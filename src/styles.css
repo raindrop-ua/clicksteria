@@ -1,3 +1,74 @@
-/* You can add global styles to this file, and also import other style files */
-
 @import 'tailwindcss';
+
+@theme {
+  --color-paper: #f6f5f0;
+  --color-ink: #111321;
+  --color-muted: #60617b;
+  --color-accent: #7038f5;
+  --color-line: #dedee5;
+  --font-sans: 'Inter', 'Arial', sans-serif;
+}
+@layer base {
+  html {
+    background: var(--color-paper);
+    color: var(--color-ink);
+  }
+  body {
+    margin: 0;
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+  button,
+  a {
+    -webkit-tap-highlight-color: transparent;
+  }
+  button:not(:disabled),
+  a {
+    cursor: pointer;
+  }
+  :focus-visible {
+    outline: 3px solid var(--color-accent);
+    outline-offset: 4px;
+  }
+  button:disabled {
+    cursor: not-allowed;
+  }
+  ::selection {
+    background: #dfd3ff;
+  }
+}
+@layer components {
+  .button {
+    @apply inline-flex min-h-12 items-center justify-center gap-2 rounded-xl border border-accent px-4 py-3 text-sm font-semibold transition-colors hover:bg-violet-50 disabled:border-line disabled:bg-transparent disabled:text-muted;
+  }
+  .button-primary {
+    @apply border-accent bg-accent text-white hover:border-violet-800 hover:bg-violet-800 disabled:border-line disabled:bg-line;
+  }
+  .nav-link {
+    @apply relative flex h-full items-center text-muted transition-colors hover:text-accent;
+  }
+  .nav-active {
+    @apply text-accent after:absolute after:inset-x-0 after:bottom-5 after:h-0.5 after:rounded after:bg-accent;
+  }
+  .brand-mark {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2px;
+    width: 25px;
+    aspect-ratio: 1;
+  }
+  .brand-mark i {
+    border-radius: 3px;
+    background: var(--color-accent);
+    box-shadow: inset 0 2px 2px #ffffff40;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

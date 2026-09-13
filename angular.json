@@ -2,11 +2,12 @@
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
   "version": 1,
   "cli": {
-    "packageManager": "npm"
+    "packageManager": "npm",
+    "analytics": "ea61afbf-a57b-4b32-a3a9-f1e05f72b934"
   },
   "newProjectRoot": "projects",
   "projects": {
-    "clixie": {
+    "clicksteria": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -92,10 +93,10 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "clixie:build:production"
+              "buildTarget": "clicksteria:build:production"
             },
             "development": {
-              "buildTarget": "clixie:build:development"
+              "buildTarget": "clicksteria:build:development"
             }
           },
           "defaultConfiguration": "development"
