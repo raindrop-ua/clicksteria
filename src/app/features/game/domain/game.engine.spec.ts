@@ -16,7 +16,7 @@ function state(value: Board): GameState {
   return { board: value, score: 0, moves: 0 };
 }
 
-describe('Clickomania engine', () => {
+describe('Clicksteria engine', () => {
   it('creates 150 unique tiles with five valid colors and a playable opening', () => {
     const value = createBoard();
     expect(value).toHaveLength(10);

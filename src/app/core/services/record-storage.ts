@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 /** Browser persistence is optional: blocked storage must never interrupt a game. */
 @Injectable({ providedIn: 'root' })
 export class RecordStorage {
-  private readonly key = 'clixie:classic:best:v1';
+  private readonly key = 'clicksteria:classic:best:v1';
   read(): number {
     try {
       const value = Number(globalThis.localStorage?.getItem(this.key));

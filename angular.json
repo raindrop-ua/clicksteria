@@ -7,7 +7,7 @@
   },
   "newProjectRoot": "projects",
   "projects": {
-    "clixie": {
+    "clicksteria": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -93,10 +93,10 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "clixie:build:production"
+              "buildTarget": "clicksteria:build:production"
             },
             "development": {
-              "buildTarget": "clixie:build:development"
+              "buildTarget": "clicksteria:build:development"
             }
           },
           "defaultConfiguration": "development"

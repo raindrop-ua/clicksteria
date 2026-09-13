@@ -15,7 +15,7 @@ import { GameSidebar } from '../ui/game-sidebar';
   template: `
     <div class="pb-4 text-center">
       <h1 class="text-[clamp(42px,6vw,64px)] leading-[1.05] font-extrabold tracking-[-3px]">
-        Clickomania<span class="text-accent">.</span>
+        Clicksteria<span class="text-accent">.</span>
       </h1>
       <p class="mt-3 text-base font-medium text-muted sm:text-xl">
         A familiar game. One more move.
@@ -26,7 +26,7 @@ import { GameSidebar } from '../ui/game-sidebar';
     </div>
     <div class="mx-auto grid max-w-[740px] items-start gap-4 md:grid-cols-[minmax(0,1fr)_270px]">
       <section
-        aria-label="Clickomania"
+        aria-label="Clicksteria"
         class="min-w-0 rounded-2xl border border-line bg-white/55 p-3 sm:p-4"
       >
         <div class="mb-3 flex items-center justify-between gap-2 px-1">

@@ -16,10 +16,10 @@ import { NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } fro
       <header class="flex h-20 shrink-0 items-center gap-8 sm:gap-12">
         <a
           routerLink="/play"
-          aria-label="Clixie — play"
+          aria-label="Clicksteria — play"
           class="flex items-center gap-2.5 text-2xl font-extrabold tracking-[-1px]"
         >
-          <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span>Clixie
+          <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span>Clicksteria
         </a>
         <nav
           aria-label="Main navigation"
@@ -48,7 +48,7 @@ import { NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } fro
       <footer
         class="mt-10 flex flex-wrap items-center justify-between gap-3 border-t border-line py-6 text-xs text-muted"
       >
-        <span>Inspired by classic Clickomania.</span>
+        <span>A little color. A little challenge.</span>
         <span class="flex items-center gap-4"
           >Take a break. Match some color.<span class="brand-mark !w-5" aria-hidden="true"
             ><i></i><i></i><i></i><i></i></span
