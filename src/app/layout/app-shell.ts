@@ -1,19 +1,22 @@
 import { ChangeDetectionStrategy, Component, ElementRef, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { ThemeSwitcher } from '../shared/ui/theme-switcher/theme-switcher.component';
 @Component({
   selector: 'app-shell',
-  imports: [RouterLink, RouterLinkActive, RouterOutlet],
+  imports: [RouterLink, RouterLinkActive, RouterOutlet, ThemeSwitcher],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <a
       href="#main"
       (click)="skipToMain($event)"
-      class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:rounded-lg focus:bg-white focus:p-4"
+      class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:rounded-lg focus:bg-surface focus:p-4"
       >Skip to content</a
     >
     <div class="mx-auto flex min-h-dvh max-w-[1240px] flex-col px-4 sm:px-10">
-      <header class="flex h-20 shrink-0 items-center gap-8 sm:gap-12">
+      <header
+        class="flex shrink-0 flex-wrap items-center gap-x-3 gap-y-3 py-4 sm:h-20 sm:flex-nowrap sm:gap-8 sm:py-0"
+      >
         <a
           routerLink="/play"
           aria-label="Clicksteria — play"
@@ -23,7 +26,7 @@ import { NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } fro
         </a>
         <nav
           aria-label="Main navigation"
-          class="flex h-full items-center gap-7 text-sm font-semibold"
+          class="order-3 flex h-10 w-full items-center gap-7 text-sm font-semibold sm:order-none sm:h-full sm:w-auto"
         >
           <a
             routerLink="/play"
@@ -40,9 +43,10 @@ import { NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } fro
             >Rules</a
           >
         </nav>
-        <p class="ml-auto hidden text-right text-xs leading-5 text-muted sm:block">
+        <p class="ml-auto hidden text-right text-xs leading-5 text-muted lg:block">
           Simple games.<br />Brighter breaks.
         </p>
+        <app-theme-switcher class="ml-auto shrink-0 lg:ml-0" />
       </header>
       <main id="main" tabindex="-1" class="flex-1 outline-none"><router-outlet /></main>
       <footer

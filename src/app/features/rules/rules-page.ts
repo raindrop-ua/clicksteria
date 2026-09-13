@@ -24,7 +24,7 @@ import { Icon } from '../../shared/ui/icon';
           </li>
         }
       </ol>
-      <section class="my-9 rounded-2xl border border-violet-200 bg-[#eee9fa] p-6">
+      <section class="my-9 rounded-2xl border border-panel-line bg-panel p-6">
         <h2 class="text-xl font-bold">How scoring works</h2>
         <p class="mt-3 leading-7 text-muted">
           A group of n blocks earns n × (n − 1) points. Two blocks earn 2 points, five earn 20, and

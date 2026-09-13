@@ -6,6 +6,22 @@
     <base href="/" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#f6f5f0" />
+    <meta name="color-scheme" content="light dark" />
+    <script>
+      // Apply the saved choice before first paint; keep in sync with ThemeService.
+      (() => {
+        let preference = 'system';
+        try {
+          const saved = localStorage.getItem('clicksteria.theme');
+          if (saved === 'light' || saved === 'dark') preference = saved;
+        } catch {}
+        document.documentElement.dataset.theme = preference;
+        const dark =
+          preference === 'dark' ||
+          (preference === 'system' && matchMedia('(prefers-color-scheme: dark)').matches);
+        document.querySelector('meta[name="theme-color"]').content = dark ? '#14131d' : '#f6f5f0';
+      })();
+    </script>
     <meta
       name="description"
       content="Clicksteria — a colorful block-matching puzzle. Match groups of colorful blocks, clear the board, and beat your best score. No timer. No rush."
