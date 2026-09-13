@@ -59,7 +59,7 @@
   z-index: 1;
 }
 .tile.dimmed {
-  filter: saturate(0.8) brightness(0.8);
+  filter: saturate(0.95) brightness(0.92);
 }
 .tile:focus-visible {
   outline: 3px solid white;

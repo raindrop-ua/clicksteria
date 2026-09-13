@@ -24,7 +24,7 @@
       (pointerenter)="preview.emit(tile)"
       (focus)="focusTile(tile.id, tile)"
       (keydown)="navigate($event, tile)"
-      (click)="activate(tile)"
+      (click)="activate(tile, $event)"
     >
       <svg viewBox="0 0 24 24" aria-hidden="true">
         @switch (tile.color) {
