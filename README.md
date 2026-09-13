@@ -4,14 +4,16 @@ A colorful block-matching puzzle game built with Angular 22 and Tailwind CSS 4. 
 
 ## Development
 
+Use pnpm 11.19.0 (pinned in `package.json`) with Node.js 24. If using Corepack, enable it with `corepack enable pnpm`.
+
 ```sh
-npm ci
-npm start
-npm test -- --watch=false
-npm run build
+pnpm install --frozen-lockfile
+pnpm start
+pnpm test --watch=false
+pnpm build
 ```
 
-Open http://localhost:4200. Production output is in `dist/clicksteria`; `npm run serve:ssr:clicksteria` runs the generated server. Tailwind is integrated through `.postcssrc.json` and `src/styles.css`.
+Open http://localhost:4200. Production output is in `dist/clicksteria`; `pnpm serve:ssr:clicksteria` runs the generated server. Tailwind is integrated through `.postcssrc.json` and `src/styles.css`.
 
 ## Architecture
 
