@@ -12,7 +12,7 @@
       [attr.aria-pressed]="theme.preference() === option.value"
       (click)="theme.setPreference(option.value)"
     >
-      <app-icon [name]="option.icon" class="size-4" />
+      <app-icon [name]="option.icon" />
     </button>
   }
 </div>

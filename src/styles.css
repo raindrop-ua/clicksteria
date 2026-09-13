@@ -13,7 +13,7 @@
   --color-muted: light-dark(#60617b, #b5afc7);
   --color-accent: light-dark(#7038f5, #b995ff);
   --color-line: light-dark(#dedee5, #393446);
-  --font-sans: 'Inter', 'Arial', sans-serif;
+  --font-sans: 'Outfit', 'Arial', sans-serif;
 }
 @layer base {
   :root {
