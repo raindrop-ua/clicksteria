@@ -1,4 +1,5 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
+import { SoundService } from '../../../core/audio/sound.service';
 import { RecordStorage } from '../../../core/services/record-storage';
 import {
   countTiles,
@@ -15,6 +16,7 @@ import { GameState, Position } from '../domain/game.models';
 @Injectable({ providedIn: 'root' })
 export class GameStore {
   private readonly storage = inject(RecordStorage);
+  private readonly sound = inject(SoundService);
   private readonly current = signal<GameState | null>(null);
   private readonly history = signal<readonly GameState[]>([]);
   private readonly selection = signal<Position | null>(null);
@@ -56,6 +58,7 @@ export class GameStore {
   play(position: Position): void {
     const previous = this.current();
     if (!previous) return;
+    this.sound.playClick();
     const next = removeGroup(previous, position);
     if (next === previous) {
       this.message.set('This block is on its own. Select a group of two or more.');

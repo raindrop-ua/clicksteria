@@ -20,7 +20,7 @@ import { Board, GAME_CONFIG, Position, TILE_LABELS } from '../domain/game.models
 export class GameBoard {
   readonly board = input.required<Board>();
   readonly highlighted = input.required<ReadonlySet<number>>();
-  readonly play = output<Position>();
+  readonly tileActivated = output<Position>();
   readonly preview = output<Position | null>();
   protected readonly config = GAME_CONFIG;
   protected readonly labels = TILE_LABELS;
@@ -34,26 +34,34 @@ export class GameBoard {
       : this.tiles()[0]?.id,
   );
   private readonly element = inject<ElementRef<HTMLElement>>(ElementRef);
-  private restoreFocus = false;
+  private restoreFocus: 'pointer' | 'keyboard' | null = null;
+  private suppressFocusPreview = false;
   constructor() {
     afterRenderEffect(() => {
       const id = this.tabId();
       this.board();
       if (!this.restoreFocus) return;
-      this.restoreFocus = false;
+      const source = this.restoreFocus;
+      this.restoreFocus = null;
       const target =
         this.element.nativeElement.querySelector<HTMLElement>(`[data-tile="${id}"]`) ??
         this.element.nativeElement.querySelector<HTMLElement>('[data-board]');
-      target?.focus({ preventScroll: true });
+      // Preserve the tab stop without turning pointer clicks into a keyboard preview.
+      this.suppressFocusPreview = source === 'pointer';
+      try {
+        target?.focus({ preventScroll: true });
+      } finally {
+        this.suppressFocusPreview = false;
+      }
     });
   }
-  protected activate(position: Position): void {
-    this.restoreFocus = true;
-    this.play.emit(position);
+  protected activate(position: Position, event: MouseEvent): void {
+    this.restoreFocus = event.detail === 0 ? 'keyboard' : 'pointer';
+    this.tileActivated.emit(position);
   }
   protected focusTile(id: number, position: Position): void {
     this.activeId.set(id);
-    this.preview.emit(position);
+    if (!this.suppressFocusPreview) this.preview.emit(position);
   }
   protected navigate(event: KeyboardEvent, position: Position): void {
     const offsets: Record<string, Position> = {

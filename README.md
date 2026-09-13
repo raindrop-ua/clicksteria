@@ -61,3 +61,9 @@ Unit coverage includes branching adjacency, diagonal exclusion, invalid moves, g
 The header offers System, Light, and Dark modes. System is the default and follows OS changes without saving an override. Choosing Light or Dark persists `clicksteria.theme`; choosing System removes it. Preferences synchronize between tabs, and blocked storage falls back to an in-memory choice.
 
 `src/index.html` applies the preference before first paint. Keep its storage key and theme-color values synchronized with `core/theme/theme.service.ts`. The service initializes browser listeners after hydration and releases them on destruction. `shared/ui/theme-switcher` owns the controls; `src/styles.css` owns the `light-dark()` semantic palette. Game tiles retain their colors in both themes.
+
+## Sound
+
+Block clicks (mouse, touch, or keyboard) play a short, quiet synthesized pop. The speaker button toggles game sounds; the preference is stored as `true` or `false` under `clicksteria.sound` and synchronizes across tabs. Sound is on by default.
+
+`core/audio/sound.service.ts` owns the preference, storage, lazy Web Audio context, playback, and cleanup. The toggle only displays state and calls the service; `GameStore.play()` triggers the effect. Muting stops the current sound and cancels pending playback. Missing or blocked audio/storage never interrupts the game, and no audio is initialized during SSR or page load.
