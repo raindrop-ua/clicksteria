@@ -4,14 +4,16 @@ A colorful block-matching puzzle game built with Angular 22 and Tailwind CSS 4. 
 
 ## Development
 
+Use pnpm 11.19.0 (pinned in `package.json`) with Node.js 24. If using Corepack, enable it with `corepack enable pnpm`.
+
 ```sh
-npm ci
-npm start
-npm test -- --watch=false
-npm run build
+pnpm install --frozen-lockfile
+pnpm start
+pnpm test --watch=false
+pnpm build
 ```
 
-Open http://localhost:4200. Production output is in `dist/clicksteria`; `npm run serve:ssr:clicksteria` runs the generated server. Tailwind is integrated through `.postcssrc.json` and `src/styles.css`.
+Open http://localhost:4200. Production output is in `dist/clicksteria`; `pnpm serve:ssr:clicksteria` runs the generated server. Tailwind is integrated through `.postcssrc.json` and `src/styles.css`.
 
 ## Architecture
 
@@ -53,3 +55,9 @@ The record is the highest score reached, including before undo. Only the record 
 Tiles have both colors and distinct shapes plus descriptive accessible names. Tab enters/leaves the board; arrow keys move between tiles; Enter/Space plays. The board uses one tab stop, restores focus after removal, and announces moves through a live region. Reduced-motion preferences disable tile transitions.
 
 Unit coverage includes branching adjacency, diagonal exclusion, invalid moves, gravity, empty-column collapse, immutable snapshots, scoring, wins, blocked boards, seeded complete games, undo, hints, and session initialization.
+
+## Appearance
+
+The header offers System, Light, and Dark modes. System is the default and follows OS changes without saving an override. Choosing Light or Dark persists `clicksteria.theme`; choosing System removes it. Preferences synchronize between tabs, and blocked storage falls back to an in-memory choice.
+
+`src/index.html` applies the preference before first paint. Keep its storage key and theme-color values synchronized with `core/theme/theme.service.ts`. The service initializes browser listeners after hydration and releases them on destruction. `shared/ui/theme-switcher` owns the controls; `src/styles.css` owns the `light-dark()` semantic palette. Game tiles retain their colors in both themes.

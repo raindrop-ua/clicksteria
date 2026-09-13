@@ -17,7 +17,7 @@ import { GameStatus } from '../domain/game.models';
   imports: [DecimalPipe, RouterLink, Icon],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <section aria-label="Score and controls" class="rounded-2xl border border-line bg-white/55 p-6">
+    <section aria-label="Score and controls" class="rounded-2xl border border-line bg-surface p-6">
       <p class="text-xs font-semibold tracking-widest text-muted">SCORE</p>
       <p class="mt-1 mb-5 text-[64px] leading-tight font-bold tracking-[-3px] tabular-nums">
         {{ score() | number }}
@@ -56,7 +56,7 @@ import { GameStatus } from '../domain/game.models';
         }
       </div>
     </section>
-    <section class="mt-4 rounded-2xl border border-violet-200 bg-[#eee9fa] p-6">
+    <section class="mt-4 rounded-2xl border border-panel-line bg-panel p-6">
       <p class="mb-4 text-[11px] font-semibold tracking-widest text-muted">HOW TO PLAY</p>
       <h2 class="text-2xl leading-tight font-bold tracking-[-.5px]">
         Fewer blocks.<br />More points.
@@ -69,7 +69,7 @@ import { GameStatus } from '../domain/game.models';
       </p>
       <a
         routerLink="/rules"
-        class="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-violet-800 hover:underline"
+        class="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-accent hover:underline"
         >All the rules <app-icon name="arrow"
       /></a>
     </section>

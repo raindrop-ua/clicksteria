@@ -27,7 +27,7 @@ import { GameSidebar } from '../ui/game-sidebar';
     <div class="mx-auto grid max-w-[740px] items-start gap-4 md:grid-cols-[minmax(0,1fr)_270px]">
       <section
         aria-label="Clicksteria"
-        class="min-w-0 rounded-2xl border border-line bg-white/55 p-3 sm:p-4"
+        class="min-w-0 rounded-2xl border border-line bg-surface p-3 sm:p-4"
       >
         <div class="mb-3 flex items-center justify-between gap-2 px-1">
           <h2 class="text-xs font-bold sm:text-sm">Classic mode</h2>
