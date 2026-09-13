@@ -2,9 +2,10 @@ import { ChangeDetectionStrategy, Component, ElementRef, inject } from '@angular
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { ThemeSwitcher } from '../shared/ui/theme-switcher/theme-switcher.component';
+import { SoundToggle } from '../shared/ui/sound-toggle/sound-toggle.component';
 @Component({
   selector: 'app-shell',
-  imports: [RouterLink, RouterLinkActive, RouterOutlet, ThemeSwitcher],
+  imports: [RouterLink, RouterLinkActive, RouterOutlet, ThemeSwitcher, SoundToggle],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <a
@@ -42,6 +43,7 @@ import { ThemeSwitcher } from '../shared/ui/theme-switcher/theme-switcher.compon
             ariaCurrentWhenActive="page"
             >Rules</a
           >
+          <app-sound-toggle class="ml-auto sm:ml-0" />
         </nav>
         <p class="ml-auto hidden text-right text-xs leading-5 text-muted lg:block">
           Simple games.<br />Brighter breaks.
