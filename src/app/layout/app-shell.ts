@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, ElementRef, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { SeoService } from '../core/services/seo.service';
 import { ThemeSwitcher } from '../shared/ui/theme-switcher/theme-switcher.component';
 import { SoundToggle } from '../shared/ui/sound-toggle/sound-toggle.component';
 
@@ -66,7 +67,9 @@ import { SoundToggle } from '../shared/ui/sound-toggle/sound-toggle.component';
 })
 export class AppShell {
   private readonly element = inject<ElementRef<HTMLElement>>(ElementRef);
+
   constructor() {
+    inject(SeoService);
     inject(Router)
       .events.pipe(takeUntilDestroyed())
       .subscribe((event) => {
