@@ -1,59 +1,55 @@
 # Clixie
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 22.0.0.
+A small Clickomania game built with Angular 22 and Tailwind CSS 4. English interface, responsive layout, SSR/prerendering, lazy routes, and no backend or external runtime services.
 
-## Development server
+## Development
 
-To start a local development server, run:
-
-```bash
-ng serve
+```sh
+npm ci
+npm start
+npm test -- --watch=false
+npm run build
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+Open http://localhost:4200. Production output is in `dist/clixie`; `npm run serve:ssr:clixie` runs the generated server. Tailwind is integrated through `.postcssrc.json` and `src/styles.css`.
 
-## Code scaffolding
+## Architecture
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
+```text
+src/app/
+  core/services/        Optional browser persistence (record storage)
+  layout/               Application shell, navigation, route focus
+  shared/ui/            Small reusable UI primitives
+  features/
+    game/
+      domain/           Immutable models and pure TypeScript rules
+      data-access/      Signal store: session, history, previews, record
+      ui/               Board rendering/input and score/control panel
+      pages/            Game page composition and browser initialization
+      game.routes.ts    Lazy feature entry point
+    rules/              Independently lazy-loaded rules page
+    not-found/          Wildcard route
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+The dependency direction is UI → store → domain. The domain imports no Angular APIs and accepts an injectable random function for deterministic tests. The board takes inputs and emits intents; it does not mutate state or know about scoring/storage. The sidebar is presentational. `GameStore` is an application-scoped session, loaded with the game feature, so visiting rules and returning preserves the game and undo history. New features should register lazy entries in `app.routes.ts`; keep feature-specific services inside their feature, not in `core` or `shared`.
 
-```bash
-ng generate --help
-```
+Components use OnPush, standalone defaults, signal inputs/outputs, and native control flow. TypeScript and Angular template strictness are enabled. Page layout and chrome use Tailwind; scoped CSS handles tile geometry, colors, focus, and falling animation.
 
-## Building
+## Game rules
 
-To build the project run:
+- 10 columns × 15 rows, five colors; every initial board has at least one legal move.
+- Click any orthogonally connected group of at least two matching tiles.
+- Remaining tiles fall down; empty columns collapse left.
+- A group of `n` tiles awards `n × (n − 1)` points. Clearing the board adds 1,000.
+- No remaining groups ends the game; an empty board is a win.
+- Undo restores the exact prior board and score, up to the start of the current game.
+- Hint highlights the largest current group, with no penalty; it does not guarantee a solution.
+- A new game asks for confirmation if moves have been made and the game is still active.
 
-```bash
-ng build
-```
+The record is the highest score reached, including before undo. Only the record persists in localStorage (`clixie:classic:best:v1`); a reload starts a fresh game. Storage failures gracefully fall back to an in-memory record. Random board creation and storage reads run in `afterNextRender`, avoiding server/client hydration differences.
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+## Accessibility and verification
 
-## Running unit tests
+Tiles have both colors and distinct shapes plus descriptive accessible names. Tab enters/leaves the board; arrow keys move between tiles; Enter/Space plays. The board uses one tab stop, restores focus after removal, and announces moves through a live region. Reduced-motion preferences disable tile transitions.
 
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+Unit coverage includes branching adjacency, diagonal exclusion, invalid moves, gravity, empty-column collapse, immutable snapshots, scoring, wins, blocked boards, seeded complete games, undo, hints, and session initialization.
