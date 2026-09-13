@@ -21,7 +21,9 @@ async function setup() {
   await fixture.whenStable();
   const preview = vi.fn();
   fixture.componentInstance.preview.subscribe(preview);
-  fixture.componentInstance.play.subscribe(() => fixture.componentRef.setInput('board', after));
+  fixture.componentInstance.tileActivated.subscribe(() =>
+    fixture.componentRef.setInput('board', after),
+  );
   const tile = fixture.nativeElement.querySelector('[data-tile="2"]') as HTMLButtonElement;
   tile.focus();
   preview.mockClear();

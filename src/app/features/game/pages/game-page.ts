@@ -38,7 +38,7 @@ import { GameSidebar } from '../ui/game-sidebar';
             [inert]="game.status() !== 'playing'"
             [board]="game.board()"
             [highlighted]="game.highlightedIds()"
-            (play)="game.play($event)"
+            (tileActivated)="game.play($event)"
             (preview)="game.preview($event)"
           />
           @if (!game.state()) {

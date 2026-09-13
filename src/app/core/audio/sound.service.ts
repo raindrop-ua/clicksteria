@@ -38,7 +38,9 @@ export class SoundService {
     });
     this.destroyRef.onDestroy(() => {
       this.stop();
-      void this.context?.close().catch(() => {});
+      void this.context?.close().catch(() => {
+        /* Closing an unavailable audio context must not interrupt teardown. */
+      });
     });
   }
 

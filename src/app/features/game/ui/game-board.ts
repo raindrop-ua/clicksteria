@@ -20,7 +20,7 @@ import { Board, GAME_CONFIG, Position, TILE_LABELS } from '../domain/game.models
 export class GameBoard {
   readonly board = input.required<Board>();
   readonly highlighted = input.required<ReadonlySet<number>>();
-  readonly play = output<Position>();
+  readonly tileActivated = output<Position>();
   readonly preview = output<Position | null>();
   protected readonly config = GAME_CONFIG;
   protected readonly labels = TILE_LABELS;
@@ -57,7 +57,7 @@ export class GameBoard {
   }
   protected activate(position: Position, event: MouseEvent): void {
     this.restoreFocus = event.detail === 0 ? 'keyboard' : 'pointer';
-    this.play.emit(position);
+    this.tileActivated.emit(position);
   }
   protected focusTile(id: number, position: Position): void {
     this.activeId.set(id);

@@ -3,6 +3,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { ThemeSwitcher } from '../shared/ui/theme-switcher/theme-switcher.component';
 import { SoundToggle } from '../shared/ui/sound-toggle/sound-toggle.component';
+
 @Component({
   selector: 'app-shell',
   imports: [RouterLink, RouterLinkActive, RouterOutlet, ThemeSwitcher, SoundToggle],
