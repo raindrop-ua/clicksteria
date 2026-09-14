@@ -15,25 +15,43 @@ pnpm build
 
 Open http://localhost:4200. Production output is in `dist/clicksteria`; `pnpm serve:ssr:clicksteria` runs the generated server. Tailwind is integrated through `.postcssrc.json` and `src/styles.css`.
 
+Installing dependencies also activates the Husky pre-commit hook. It runs ESLint and Prettier only on staged files, keeping commits fast while preventing new lint and formatting issues.
+
 ## Architecture
 
 ```text
-src/app/
-  core/services/        Optional browser persistence (record storage)
-  layout/               Application shell, navigation, route focus
-  shared/ui/            Small reusable UI primitives
-  features/
-    game/
-      domain/           Immutable models and pure TypeScript rules
-      data-access/      Signal store: session, history, previews, record
-      ui/               Board rendering/input and score/control panel
-      pages/            Game page composition and browser initialization
-      game.routes.ts    Lazy feature entry point
-    rules/              Independently lazy-loaded rules page
-    not-found/          Wildcard route
+src/
+  main.ts               Browser bootstrap
+  main.server.ts        Angular server bootstrap
+  server.ts             Express SSR server entry point
+  app/
+    app.routes.ts       Top-level lazy routes and route SEO data
+    app.routes.server.ts
+                        Prerender policy for every route
+    core/
+      audio/            Sound preference and lazy Web Audio playback
+      services/         SEO metadata and record persistence
+      theme/            System/light/dark preference and browser sync
+    layout/             Persistent shell, navigation, route focus
+    shared/ui/          Reusable icons and preference controls
+    features/
+      game/
+        domain/         Immutable models and pure TypeScript rules
+        data-access/    Signal store: session, history, preview, record
+        ui/             Accessible board and presentational sidebar
+        pages/          Feature composition and browser initialization
+        game.routes.ts  Lazy game route and SEO metadata
+      rules/            Lazy rules page
+      not-found/        Lazy wildcard page
 ```
 
-The dependency direction is UI → store → domain. The domain imports no Angular APIs and accepts an injectable random function for deterministic tests. The board takes inputs and emits intents; it does not mutate state or know about scoring/storage. The sidebar is presentational. `GameStore` is an application-scoped session, loaded with the game feature, so visiting rules and returning preserves the game and undo history. New features should register lazy entries in `app.routes.ts`; keep feature-specific services inside their feature, not in `core` or `shared`.
+The router lazy-loads the game route collection and the standalone rules and not-found pages. `AppShell` stays mounted around them, owns global navigation and focus restoration, and starts route-driven SEO updates. Angular prerenders all routes on the server, then hydrates them in the browser.
+
+Inside the game feature, dependencies flow from page/UI → `GameStore` → domain engine. The domain imports no Angular APIs, keeps board transformations immutable, and accepts an injectable random function for deterministic tests. The board receives state and emits user intents; it does not own scoring, history, persistence, or sound. The sidebar is presentational.
+
+`GameStore` is a root singleton, so the current session and undo history survive navigation between Play and Rules. It coordinates domain operations with the app-wide record and sound services, while browser-only initialization stays in `afterNextRender` to avoid SSR and hydration mismatches. Theme, sound, and record preferences degrade to in-memory behavior when browser storage is unavailable.
+
+New routes belong in `app.routes.ts` and should be lazy by default. Keep game-specific state and behavior under `features/game`; put truly app-wide browser concerns in `core`; keep `shared/ui` limited to reusable presentational controls.
 
 Components use OnPush, standalone defaults, signal inputs/outputs, and native control flow. TypeScript and Angular template strictness are enabled. Page layout and chrome use Tailwind; scoped CSS handles tile geometry, colors, focus, and falling animation.
 
