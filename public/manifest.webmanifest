@@ -1,6 +1,6 @@
 {
-  "name": "clicksteria",
-  "short_name": "clicksteria",
+  "name": "Clicksteria",
+  "short_name": "Clicksteria",
   "display": "standalone",
   "scope": "./",
   "start_url": "./",
