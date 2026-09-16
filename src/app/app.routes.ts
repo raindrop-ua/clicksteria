@@ -19,6 +19,30 @@ export const routes: Routes = [
     loadComponent: () => import('./features/rules/rules-page'),
   },
   {
+    path: 'privacy',
+    title: 'Privacy Policy · Clicksteria',
+    data: {
+      seo: {
+        description:
+          'How Clicksteria uses browser storage and handles privacy, without analytics or tracking cookies.',
+        canonicalPath: '/privacy',
+      } satisfies SeoData,
+    },
+    loadComponent: () => import('./features/legal/privacy-page'),
+  },
+  {
+    path: 'terms',
+    title: 'Terms of Use · Clicksteria',
+    data: {
+      seo: {
+        description:
+          'The terms for playing Clicksteria, a free browser puzzle game by Anton Sizov.',
+        canonicalPath: '/terms',
+      } satisfies SeoData,
+    },
+    loadComponent: () => import('./features/legal/terms-page'),
+  },
+  {
     path: '**',
     title: 'Page not found · Clicksteria',
     data: {
