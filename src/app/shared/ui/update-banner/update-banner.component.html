@@ -1,0 +1,25 @@
+<div aria-live="polite" aria-atomic="true">
+  @if (updates.notice(); as notice) {
+    <section
+      aria-labelledby="app-update-title"
+      class="mb-5 flex flex-col gap-4 rounded-2xl border border-panel-line bg-panel p-4 sm:flex-row sm:items-center sm:justify-between sm:px-5"
+    >
+      <div class="min-w-0">
+        <h2 id="app-update-title" class="text-sm font-semibold text-ink">
+          {{ notice === 'ready' ? 'A fresh version is ready' : 'A quick reload is needed' }}
+        </h2>
+        <p class="mt-1 text-sm leading-relaxed text-muted">
+          {{
+            notice === 'ready'
+              ? 'Finish your game, then refresh to update. Refreshing starts a new game.'
+              : 'Clicksteria needs to reload to keep working. This starts a new game.'
+          }}
+          Your best score is saved.
+        </p>
+      </div>
+      <button type="button" class="button button-primary shrink-0" (click)="updates.reload()">
+        {{ notice === 'ready' ? 'Refresh to update' : 'Reload game' }}
+      </button>
+    </section>
+  }
+</div>
