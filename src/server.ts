@@ -29,7 +29,15 @@ const angularApp = new AngularNodeAppEngine();
  */
 app.use(
   express.static(browserDistFolder, {
-    maxAge: '1y',
+    // Only content-hashed bundles can safely live in the HTTP cache for a year.
+    // Worker scripts, manifests, HTML and unversioned assets must revalidate.
+    setHeaders: (res, path) => {
+      const hashedBundle = /[-.][A-Za-z0-9_-]{8}\.(?:js|css)$/.test(path);
+      res.setHeader(
+        'Cache-Control',
+        hashedBundle ? 'public, max-age=31536000, immutable' : 'no-cache',
+      );
+    },
     index: false,
     redirect: false,
   }),
@@ -39,11 +47,10 @@ app.use(
  * Handle all other requests by rendering the Angular application.
  */
 app.use((req, res, next) => {
+  res.setHeader('Cache-Control', 'no-cache');
   angularApp
     .handle(req)
-    .then((response) =>
-      response ? writeResponseToNodeResponse(response, res) : next(),
-    )
+    .then((response) => (response ? writeResponseToNodeResponse(response, res) : next()))
     .catch(next);
 });
 
