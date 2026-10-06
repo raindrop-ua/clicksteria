@@ -1,0 +1,25 @@
+<section aria-label="Score and controls" class="rounded-2xl border border-line bg-surface p-6">
+  <p class="text-xs font-semibold tracking-widest text-muted">SCORE</p>
+  <p class="mt-1 mb-5 text-[64px] leading-tight font-bold tracking-[-3px] tabular-nums">
+    {{ score() | number }}
+  </p>
+  <dl class="space-y-3 border-t border-line pt-5 text-sm">
+    <div class="flex justify-between">
+      <dt class="text-muted">Best score</dt>
+      <dd class="font-bold tabular-nums">{{ record() | number }}</dd>
+    </div>
+    <div class="flex justify-between">
+      <dt class="text-muted">Blocks left</dt>
+      <dd class="font-bold tabular-nums">{{ remaining() }}</dd>
+    </div>
+  </dl>
+  <app-game-controls
+    [canUndo]="canUndo()"
+    [ready]="ready()"
+    [status]="status()"
+    (newGame)="newGame.emit()"
+    (undo)="undo.emit()"
+    (hint)="hint.emit()"
+  />
+</section>
+<app-game-help />
