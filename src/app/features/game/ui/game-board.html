@@ -7,6 +7,16 @@
   aria-describedby="board-help"
   (pointerleave)="preview.emit(null)"
 >
+  <img
+    class="board-backdrop"
+    ngSrc="/images/board-night-lake.webp"
+    alt=""
+    aria-hidden="true"
+    fill
+    priority
+    sizes="(min-width: 768px) 50vw, 100vw"
+    draggable="false"
+  />
   @for (tile of tiles(); track tile.id) {
     <button
       type="button"
