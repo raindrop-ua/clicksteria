@@ -9,6 +9,13 @@
   border-radius: 5px;
   outline-offset: 6px;
 }
+.board-backdrop {
+  object-fit: cover;
+  border-radius: inherit;
+  opacity: 0.8;
+  pointer-events: none;
+  user-select: none;
+}
 .tile {
   position: absolute;
   width: 10%;
