@@ -1,5 +1,7 @@
 # Clicksteria
 
+![Clicksteria — block-matching puzzle game](public/og-image.png)
+
 A colorful block-matching puzzle game built with Angular 22 and Tailwind CSS 4. English interface, responsive layout, SSR/prerendering, lazy routes, and no backend or external runtime services.
 
 ## Development
