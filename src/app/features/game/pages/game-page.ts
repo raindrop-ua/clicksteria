@@ -1,11 +1,10 @@
-import { afterNextRender, ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { afterNextRender, Component, inject } from '@angular/core';
 import { GameStore } from '../data-access/game-store';
 import { GameBoard } from '../ui/game-board';
 import { GameSidebar } from '../ui/game-sidebar';
 import { GameResult } from '../ui/game-result/game-result.component';
 @Component({
   imports: [GameBoard, GameSidebar, GameResult],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './game-page.html',
 })
 export default class GamePage {

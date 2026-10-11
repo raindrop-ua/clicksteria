@@ -1,10 +1,9 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { LegalLayout } from './legal-layout';
 
 @Component({
   imports: [LegalLayout, RouterLink],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <app-legal-layout title="Terms of Use">
       <p>

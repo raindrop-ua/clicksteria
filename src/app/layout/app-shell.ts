@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, ElementRef, inject } from '@angular/core';
+import { Component, ElementRef, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { SeoService } from '../core/services/seo.service';
@@ -9,7 +9,6 @@ import { UpdateBannerComponent } from '../shared/ui/update-banner/update-banner.
 @Component({
   selector: 'app-shell',
   imports: [RouterOutlet, AppHeader, AppFooter, UpdateBannerComponent],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './app-shell.html',
 })
 export class AppShell {

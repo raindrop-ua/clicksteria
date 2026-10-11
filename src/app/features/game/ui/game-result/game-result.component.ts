@@ -1,17 +1,8 @@
-import {
-  afterRenderEffect,
-  ChangeDetectionStrategy,
-  Component,
-  ElementRef,
-  inject,
-  input,
-  output,
-} from '@angular/core';
+import { afterRenderEffect, Component, ElementRef, inject, input, output } from '@angular/core';
 import { GameStatus } from '../../domain/game.models';
 
 @Component({
   selector: 'app-game-result',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './game-result.component.html',
 })
 export class GameResult {

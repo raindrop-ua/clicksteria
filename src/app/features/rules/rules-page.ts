@@ -1,9 +1,8 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Icon } from '../../shared/ui/icon';
 @Component({
   imports: [RouterLink, Icon],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <article class="mx-auto max-w-2xl py-8 sm:py-12">
       <h1 class="text-4xl font-extrabold tracking-tight sm:text-5xl">
