@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
+import { Component, input, output } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
 import { GameStatus } from '../domain/game.models';
 import { GameControls } from './game-controls/game-controls.component';
@@ -7,7 +7,6 @@ import { GameHelp } from './game-help/game-help.component';
 @Component({
   selector: 'app-game-sidebar',
   imports: [DecimalPipe, GameControls, GameHelp],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './game-sidebar.html',
 })
 export class GameSidebar {

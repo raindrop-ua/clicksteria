@@ -1,7 +1,6 @@
 import { NgOptimizedImage } from '@angular/common';
 import {
   afterRenderEffect,
-  ChangeDetectionStrategy,
   Component,
   computed,
   ElementRef,
@@ -15,7 +14,6 @@ import { Board, GAME_CONFIG, Position, TILE_LABELS } from '../domain/game.models
 @Component({
   selector: 'app-game-board',
   imports: [NgOptimizedImage],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './game-board.html',
   styleUrl: './game-board.css',
 })

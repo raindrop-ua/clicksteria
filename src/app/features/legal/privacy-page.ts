@@ -1,9 +1,8 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { Component } from '@angular/core';
 import { LegalLayout } from './legal-layout';
 
 @Component({
   imports: [LegalLayout],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <app-legal-layout title="Privacy Policy">
       <p>

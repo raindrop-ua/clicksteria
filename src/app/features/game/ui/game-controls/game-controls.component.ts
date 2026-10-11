@@ -1,6 +1,5 @@
 import {
   afterRenderEffect,
-  ChangeDetectionStrategy,
   Component,
   ElementRef,
   inject,
@@ -14,7 +13,6 @@ import { GameStatus } from '../../domain/game.models';
 @Component({
   selector: 'app-game-controls',
   imports: [Icon],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   host: { class: 'block' },
   templateUrl: './game-controls.component.html',
 })

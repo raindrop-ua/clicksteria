@@ -1,10 +1,9 @@
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-legal-layout',
   imports: [RouterLink],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <article class="mx-auto max-w-2xl py-8 sm:py-12">
       <h1 class="text-4xl font-extrabold tracking-tight sm:text-5xl">{{ title() }}</h1>

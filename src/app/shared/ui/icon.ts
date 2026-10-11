@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { Component, input } from '@angular/core';
 const PATHS = {
   volume: 'M11 4 6 8H3v8h3l5 4ZM15 8a6 6 0 0 1 0 8m3-11a10 10 0 0 1 0 14',
   'volume-off': 'M11 4 6 8H3v8h3l5 4Zm5 5 5 6m0-6-5 6',
@@ -12,7 +12,6 @@ const PATHS = {
 } as const;
 @Component({
   selector: 'app-icon',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   host: { 'aria-hidden': 'true', class: 'inline-flex shrink-0' },
   template:
     '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path [attr.d]="paths[name()]" /></svg>',
