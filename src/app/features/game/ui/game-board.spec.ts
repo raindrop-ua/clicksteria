@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { Board } from '../domain/game.models';
+import { Board } from '@features/game/domain/game.models';
 import { GameBoard } from './game-board';
 
 const before: Board = [

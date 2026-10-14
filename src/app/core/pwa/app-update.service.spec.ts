@@ -3,7 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { SwUpdate, UnrecoverableStateEvent, VersionEvent } from '@angular/service-worker';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { AppUpdateService } from './app-update.service';
-import { UpdateBannerComponent } from '../../shared/ui/update-banner/update-banner.component';
+import { UpdateBannerComponent } from '@shared/ui/update-banner/update-banner.component';
 
 describe('App updates', () => {
   let stable: BehaviorSubject<boolean>;

@@ -1,8 +1,8 @@
 import { afterNextRender, Component, inject } from '@angular/core';
-import { GameStore } from '../data-access/game-store';
-import { GameBoard } from '../ui/game-board';
-import { GameSidebar } from '../ui/game-sidebar';
-import { GameResult } from '../ui/game-result/game-result.component';
+import { GameStore } from '@features/game/data-access/game-store';
+import { GameBoard } from '@features/game/ui/game-board';
+import { GameSidebar } from '@features/game/ui/game-sidebar';
+import { GameResult } from '@features/game/ui/game-result/game-result.component';
 @Component({
   imports: [GameBoard, GameSidebar, GameResult],
   templateUrl: './game-page.html',

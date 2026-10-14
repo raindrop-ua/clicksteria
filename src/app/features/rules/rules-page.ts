@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { Icon } from '../../shared/ui/icon';
+import { Icon } from '@shared/ui/icon';
 @Component({
   imports: [RouterLink, Icon],
   template: `

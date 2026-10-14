@@ -7,8 +7,8 @@ import {
   output,
   signal,
 } from '@angular/core';
-import { Icon } from '../../../../shared/ui/icon';
-import { GameStatus } from '../../domain/game.models';
+import { Icon } from '@shared/ui/icon';
+import { GameStatus } from '@features/game/domain/game.models';
 
 @Component({
   selector: 'app-game-controls',

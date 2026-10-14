@@ -1,10 +1,10 @@
 import { Component, ElementRef, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
-import { SeoService } from '../core/services/seo.service';
-import { AppHeader } from './app-header/app-header.component';
-import { AppFooter } from './app-footer/app-footer.component';
-import { UpdateBannerComponent } from '../shared/ui/update-banner/update-banner.component';
+import { SeoService } from '@core/services/seo.service';
+import { AppHeader } from '@layout/app-header/app-header.component';
+import { AppFooter } from '@layout/app-footer/app-footer.component';
+import { UpdateBannerComponent } from '@shared/ui/update-banner/update-banner.component';
 
 @Component({
   selector: 'app-shell',

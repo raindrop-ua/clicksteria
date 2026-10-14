@@ -9,7 +9,7 @@ import {
   output,
   signal,
 } from '@angular/core';
-import { Board, GAME_CONFIG, Position, TILE_LABELS } from '../domain/game.models';
+import { Board, GAME_CONFIG, Position, TILE_LABELS } from '@features/game/domain/game.models';
 
 @Component({
   selector: 'app-game-board',

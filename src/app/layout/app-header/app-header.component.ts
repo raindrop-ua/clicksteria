@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
-import { SoundToggle } from '../../shared/ui/sound-toggle/sound-toggle.component';
-import { ThemeSwitcher } from '../../shared/ui/theme-switcher/theme-switcher.component';
+import { SoundToggle } from '@shared/ui/sound-toggle/sound-toggle.component';
+import { ThemeSwitcher } from '@shared/ui/theme-switcher/theme-switcher.component';
 
 @Component({
   selector: 'app-header',
