@@ -1,5 +1,5 @@
 import { afterRenderEffect, Component, ElementRef, inject, input, output } from '@angular/core';
-import { GameStatus } from '../../domain/game.models';
+import { GameStatus } from '@features/game/domain/game.models';
 
 @Component({
   selector: 'app-game-result',

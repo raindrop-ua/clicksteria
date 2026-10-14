@@ -1,9 +1,9 @@
 import { Routes } from '@angular/router';
-import type { SeoData } from './core/services/seo.service';
+import type { SeoData } from '@core/services/seo.service';
 
 export const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'play' },
-  { path: 'play', loadChildren: () => import('./features/game/game.routes') },
+  { path: 'play', loadChildren: () => import('@features/game/game.routes') },
   {
     path: 'rules',
     title: 'How to Play Clicksteria — Rules & Scoring',
@@ -16,7 +16,7 @@ export const routes: Routes = [
         canonicalPath: '/rules',
       } satisfies SeoData,
     },
-    loadComponent: () => import('./features/rules/rules-page'),
+    loadComponent: () => import('@features/rules/rules-page'),
   },
   {
     path: 'privacy',
@@ -28,7 +28,7 @@ export const routes: Routes = [
         canonicalPath: '/privacy',
       } satisfies SeoData,
     },
-    loadComponent: () => import('./features/legal/privacy-page'),
+    loadComponent: () => import('@features/legal/privacy-page'),
   },
   {
     path: 'terms',
@@ -40,7 +40,7 @@ export const routes: Routes = [
         canonicalPath: '/terms',
       } satisfies SeoData,
     },
-    loadComponent: () => import('./features/legal/terms-page'),
+    loadComponent: () => import('@features/legal/terms-page'),
   },
   {
     path: '**',
@@ -51,6 +51,6 @@ export const routes: Routes = [
         robots: 'noindex, nofollow',
       } satisfies SeoData,
     },
-    loadComponent: () => import('./features/not-found/not-found-page'),
+    loadComponent: () => import('@features/not-found/not-found-page'),
   },
 ];

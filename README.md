@@ -57,6 +57,31 @@ New routes belong in `app.routes.ts` and should be lazy by default. Keep game-sp
 
 Components use OnPush, standalone defaults, signal inputs/outputs, and native control flow. TypeScript and Angular template strictness are enabled. Page layout and chrome use Tailwind; scoped CSS handles tile geometry, colors, focus, and falling animation.
 
+### Import aliases
+
+Aliases are defined once in the root `tsconfig.json` and inherited by the application and test configurations. Angular's build and test tooling resolves them for browser bundles, SSR, and lazy routes.
+
+| Alias         | Directory                                                |
+| ------------- | -------------------------------------------------------- |
+| `@app/*`      | `src/app/*` (root components, configuration, and routes) |
+| `@core/*`     | `src/app/core/*`                                         |
+| `@shared/*`   | `src/app/shared/*`                                       |
+| `@layout/*`   | `src/app/layout/*`                                       |
+| `@features/*` | `src/app/features/*`                                     |
+
+Use the most specific alias for imports between directories, including dynamic imports. Keep relative imports for neighboring files in the same directory, such as a test importing its subject. Import directly from the source file rather than introducing barrel files; aliases do not change the dependency direction described above.
+
+```ts
+import { SoundService } from '@core/audio/sound.service';
+import { GameStore } from '@features/game/data-access/game-store';
+import { Icon } from '@shared/ui/icon';
+import { GameBoard } from './game-board';
+
+const loadGameRoutes = () => import('@features/game/game.routes');
+```
+
+Path targets are relative to `tsconfig.json`, so no `baseUrl` is needed. Component template/style URLs and public asset URLs remain relative paths or web URLs; these aliases apply only to TypeScript module imports.
+
 ## Game rules
 
 - 10 columns × 15 rows, five colors; every initial board has at least one legal move.

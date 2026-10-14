@@ -1,6 +1,6 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
-import { SoundService } from '../../../core/audio/sound.service';
-import { RecordStorage } from '../../../core/services/record-storage';
+import { SoundService } from '@core/audio/sound.service';
+import { RecordStorage } from '@core/services/record-storage';
 import {
   countTiles,
   createBoard,
@@ -9,8 +9,8 @@ import {
   getStatus,
   groupScore,
   removeGroup,
-} from '../domain/game.engine';
-import { GameState, Position } from '../domain/game.models';
+} from '@features/game/domain/game.engine';
+import { GameState, Position } from '@features/game/domain/game.models';
 
 /** One session survives route changes. The engine owns rules; this service owns history and UI state. */
 @Injectable({ providedIn: 'root' })

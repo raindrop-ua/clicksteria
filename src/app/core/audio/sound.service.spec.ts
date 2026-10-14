@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { SoundToggle } from '../../shared/ui/sound-toggle/sound-toggle.component';
+import { SoundToggle } from '@shared/ui/sound-toggle/sound-toggle.component';
 import { SoundService } from './sound.service';
 
 function audioMock() {

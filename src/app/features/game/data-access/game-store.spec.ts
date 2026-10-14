@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
-import { RecordStorage } from '../../../core/services/record-storage';
-import { findLargestGroup } from '../domain/game.engine';
+import { RecordStorage } from '@core/services/record-storage';
+import { findLargestGroup } from '@features/game/domain/game.engine';
 import { GameStore } from './game-store';
 
 describe('GameStore', () => {

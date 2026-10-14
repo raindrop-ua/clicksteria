@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import type { SeoData } from '../../core/services/seo.service';
+import type { SeoData } from '@core/services/seo.service';
 
 export default [
   {
@@ -14,6 +14,6 @@ export default [
         canonicalPath: '/play',
       } satisfies SeoData,
     },
-    loadComponent: () => import('./pages/game-page'),
+    loadComponent: () => import('@features/game/pages/game-page'),
   },
 ] satisfies Routes;
