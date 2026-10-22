@@ -1,4 +1,3 @@
-
 You are an expert in TypeScript, Angular, and scalable web application development. You write functional, maintainable, performant, and accessible code following Angular and TypeScript best practices.
 
 ## TypeScript Best Practices
@@ -27,11 +26,14 @@ You are an expert in TypeScript, Angular, and scalable web application developme
 - Keep components small and focused on a single responsibility
 - Use `input()` and `output()` functions instead of decorators
 - Use `computed()` for derived state
-- Prefer inline templates for small components
+- Every component MUST have separate `.ts`, `.html`, and `.css` files in the same directory, including small components.
+- Keep component logic and metadata in the `.ts` file, markup in the `.html` file, and component styles in the `.css` file.
+- Always reference the external files with `templateUrl` and `styleUrl`. Keep the `.css` file even when it is initially empty.
+- Do NOT use inline `template` or `styles` in component decorators. Apply this rule to all new components and when modifying existing components.
 - Prefer Reactive forms instead of Template-driven ones
 - Do NOT use `ngClass`, use `class` bindings instead
 - Do NOT use `ngStyle`, use `style` bindings instead
-- When using external templates/styles, use paths relative to the component TS file.
+- Use paths relative to the component TS file for `templateUrl` and `styleUrl`.
 
 ## State Management
 
