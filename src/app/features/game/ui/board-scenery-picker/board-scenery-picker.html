@@ -1,0 +1,42 @@
+<div class="scenery-picker">
+  <div class="scenery-preview" aria-hidden="true">
+    @for (image of thumbnail(); track image.id) {
+      <img [ngSrc]="image.image" alt="" width="56" height="84" draggable="false" />
+    }
+  </div>
+  <div class="scenery-choice">
+    <label for="board-scenery">Board scenery</label>
+    <select
+      #selection
+      id="board-scenery"
+      aria-describedby="scenery-help"
+      (change)="choose(selection.value)"
+    >
+      <option value="auto" [selected]="scenery.preference() === 'auto'">
+        Auto · {{ scenery.automaticScenery().label }}
+      </option>
+      <option value="classic" [selected]="scenery.preference() === 'classic'">Classic lake</option>
+      <optgroup label="Seasons">
+        @for (scene of seasons; track scene.id) {
+          <option [value]="scene.id" [selected]="scenery.preference() === scene.id">
+            {{ scene.label }}
+          </option>
+        }
+      </optgroup>
+      <optgroup label="Celebrations">
+        @for (scene of celebrations; track scene.id) {
+          <option [value]="scene.id" [selected]="scenery.preference() === scene.id">
+            {{ scene.label }}
+          </option>
+        }
+      </optgroup>
+    </select>
+  </div>
+</div>
+<p id="scenery-help" class="scenery-help">
+  @if (scenery.preference() === 'auto') {
+    A little atmosphere, picked by your local calendar.
+  } @else {
+    Your scenery, any time of year. Auto follows the calendar.
+  }
+</p>

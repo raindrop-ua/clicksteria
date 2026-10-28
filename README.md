@@ -109,6 +109,28 @@ The header offers System, Light, and Dark modes. System is the default and follo
 
 `src/index.html` applies the preference before first paint. Keep its storage key and theme-color values synchronized with `core/theme/theme.service.ts`. The service initializes browser listeners after hydration and releases them on destruction. `shared/ui/theme-switcher` owns the controls; `src/styles.css` owns the `light-dark()` semantic palette. Game tiles retain their colors in both themes.
 
+### Board scenery
+
+The **Board scenery** selector below the field defaults to **Auto**, using the player's local date and Northern Hemisphere seasons: winter (December–February), spring (March–May), summer (June–August), and autumn (September–November). Celebrations take priority over the season:
+
+| Scenery           | Automatic dates (inclusive)                           |
+| ----------------- | ----------------------------------------------------- |
+| New Year          | December 27–January 7                                 |
+| Valentine's Day   | February 12–15                                        |
+| St. Patrick's Day | March 14–18                                           |
+| April Fools' Day  | April 1                                               |
+| Easter            | Friday–Monday around both Western and Orthodox Easter |
+| Earth Day         | April 20–23                                           |
+| Midsummer         | June 20–24                                            |
+| Halloween         | October 24–November 2                                 |
+| Christmas         | December 18–26                                        |
+
+These are decorative windows rather than public-holiday definitions. Easter wins if its window overlaps Earth Day. All four seasons, nine celebrations, and the original **Classic lake** can also be selected manually without changing the board, score, history, or focus. A manual choice persists under `clicksteria.scenery` and synchronizes across tabs; returning to Auto removes the override. Storage failures keep the choice in memory.
+
+`features/game/domain/board-scenery.ts` owns the pure calendar and catalog; `data-access/board-scenery.service.ts` owns browser initialization, persistence, and date refresh. SSR starts with the same classic lake on server and client; the local scenery is selected after hydration. Auto refreshes at local midnight and when the app regains visibility or window focus, including after sleep or a timezone change. No location permission, network calendar, or date library is needed.
+
+The optimized decorative images in `public/images/scenery/` are static, lightweight SVG landscapes. A dark overlay keeps the empty field calm; opaque tiles, symbols, selection outlines, and pointer hit testing retain their existing behavior. There are no weather particles, flashing lights, or new animation loops. The PWA's existing lazy asset cache stores each background when first used.
+
 ## Sound
 
 Block clicks (mouse, touch, or keyboard) play a short, quiet synthesized pop. The speaker button toggles game sounds; the preference is stored as `true` or `false` under `clicksteria.sound` and synchronizes across tabs. Sound is on by default.

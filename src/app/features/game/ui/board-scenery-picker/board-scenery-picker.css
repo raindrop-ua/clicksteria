@@ -1,0 +1,60 @@
+:host {
+  display: block;
+  margin-top: 1rem;
+  padding-top: 0.875rem;
+  border-top: 1px solid var(--color-line);
+}
+.scenery-picker {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.scenery-preview {
+  position: relative;
+  flex: 0 0 56px;
+  height: 64px;
+  overflow: hidden;
+  border-radius: 0.625rem;
+  background: #121a37;
+}
+.scenery-preview img {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+  object-fit: cover;
+}
+.scenery-choice {
+  flex: 1;
+  min-width: 0;
+}
+label {
+  display: block;
+  margin-bottom: 0.25rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-muted);
+}
+select {
+  display: block;
+  width: 100%;
+  min-height: 44px;
+  padding: 0.5rem 0.625rem;
+  border: 1px solid var(--color-line);
+  border-radius: 0.625rem;
+  background: var(--color-surface);
+  color: var(--color-ink);
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+select:hover {
+  border-color: var(--color-accent);
+}
+.scenery-help {
+  margin-top: 0.5rem;
+  font-size: 0.6875rem;
+  line-height: 1.5;
+  color: var(--color-muted);
+}
