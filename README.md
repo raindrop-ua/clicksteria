@@ -55,7 +55,9 @@ Inside the game feature, dependencies flow from page/UI → `GameStore` → doma
 
 New routes belong in `app.routes.ts` and should be lazy by default. Keep game-specific state and behavior under `features/game`; put truly app-wide browser concerns in `core`; keep `shared/ui` limited to reusable presentational controls.
 
-Components use OnPush, standalone defaults, signal inputs/outputs, and native control flow. TypeScript and Angular template strictness are enabled. Page layout and chrome use Tailwind; scoped CSS handles tile geometry, colors, focus, and falling animation.
+Components use Angular 22's default change detection, standalone defaults, signal inputs/outputs, and native control flow. TypeScript and Angular template strictness are enabled. Page layout and chrome use Tailwind; scoped CSS handles the board surface and focus.
+
+The board draws its tiles and symbols on a single 2D canvas above the optimized background image. `game-board-renderer.ts` owns pixel-aligned drawing; `game-board-canvas.ts` owns device-pixel-ratio scaling, resizing, and the 180 ms falling animation. Frames are requested only for changes and while tiles are moving. Pointer hit testing follows the visible tile positions during a fall. Browser observers, media-query listeners, and pending frames are released when the board is destroyed.
 
 ### Import aliases
 
@@ -97,7 +99,7 @@ The record is the highest score reached, including before undo. Only the record 
 
 ## Accessibility and verification
 
-Tiles have both colors and distinct shapes plus descriptive accessible names. Tab enters/leaves the board; arrow keys move between tiles; Enter/Space plays. The board uses one tab stop, restores focus after removal, and announces moves through a live region. Reduced-motion preferences disable tile transitions.
+Tiles have both colors and distinct shapes plus descriptive accessible names. Tab enters/leaves the board; arrow keys move between tiles; Home/End move to the first/last column; Enter/Space plays. A single focusable ARIA grid exposes the current tile through an active descendant, keeping DOM size constant as the board changes. Focus stays on the board after removal, and moves are announced through a live region. Reduced-motion preferences disable falling animations, including when changed during play.
 
 Unit coverage includes branching adjacency, diagonal exclusion, invalid moves, gravity, empty-column collapse, immutable snapshots, scoring, wins, blocked boards, seeded complete games, undo, hints, and session initialization.
 
