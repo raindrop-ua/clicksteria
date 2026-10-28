@@ -1,11 +1,21 @@
 <div
+  #grid
   class="board"
   data-board
-  tabindex="-1"
-  role="group"
+  tabindex="0"
+  role="grid"
   aria-label="Game board"
   aria-describedby="board-help"
-  (pointerleave)="preview.emit(null)"
+  [attr.aria-rowcount]="config.rows"
+  [attr.aria-colcount]="config.columns"
+  [attr.aria-activedescendant]="activeTile() ? 'board-active-tile-' + activeTile()!.id : null"
+  (pointerdown)="pointerDown()"
+  (pointermove)="hover($event)"
+  (pointerleave)="leave()"
+  (click)="activate($event)"
+  (focus)="focusBoard()"
+  (blur)="blurBoard()"
+  (keydown)="navigate($event)"
 >
   <img
     class="board-backdrop"
@@ -17,47 +27,28 @@
     sizes="(min-width: 768px) 50vw, 100vw"
     draggable="false"
   />
-  @for (tile of tiles(); track tile.id) {
-    <button
-      type="button"
-      class="tile"
-      [class]="'tile tile-' + tile.color"
-      [class.highlighted]="highlighted().has(tile.id)"
-      [class.dimmed]="highlighted().size > 0 && !highlighted().has(tile.id)"
-      [style.left.%]="(tile.column * 100) / config.columns"
-      [style.bottom.%]="(tile.row * 100) / config.rows"
-      [attr.data-tile]="tile.id"
-      [tabIndex]="tile.id === tabId() ? 0 : -1"
-      [attr.aria-label]="
-        labels[tile.color] + ', column ' + (tile.column + 1) + ', row from bottom ' + (tile.row + 1)
-      "
-      (pointerenter)="preview.emit(tile)"
-      (focus)="focusTile(tile.id, tile)"
-      (keydown)="navigate($event, tile)"
-      (click)="activate(tile, $event)"
-    >
-      <svg viewBox="0 0 24 24" aria-hidden="true">
-        @switch (tile.color) {
-          @case ('coral') {
-            <circle cx="12" cy="12" r="6" />
-          }
-          @case ('amber') {
-            <path d="m12 4 8 8-8 8-8-8Z" />
-          }
-          @case ('cyan') {
-            <rect x="6" y="6" width="12" height="12" rx="1.5" />
-          }
-          @case ('violet') {
-            <path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-3-5.6 3 1.1-6.2L3 9.6l6.2-.9Z" />
-          }
-          @case ('green') {
-            <path d="m12 4 8 15H4Z" />
-          }
-        }
-      </svg>
-    </button>
+  <canvas #canvas class="board-canvas" aria-hidden="true"></canvas>
+  @if (activeTile(); as tile) {
+    <div class="sr-only" role="row" [attr.aria-rowindex]="config.rows - tile.row">
+      <span
+        [id]="'board-active-tile-' + tile.id"
+        role="gridcell"
+        [attr.aria-colindex]="tile.column + 1"
+        [attr.data-tile]="tile.id"
+        [attr.aria-label]="
+          labels[tile.color] +
+          ', column ' +
+          (tile.column + 1) +
+          ', row from bottom ' +
+          (tile.row + 1)
+        "
+        >{{ labels[tile.color] }}, column {{ tile.column + 1 }}, row from bottom
+        {{ tile.row + 1 }}</span
+      >
+    </div>
   }
 </div>
 <p id="board-help" class="sr-only">
-  Arrow keys move between blocks. Enter or Space removes a group. Tab leaves the board.
+  Arrow keys move between blocks. Home and End move to the first and last column. Enter or Space
+  removes a group. Tab leaves the board.
 </p>
