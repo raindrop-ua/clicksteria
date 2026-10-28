@@ -1,5 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { Board } from '@features/game/domain/game.models';
+import { SCENERIES } from '@features/game/domain/board-scenery';
 import { GameBoard } from './game-board';
 
 const before: Board = [
@@ -100,6 +101,25 @@ describe('Canvas game board', () => {
     grid.focus();
     expect(document.activeElement).toBe(grid);
     expect(preview).toHaveBeenLastCalledWith({ column: 0, row: 0 });
+  });
+
+  it('changes decorative scenery without replacing the board or losing keyboard selection', async () => {
+    const { fixture, grid, key, cell, activated } = await setup();
+    grid.focus();
+    await key('ArrowUp');
+    const selected = cell()?.id;
+    const scene = SCENERIES.find((entry) => entry.id === 'halloween')!;
+    fixture.componentRef.setInput('scenery', scene);
+    await fixture.whenStable();
+    const image = grid.querySelector('img')!;
+    expect(image.getAttribute('src')).toBe(scene.image);
+    expect(image.getAttribute('alt')).toBe('');
+    expect(image.getAttribute('aria-hidden')).toBe('true');
+    expect(grid.getAttribute('data-scenery')).toBe('halloween');
+    expect(cell()?.id).toBe(selected);
+    expect(document.activeElement).toBe(grid);
+    expect(fixture.componentInstance.board()).toBe(before);
+    expect(activated).not.toHaveBeenCalled();
   });
 
   it('moves in the visible arrow direction and clamps navigation to occupied cells', async () => {

@@ -7,6 +7,7 @@
   aspect-ratio: 10 / 15;
   background: #121a37;
   border-radius: 5px;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--scenery-accent) 35%, #121a37);
   outline-offset: 6px;
   user-select: none;
   -webkit-tap-highlight-color: transparent;
@@ -14,7 +15,14 @@
 .board-backdrop {
   object-fit: cover;
   border-radius: inherit;
-  opacity: 0.8;
+  opacity: 0.9;
+  pointer-events: none;
+}
+.board-shade {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(#0a10252b, #0a10254d);
   pointer-events: none;
 }
 .board-canvas {

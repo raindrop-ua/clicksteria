@@ -2,6 +2,8 @@
   #grid
   class="board"
   data-board
+  [attr.data-scenery]="scenery().id"
+  [style.--scenery-accent]="scenery().accent"
   tabindex="0"
   role="grid"
   aria-label="Game board"
@@ -17,16 +19,19 @@
   (blur)="blurBoard()"
   (keydown)="navigate($event)"
 >
-  <img
-    class="board-backdrop"
-    ngSrc="/images/board-night-lake.webp"
-    alt=""
-    aria-hidden="true"
-    fill
-    priority
-    sizes="(min-width: 768px) 50vw, 100vw"
-    draggable="false"
-  />
+  @for (scene of [scenery()]; track scene.id) {
+    <img
+      class="board-backdrop"
+      [ngSrc]="scene.image"
+      alt=""
+      aria-hidden="true"
+      fill
+      priority
+      sizes="(min-width: 768px) 50vw, 100vw"
+      draggable="false"
+    />
+  }
+  <div class="board-shade" aria-hidden="true"></div>
   <canvas #canvas class="board-canvas" aria-hidden="true"></canvas>
   @if (activeTile(); as tile) {
     <div class="sr-only" role="row" [attr.aria-rowindex]="config.rows - tile.row">

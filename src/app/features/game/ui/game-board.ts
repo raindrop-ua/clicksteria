@@ -14,6 +14,7 @@ import {
   viewChild,
 } from '@angular/core';
 import { Board, GAME_CONFIG, Position, TILE_LABELS } from '@features/game/domain/game.models';
+import { BoardScenery, CLASSIC_SCENERY } from '@features/game/domain/board-scenery';
 import { GameBoardCanvas } from './game-board-canvas';
 import { positionAtPoint } from './game-board-renderer';
 
@@ -26,6 +27,7 @@ import { positionAtPoint } from './game-board-renderer';
 export class GameBoard {
   readonly board = input.required<Board>();
   readonly highlighted = input.required<ReadonlySet<number>>();
+  readonly scenery = input<BoardScenery>(CLASSIC_SCENERY);
   readonly tileActivated = output<Position>();
   readonly preview = output<Position | null>();
   protected readonly config = GAME_CONFIG;
