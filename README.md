@@ -106,7 +106,7 @@ Unit coverage includes branching adjacency, diagonal exclusion, invalid moves, g
 
 ## Appearance
 
-Open **Settings** from the header to choose the block style and board scenery at `/settings`. Returning to Play keeps the current board, score, and undo history.
+Open **Settings** from the header to choose the block style, board scenery, and highlight dimming at `/settings`. Returning to Play keeps the current board, score, and undo history.
 
 The header offers System, Light, and Dark modes. System is the default and follows OS changes without saving an override. Choosing Light or Dark persists `clicksteria.theme`; choosing System removes it. Preferences synchronize between tabs, and blocked storage falls back to an in-memory choice.
 
@@ -123,6 +123,8 @@ The **Block style** controls in Settings offer three independent appearances:
 Styles work with every board scenery and with System, Light, or Dark app modes. The selected style is applied when returning to Play without starting a new game or changing the board, score, or undo history. Idle boards do not run an animation loop.
 
 The preference persists under `clicksteria.block-style` and synchronizes across tabs. Choosing Classic removes the override. Storage restrictions fall back to an in-memory choice. `features/game/domain/block-style.ts` defines the catalog, `data-access/block-style.service.ts` owns browser persistence, and `ui/block-style-picker/` owns the controls. Server and initial browser rendering start with Classic; a stored preference is restored after hydration.
+
+**Dim other blocks** is enabled by default. It softens blocks outside the highlighted group when hovering, navigating with the keyboard, or using a hint. Turn it off to keep their usual brightness while preserving the highlighted group's outline. This setting works with every block style. `data-access/board-dimming.service.ts` saves an opt-out as `false` under `clicksteria.dim-others`; enabling it removes the override. The choice restores after hydration, synchronizes across tabs, and stays usable in memory if storage is blocked.
 
 ### Board scenery
 

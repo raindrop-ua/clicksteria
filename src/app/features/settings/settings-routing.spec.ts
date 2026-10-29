@@ -4,12 +4,14 @@ import { RouterTestingHarness } from '@angular/router/testing';
 import { routes } from '@app/app.routes';
 import { SoundService } from '@core/audio/sound.service';
 import { GameStore } from '@features/game/data-access/game-store';
+import { GameBoard } from '@features/game/ui/game-board';
 import { findLargestGroup } from '@features/game/domain/game.engine';
 
 describe('Settings navigation', () => {
   beforeEach(() => {
     localStorage.removeItem('clicksteria.scenery');
     localStorage.removeItem('clicksteria.block-style');
+    localStorage.removeItem('clicksteria.dim-others');
     TestBed.configureTestingModule({ providers: [provideRouter(routes)] });
     vi.spyOn(HTMLCanvasElement.prototype, 'getContext').mockReturnValue(null);
     vi.stubGlobal('matchMedia', () => ({
@@ -26,6 +28,7 @@ describe('Settings navigation', () => {
     vi.unstubAllGlobals();
     localStorage.removeItem('clicksteria.scenery');
     localStorage.removeItem('clicksteria.block-style');
+    localStorage.removeItem('clicksteria.dim-others');
   });
 
   it('opens settings directly and applies its choices when starting the game', async () => {
@@ -43,9 +46,14 @@ describe('Settings navigation', () => {
       button.textContent?.includes('Glass'),
     )!;
     glass.click();
+    const dimming = settings.querySelector<HTMLInputElement>('input[role="switch"]')!;
+    expect(dimming.checked).toBe(true);
+    dimming.checked = false;
+    dimming.dispatchEvent(new Event('change'));
     await harness.fixture.whenStable();
     expect(localStorage.getItem('clicksteria.scenery')).toBe('summer');
     expect(localStorage.getItem('clicksteria.block-style')).toBe('glass');
+    expect(localStorage.getItem('clicksteria.dim-others')).toBe('false');
 
     await harness.navigateByUrl('/play');
     await harness.fixture.whenStable();
@@ -54,6 +62,11 @@ describe('Settings navigation', () => {
     expect(play.querySelector('[data-board]')?.getAttribute('data-block-style')).toBe('glass');
     expect(play.querySelector('app-board-scenery-picker')).toBeNull();
     expect(play.querySelector('app-block-style-picker')).toBeNull();
+    expect(
+      harness.fixture.debugElement
+        .query((element) => element.componentInstance instanceof GameBoard)
+        ?.componentInstance.dimOthers(),
+    ).toBe(false);
     expect(game.remaining()).toBe(150);
   });
 
