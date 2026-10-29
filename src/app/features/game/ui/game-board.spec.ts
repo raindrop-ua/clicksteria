@@ -2,6 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { Board } from '@features/game/domain/game.models';
 import { SCENERIES } from '@features/game/domain/board-scenery';
 import { GameBoard } from './game-board';
+import { GameBoardCanvas } from './game-board-canvas';
 
 const before: Board = [
   [
@@ -121,6 +122,33 @@ describe('Canvas game board', () => {
     expect(fixture.componentInstance.board()).toBe(before);
     expect(activated).not.toHaveBeenCalled();
   });
+
+  it.each(['minimal', 'glass'] as const)(
+    'redraws %s blocks without replacing the board or losing keyboard selection',
+    async (style) => {
+      const update = vi.spyOn(GameBoardCanvas.prototype, 'update');
+      const { fixture, grid, canvas, key, cell, activated } = await setup();
+      grid.focus();
+      await key('ArrowUp');
+      const selected = cell()?.id;
+      const highlighted = new Set([0, 1]);
+      fixture.componentRef.setInput('highlighted', highlighted);
+      await fixture.whenStable();
+      update.mockClear();
+
+      fixture.componentRef.setInput('blockStyle', style);
+      await fixture.whenStable();
+
+      expect(update).toHaveBeenLastCalledWith(before, highlighted, 1, style);
+      expect(grid.getAttribute('data-block-style')).toBe(style);
+      expect(grid.querySelector('canvas')).toBe(canvas);
+      expect(cell()?.id).toBe(selected);
+      expect(grid.getAttribute('aria-activedescendant')).toBe(selected);
+      expect(document.activeElement).toBe(grid);
+      expect(fixture.componentInstance.board()).toBe(before);
+      expect(activated).not.toHaveBeenCalled();
+    },
+  );
 
   it('moves in the visible arrow direction and clamps navigation to occupied cells', async () => {
     const { grid, cell, key, preview } = await setup();

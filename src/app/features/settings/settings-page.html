@@ -1,0 +1,25 @@
+<article class="settings-page">
+  <header class="settings-header">
+    <h1>Settings<span class="text-accent">.</span></h1>
+    <p>Make a little room for your style.</p>
+  </header>
+
+  <div class="settings-sections">
+    <section class="settings-card" aria-labelledby="scenery-heading">
+      <h2 id="scenery-heading">Scenery</h2>
+      <p class="section-description">A backdrop for your next good move.</p>
+      <app-board-scenery-picker />
+    </section>
+
+    <section class="settings-card" aria-labelledby="blocks-heading">
+      <h2 id="blocks-heading">Blocks</h2>
+      <p class="section-description">Keep it classic, simple, or a little shiny.</p>
+      <app-block-style-picker />
+    </section>
+  </div>
+
+  <p class="save-note">
+    Changes save automatically in this browser. Your current game stays right where you left it.
+  </p>
+  <a routerLink="/play" class="button button-primary">Back to game <app-icon name="arrow" /></a>
+</article>

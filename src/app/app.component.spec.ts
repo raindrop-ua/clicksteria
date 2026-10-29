@@ -15,5 +15,6 @@ describe('App shell', () => {
     expect(element.querySelector('main')).toBeTruthy();
     expect(element.querySelector('nav')?.textContent).toContain('Rules');
     expect(element.querySelector('a[href="/play"]')).toBeTruthy();
+    expect(element.querySelector('nav a[href="/settings"]')?.textContent).toContain('Settings');
   });
 });
