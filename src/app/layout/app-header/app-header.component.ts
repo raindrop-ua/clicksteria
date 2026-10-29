@@ -8,5 +8,6 @@ import { ThemeSwitcher } from '@shared/ui/theme-switcher/theme-switcher.componen
   imports: [RouterLink, RouterLinkActive, SoundToggle, ThemeSwitcher],
   host: { class: 'block shrink-0' },
   templateUrl: './app-header.component.html',
+  styleUrl: './app-header.component.css',
 })
 export class AppHeader {}

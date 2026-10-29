@@ -1,5 +1,5 @@
 <header
-  class="flex shrink-0 flex-wrap items-center gap-x-3 gap-y-3 py-4 sm:h-20 sm:flex-nowrap sm:gap-8 sm:py-0"
+  class="flex shrink-0 flex-wrap items-center gap-x-3 gap-y-3 py-4 md:h-20 md:flex-nowrap md:gap-8 md:py-0"
 >
   <a
     routerLink="/play"
@@ -10,7 +10,7 @@
   </a>
   <nav
     aria-label="Main navigation"
-    class="order-3 flex h-10 w-full items-center gap-7 text-sm font-semibold sm:order-none sm:h-full sm:w-auto"
+    class="order-3 flex h-10 w-full items-center gap-7 text-sm font-semibold md:order-none md:h-full md:w-auto"
   >
     <a
       routerLink="/play"
@@ -26,7 +26,14 @@
       ariaCurrentWhenActive="page"
       >Rules</a
     >
-    <app-sound-toggle class="ml-auto sm:ml-0" />
+    <a
+      routerLink="/settings"
+      routerLinkActive="nav-active"
+      class="nav-link"
+      ariaCurrentWhenActive="page"
+      >Settings</a
+    >
+    <app-sound-toggle class="ml-auto md:ml-0" />
   </nav>
   <p class="ml-auto hidden text-right text-xs leading-5 text-muted lg:block">
     Simple games.<br />Brighter breaks.

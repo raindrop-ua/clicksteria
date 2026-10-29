@@ -22,6 +22,7 @@
         [board]="game.board()"
         [highlighted]="game.highlightedIds()"
         [scenery]="scenery.scenery()"
+        [blockStyle]="blocks.style()"
         (tileActivated)="game.play($event)"
         (preview)="game.preview($event)"
       />
@@ -45,7 +46,6 @@
           : 'Match two or more'
       }}</span>
     </div>
-    <app-board-scenery-picker />
   </section>
   <app-game-sidebar
     [score]="game.score()"

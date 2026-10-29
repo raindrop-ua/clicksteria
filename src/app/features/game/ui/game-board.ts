@@ -15,6 +15,7 @@ import {
 } from '@angular/core';
 import { Board, GAME_CONFIG, Position, TILE_LABELS } from '@features/game/domain/game.models';
 import { BoardScenery, CLASSIC_SCENERY } from '@features/game/domain/board-scenery';
+import { BlockStyle } from '@features/game/domain/block-style';
 import { GameBoardCanvas } from './game-board-canvas';
 import { positionAtPoint } from './game-board-renderer';
 
@@ -28,6 +29,7 @@ export class GameBoard {
   readonly board = input.required<Board>();
   readonly highlighted = input.required<ReadonlySet<number>>();
   readonly scenery = input<BoardScenery>(CLASSIC_SCENERY);
+  readonly blockStyle = input<BlockStyle>('classic');
   readonly tileActivated = output<Position>();
   readonly preview = output<Position | null>();
   protected readonly config = GAME_CONFIG;
@@ -53,17 +55,18 @@ export class GameBoard {
   constructor() {
     afterNextRender(() => {
       this.surface = new GameBoardCanvas(this.canvas().nativeElement);
-      this.surface.update(this.board(), this.highlighted(), this.focusedId());
+      this.surface.update(this.board(), this.highlighted(), this.focusedId(), this.blockStyle());
     });
     afterRenderEffect({
       write: () => {
         const board = this.board();
         const highlighted = this.highlighted();
         const focusedId = this.focusedId();
+        const blockStyle = this.blockStyle();
         const previewPending = this.keyboardPreviewPending();
         untracked(() => {
           this.activeId.set(this.activeTile()?.id ?? null);
-          this.surface?.update(board, highlighted, focusedId);
+          this.surface?.update(board, highlighted, focusedId, blockStyle);
           if (previewPending) {
             this.keyboardPreviewPending.set(false);
             if (this.keyboardFocus()) this.previewActive();
