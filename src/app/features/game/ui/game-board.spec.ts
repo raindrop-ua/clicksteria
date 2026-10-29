@@ -139,7 +139,7 @@ describe('Canvas game board', () => {
       fixture.componentRef.setInput('blockStyle', style);
       await fixture.whenStable();
 
-      expect(update).toHaveBeenLastCalledWith(before, highlighted, 1, style);
+      expect(update).toHaveBeenLastCalledWith(before, highlighted, 1, style, true);
       expect(grid.getAttribute('data-block-style')).toBe(style);
       expect(grid.querySelector('canvas')).toBe(canvas);
       expect(cell()?.id).toBe(selected);
@@ -149,6 +149,25 @@ describe('Canvas game board', () => {
       expect(activated).not.toHaveBeenCalled();
     },
   );
+
+  it('updates dimming without changing the group, board, or keyboard focus', async () => {
+    const update = vi.spyOn(GameBoardCanvas.prototype, 'update');
+    const { fixture, grid, cell, activated } = await setup();
+    grid.focus();
+    const highlighted = new Set([0, 1]);
+    fixture.componentRef.setInput('highlighted', highlighted);
+    await fixture.whenStable();
+    const selected = cell()?.id;
+
+    fixture.componentRef.setInput('dimOthers', false);
+    await fixture.whenStable();
+
+    expect(update).toHaveBeenLastCalledWith(before, highlighted, 0, 'classic', false);
+    expect(fixture.componentInstance.board()).toBe(before);
+    expect(cell()?.id).toBe(selected);
+    expect(document.activeElement).toBe(grid);
+    expect(activated).not.toHaveBeenCalled();
+  });
 
   it('moves in the visible arrow direction and clamps navigation to occupied cells', async () => {
     const { grid, cell, key, preview } = await setup();

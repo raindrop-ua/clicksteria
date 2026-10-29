@@ -19,6 +19,7 @@ export class GameBoardCanvas {
   private highlighted: ReadonlySet<number> = new Set();
   private focusedId: number | null = null;
   private style: BlockStyle = 'classic';
+  private dimOthers = true;
   private startedAt = 0;
   private frame: number | null = null;
   private needsResize = true;
@@ -45,6 +46,7 @@ export class GameBoardCanvas {
     highlighted: ReadonlySet<number>,
     focusedId: number | null,
     style: BlockStyle = 'classic',
+    dimOthers = true,
   ): void {
     if (this.destroyed) return;
     if (board !== this.board) {
@@ -75,6 +77,7 @@ export class GameBoardCanvas {
     this.highlighted = highlighted;
     this.focusedId = focusedId;
     this.style = style;
+    this.dimOthers = dimOthers;
     this.schedule();
   }
 
@@ -177,6 +180,7 @@ export class GameBoardCanvas {
       this.highlighted,
       this.focusedId,
       this.style,
+      this.dimOthers,
     );
     if (this.origins.size) this.schedule();
   };

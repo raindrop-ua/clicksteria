@@ -42,6 +42,7 @@ export function renderBoard(
   highlighted: ReadonlySet<number>,
   focusedId: number | null,
   style: BlockStyle = 'classic',
+  dimOthers = true,
 ): void {
   context.clearRect(0, 0, width, height);
   const unit = Math.min(width / GAME_CONFIG.columns, height / GAME_CONFIG.rows) / 36;
@@ -57,7 +58,7 @@ export function renderBoard(
     const selected = highlighted.has(tile.id);
     const palette = selected
       ? HIGHLIGHT_PALETTE[tile.color]
-      : highlighted.size
+      : highlighted.size && dimOthers
         ? DIMMED_PALETTE[tile.color]
         : PALETTE[tile.color];
 

@@ -165,6 +165,47 @@ describe('Game board canvas lifecycle', () => {
     },
   );
 
+  it.each(BLOCK_STYLES)(
+    'can disable dimming in $id while keeping the selected group bright and focus visible',
+    ({ id }) => {
+      const drawing = context as unknown as CanvasRenderingContext2D;
+      const colors: string[] = [];
+      const outlines: string[] = [];
+      context.fill.mockImplementation(() => {
+        if (typeof drawing.fillStyle === 'string') colors.push(drawing.fillStyle);
+      });
+      context.stroke.mockImplementation(() => {
+        if (typeof drawing.strokeStyle === 'string') outlines.push(drawing.strokeStyle);
+      });
+
+      function paint(highlighted: ReadonlySet<number>, time: number, dimOthers?: boolean) {
+        colors.length = 0;
+        outlines.length = 0;
+        surface.update(opening, highlighted, 3, id, dimOthers);
+        expect(frames.size).toBe(1);
+        drawAt(time);
+        expect(frames.size).toBe(0);
+        return { colors: [...colors], outlines: [...outlines] };
+      }
+
+      const resting = paint(new Set(), 0);
+      const group = new Set([0, 1]);
+      const defaultDimming = paint(group, 16);
+      const disabled = paint(group, 32, false);
+      const enabled = paint(group, 48, true);
+      // The first two tiles form the selected group; the last two remain outside it.
+      const middle = resting.colors.length / 2;
+      expect(disabled.colors.slice(middle)).toEqual(resting.colors.slice(middle));
+      expect(defaultDimming.colors.slice(middle)).not.toEqual(resting.colors.slice(middle));
+      expect(disabled.colors.slice(0, middle)).not.toEqual(resting.colors.slice(0, middle));
+      expect(disabled.colors.slice(0, middle)).toEqual(defaultDimming.colors.slice(0, middle));
+      expect(enabled.colors).toEqual(defaultDimming.colors);
+      expect(disabled.outlines.filter((color) => color === '#ffffff')).toHaveLength(3);
+      expect(surface.hitTest(18, 450, 360, 540)).toEqual({ column: 0, row: 2 });
+      expect(context.clearRect).toHaveBeenCalledTimes(4);
+    },
+  );
+
   it('updates bitmap density after moving between displays without changing CSS coordinates', () => {
     surface.update(opening, new Set(), null);
     drawAt(0);

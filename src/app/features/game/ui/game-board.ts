@@ -30,6 +30,7 @@ export class GameBoard {
   readonly highlighted = input.required<ReadonlySet<number>>();
   readonly scenery = input<BoardScenery>(CLASSIC_SCENERY);
   readonly blockStyle = input<BlockStyle>('classic');
+  readonly dimOthers = input(true);
   readonly tileActivated = output<Position>();
   readonly preview = output<Position | null>();
   protected readonly config = GAME_CONFIG;
@@ -55,7 +56,13 @@ export class GameBoard {
   constructor() {
     afterNextRender(() => {
       this.surface = new GameBoardCanvas(this.canvas().nativeElement);
-      this.surface.update(this.board(), this.highlighted(), this.focusedId(), this.blockStyle());
+      this.surface.update(
+        this.board(),
+        this.highlighted(),
+        this.focusedId(),
+        this.blockStyle(),
+        this.dimOthers(),
+      );
     });
     afterRenderEffect({
       write: () => {
@@ -63,10 +70,11 @@ export class GameBoard {
         const highlighted = this.highlighted();
         const focusedId = this.focusedId();
         const blockStyle = this.blockStyle();
+        const dimOthers = this.dimOthers();
         const previewPending = this.keyboardPreviewPending();
         untracked(() => {
           this.activeId.set(this.activeTile()?.id ?? null);
-          this.surface?.update(board, highlighted, focusedId, blockStyle);
+          this.surface?.update(board, highlighted, focusedId, blockStyle, dimOthers);
           if (previewPending) {
             this.keyboardPreviewPending.set(false);
             if (this.keyboardFocus()) this.previewActive();
