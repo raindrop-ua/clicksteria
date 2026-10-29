@@ -44,20 +44,21 @@ src/
         pages/          Feature composition and browser initialization
         game.routes.ts  Lazy game route and SEO metadata
       rules/            Lazy rules page
+      settings/         Lazy appearance settings page
       not-found/        Lazy wildcard page
 ```
 
-The router lazy-loads the game route collection and the standalone rules and not-found pages. `AppShell` stays mounted around them, owns global navigation and focus restoration, and starts route-driven SEO updates. Angular prerenders all routes on the server, then hydrates them in the browser.
+The router lazy-loads the game route collection and the standalone rules, settings, and not-found pages. `AppShell` stays mounted around them, owns global navigation and focus restoration, and starts route-driven SEO updates. Angular prerenders all routes on the server, then hydrates them in the browser.
 
 Inside the game feature, dependencies flow from page/UI → `GameStore` → domain engine. The domain imports no Angular APIs, keeps board transformations immutable, and accepts an injectable random function for deterministic tests. The board receives state and emits user intents; it does not own scoring, history, persistence, or sound. The sidebar is presentational.
 
-`GameStore` is a root singleton, so the current session and undo history survive navigation between Play and Rules. It coordinates domain operations with the app-wide record and sound services, while browser-only initialization stays in `afterNextRender` to avoid SSR and hydration mismatches. Theme, sound, and record preferences degrade to in-memory behavior when browser storage is unavailable.
+`GameStore` is a root singleton, so the current session and undo history survive navigation between Play, Rules, and Settings. It coordinates domain operations with the app-wide record and sound services, while browser-only initialization stays in `afterNextRender` to avoid SSR and hydration mismatches. Theme, sound, and record preferences degrade to in-memory behavior when browser storage is unavailable.
 
 New routes belong in `app.routes.ts` and should be lazy by default. Keep game-specific state and behavior under `features/game`; put truly app-wide browser concerns in `core`; keep `shared/ui` limited to reusable presentational controls.
 
 Components use Angular 22's default change detection, standalone defaults, signal inputs/outputs, and native control flow. TypeScript and Angular template strictness are enabled. Page layout and chrome use Tailwind; scoped CSS handles the board surface and focus.
 
-The board draws its tiles and symbols on a single 2D canvas above the optimized background image. `game-board-renderer.ts` owns pixel-aligned drawing; `game-board-canvas.ts` owns device-pixel-ratio scaling, resizing, and the 180 ms falling animation. Frames are requested only for changes and while tiles are moving. Pointer hit testing follows the visible tile positions during a fall. Browser observers, media-query listeners, and pending frames are released when the board is destroyed.
+The board draws its tiles and, in Classic style, symbols on a single 2D canvas above the optimized background image. `game-board-renderer.ts` owns pixel-aligned drawing; `game-board-canvas.ts` owns device-pixel-ratio scaling, resizing, and the 180 ms falling animation. Frames are requested only for changes and while tiles are moving. Pointer hit testing follows the visible tile positions during a fall. Browser observers, media-query listeners, and pending frames are released when the board is destroyed.
 
 ### Import aliases
 
@@ -99,19 +100,33 @@ The record is the highest score reached, including before undo. Only the record 
 
 ## Accessibility and verification
 
-Tiles have both colors and distinct shapes plus descriptive accessible names. Tab enters/leaves the board; arrow keys move between tiles; Home/End move to the first/last column; Enter/Space plays. A single focusable ARIA grid exposes the current tile through an active descendant, keeping DOM size constant as the board changes. Focus stays on the board after removal, and moves are announced through a live region. Reduced-motion preferences disable falling animations, including when changed during play.
+Classic tiles have both colors and distinct shapes; Minimal and Glass omit the visible shapes. Descriptive accessible names remain available in every style. Choose Classic for visual shape cues when colors are hard to distinguish. Tab enters/leaves the board; arrow keys move between tiles; Home/End move to the first/last column; Enter/Space plays. A single focusable ARIA grid exposes the current tile through an active descendant, keeping DOM size constant as the board changes. Focus stays on the board after removal, and moves are announced through a live region. Reduced-motion preferences disable falling animations, including when changed during play.
 
 Unit coverage includes branching adjacency, diagonal exclusion, invalid moves, gravity, empty-column collapse, immutable snapshots, scoring, wins, blocked boards, seeded complete games, undo, hints, and session initialization.
 
 ## Appearance
 
+Open **Settings** from the header to choose the block style and board scenery at `/settings`. Returning to Play keeps the current board, score, and undo history.
+
 The header offers System, Light, and Dark modes. System is the default and follows OS changes without saving an override. Choosing Light or Dark persists `clicksteria.theme`; choosing System removes it. Preferences synchronize between tabs, and blocked storage falls back to an in-memory choice.
 
 `src/index.html` applies the preference before first paint. Keep its storage key and theme-color values synchronized with `core/theme/theme.service.ts`. The service initializes browser listeners after hydration and releases them on destruction. `shared/ui/theme-switcher` owns the controls; `src/styles.css` owns the `light-dark()` semantic palette. Game tiles retain their colors in both themes.
 
+### Block styles
+
+The **Block style** controls in Settings offer three independent appearances:
+
+- **Classic** (default): the original opaque, beveled blocks with shape symbols.
+- **Minimal**: flat, solid-color blocks without symbols.
+- **Glass**: translucent colored blocks with fine rims and glossy highlights, without symbols. The selected scenery shows through the blocks.
+
+Styles work with every board scenery and with System, Light, or Dark app modes. The selected style is applied when returning to Play without starting a new game or changing the board, score, or undo history. Idle boards do not run an animation loop.
+
+The preference persists under `clicksteria.block-style` and synchronizes across tabs. Choosing Classic removes the override. Storage restrictions fall back to an in-memory choice. `features/game/domain/block-style.ts` defines the catalog, `data-access/block-style.service.ts` owns browser persistence, and `ui/block-style-picker/` owns the controls. Server and initial browser rendering start with Classic; a stored preference is restored after hydration.
+
 ### Board scenery
 
-The **Board scenery** selector below the field defaults to **Auto**, using the player's local date and Northern Hemisphere seasons: winter (December–February), spring (March–May), summer (June–August), and autumn (September–November). Celebrations take priority over the season:
+The **Board scenery** selector in Settings defaults to **Auto**, using the player's local date and Northern Hemisphere seasons: winter (December–February), spring (March–May), summer (June–August), and autumn (September–November). Celebrations take priority over the season:
 
 | Scenery           | Automatic dates (inclusive)                           |
 | ----------------- | ----------------------------------------------------- |
@@ -129,7 +144,7 @@ These are decorative windows rather than public-holiday definitions. Easter wins
 
 `features/game/domain/board-scenery.ts` owns the pure calendar and catalog; `data-access/board-scenery.service.ts` owns browser initialization, persistence, and date refresh. SSR starts with the same classic lake on server and client; the local scenery is selected after hydration. Auto refreshes at local midnight and when the app regains visibility or window focus, including after sleep or a timezone change. No location permission, network calendar, or date library is needed.
 
-The optimized decorative images in `public/images/scenery/` are static, lightweight SVG landscapes. A dark overlay keeps the empty field calm; opaque tiles, symbols, selection outlines, and pointer hit testing retain their existing behavior. There are no weather particles, flashing lights, or new animation loops. The PWA's existing lazy asset cache stores each background when first used.
+The optimized decorative images in `public/images/scenery/` are static, lightweight SVG landscapes. A dark overlay keeps the empty field calm. The chosen block style controls tile opacity and symbols; selection outlines and pointer hit testing work in every style. There are no weather particles, flashing lights, or new animation loops. The PWA's existing lazy asset cache stores each background when first used.
 
 ## Sound
 

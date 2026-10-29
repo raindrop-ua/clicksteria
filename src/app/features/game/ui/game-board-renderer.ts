@@ -1,4 +1,5 @@
 import { Board, GAME_CONFIG, Position, TileColor } from '@features/game/domain/game.models';
+import { BlockStyle } from '@features/game/domain/block-style';
 
 /** Positions may be fractional while surviving tiles settle after a move. */
 export interface RenderTile extends Position {
@@ -40,6 +41,7 @@ export function renderBoard(
   tiles: readonly RenderTile[],
   highlighted: ReadonlySet<number>,
   focusedId: number | null,
+  style: BlockStyle = 'classic',
 ): void {
   context.clearRect(0, 0, width, height);
   const unit = Math.min(width / GAME_CONFIG.columns, height / GAME_CONFIG.rows) / 36;
@@ -59,28 +61,36 @@ export function renderBoard(
         ? DIMMED_PALETTE[tile.color]
         : PALETTE[tile.color];
 
-    context.beginPath();
-    context.roundRect(left, top, tileWidth, tileHeight, radius);
-    context.fillStyle = '#121a37';
-    context.fill();
+    if (style === 'classic') {
+      context.beginPath();
+      context.roundRect(left, top, tileWidth, tileHeight, radius);
+      context.fillStyle = '#121a37';
+      context.fill();
+    }
 
     const x = left + border;
     const y = top + border;
     const innerWidth = Math.max(0, tileWidth - border * 2);
     const innerHeight = Math.max(0, tileHeight - border * 2);
     const innerRadius = Math.max(0, radius - border);
-    context.beginPath();
-    context.roundRect(x, y, innerWidth, innerHeight, innerRadius);
-    context.fillStyle = palette.tile;
-    context.fill();
+    if (style === 'glass') {
+      drawGlass(context, x, y, innerWidth, innerHeight, innerRadius, unit, palette.tile);
+    } else {
+      context.beginPath();
+      context.roundRect(x, y, innerWidth, innerHeight, innerRadius);
+      context.fillStyle = palette.tile;
+      context.fill();
 
-    const bevel = context.createLinearGradient(0, y, 0, y + innerHeight);
-    bevel.addColorStop(0, '#ffffff70');
-    bevel.addColorStop(Math.min(0.4, (3 * unit) / Math.max(1, innerHeight)), '#ffffff00');
-    bevel.addColorStop(0.85, '#00000000');
-    bevel.addColorStop(1, '#00000018');
-    context.fillStyle = bevel;
-    context.fill();
+      if (style === 'classic') {
+        const bevel = context.createLinearGradient(0, y, 0, y + innerHeight);
+        bevel.addColorStop(0, '#ffffff70');
+        bevel.addColorStop(Math.min(0.4, (3 * unit) / Math.max(1, innerHeight)), '#ffffff00');
+        bevel.addColorStop(0.85, '#00000000');
+        bevel.addColorStop(1, '#00000018');
+        context.fillStyle = bevel;
+        context.fill();
+      }
+    }
 
     if (selected || tile.id === focusedId) {
       const lineWidth = Math.max(1, Math.round((tile.id === focusedId ? 3 : 2) * unit));
@@ -97,14 +107,79 @@ export function renderBoard(
       context.stroke();
     }
 
-    context.save();
-    const symbolSize = innerWidth * 0.51;
-    context.translate(left + (tileWidth - symbolSize) / 2, top + (tileHeight - symbolSize) / 2);
-    context.scale(symbolSize / 24, symbolSize / 24);
-    context.fillStyle = palette.symbol;
-    drawSymbol(context, tile.color);
-    context.restore();
+    if (style === 'classic') {
+      context.save();
+      const symbolSize = innerWidth * 0.51;
+      context.translate(left + (tileWidth - symbolSize) / 2, top + (tileHeight - symbolSize) / 2);
+      context.scale(symbolSize / 24, symbolSize / 24);
+      context.fillStyle = palette.symbol;
+      drawSymbol(context, tile.color);
+      context.restore();
+    }
   }
+}
+
+/** Translucent color and a compact reflection give glass depth without washing out the face. */
+function drawGlass(
+  context: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+  radius: number,
+  unit: number,
+  color: string,
+): void {
+  context.save();
+  context.beginPath();
+  context.roundRect(x, y, width, height, radius);
+  context.globalAlpha = 0.72;
+  context.fillStyle = color;
+  context.fill();
+  context.globalAlpha = 1;
+
+  const sheen = context.createLinearGradient(x, y, x + width * 0.7, y + height);
+  sheen.addColorStop(0, '#ffffff5c');
+  sheen.addColorStop(0.4, '#ffffff0c');
+  sheen.addColorStop(0.5, '#ffffff00');
+  sheen.addColorStop(1, '#07142b26');
+  context.fillStyle = sheen;
+  context.fill();
+
+  const edge = context.createLinearGradient(x, y, x + width, y + height);
+  edge.addColorStop(0, '#ffffffbf');
+  edge.addColorStop(0.45, '#ffffff40');
+  edge.addColorStop(0.72, '#ffffff1c');
+  edge.addColorStop(1, '#ffffff66');
+  const line = Math.max(1, Math.round(unit));
+  context.beginPath();
+  context.roundRect(
+    x + line / 2,
+    y + line / 2,
+    Math.max(0, width - line),
+    Math.max(0, height - line),
+    Math.max(0, radius - line / 2),
+  );
+  context.lineWidth = line;
+  context.strokeStyle = edge;
+  context.stroke();
+
+  const inset = Math.min(Math.max(1, Math.round(2 * unit)), width / 4, height / 4);
+  const reflection = context.createLinearGradient(0, y + inset, 0, y + height * 0.34);
+  reflection.addColorStop(0, '#ffffff3d');
+  reflection.addColorStop(0.65, '#ffffff0c');
+  reflection.addColorStop(1, '#ffffff00');
+  context.beginPath();
+  context.roundRect(
+    x + inset,
+    y + inset,
+    Math.max(0, width - inset * 2),
+    Math.max(0, height * 0.3 - inset),
+    Math.max(0, radius - inset / 2),
+  );
+  context.fillStyle = reflection;
+  context.fill();
+  context.restore();
 }
 
 function drawSymbol(context: CanvasRenderingContext2D, color: TileColor): void {

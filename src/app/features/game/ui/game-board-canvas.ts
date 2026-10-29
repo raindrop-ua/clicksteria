@@ -1,4 +1,5 @@
 import { Board, GAME_CONFIG, Position } from '@features/game/domain/game.models';
+import { BlockStyle } from '@features/game/domain/block-style';
 import { RenderTile, renderBoard } from './game-board-renderer';
 
 const FALL_DURATION = 180;
@@ -17,6 +18,7 @@ export class GameBoardCanvas {
   private origins = new Map<number, RenderTile>();
   private highlighted: ReadonlySet<number> = new Set();
   private focusedId: number | null = null;
+  private style: BlockStyle = 'classic';
   private startedAt = 0;
   private frame: number | null = null;
   private needsResize = true;
@@ -38,7 +40,12 @@ export class GameBoardCanvas {
     this.schedule();
   }
 
-  update(board: Board, highlighted: ReadonlySet<number>, focusedId: number | null): void {
+  update(
+    board: Board,
+    highlighted: ReadonlySet<number>,
+    focusedId: number | null,
+    style: BlockStyle = 'classic',
+  ): void {
     if (this.destroyed) return;
     if (board !== this.board) {
       const now = this.view.performance.now();
@@ -67,6 +74,7 @@ export class GameBoardCanvas {
     }
     this.highlighted = highlighted;
     this.focusedId = focusedId;
+    this.style = style;
     this.schedule();
   }
 
@@ -168,6 +176,7 @@ export class GameBoardCanvas {
       this.displayed,
       this.highlighted,
       this.focusedId,
+      this.style,
     );
     if (this.origins.size) this.schedule();
   };

@@ -1,4 +1,5 @@
 import { Board } from '@features/game/domain/game.models';
+import { BLOCK_STYLES } from '@features/game/domain/block-style';
 import { GameBoardCanvas } from './game-board-canvas';
 
 const opening: Board = [
@@ -119,6 +120,50 @@ describe('Game board canvas lifecycle', () => {
     expect(surface.hitTest(18, 535, 360, 540)).toBeNull();
     expect(surface.hitTest(360, 490, 360, 540)).toBeNull();
   });
+
+  it('redraws the same board in a new style without moving tiles or keeping an idle loop', () => {
+    surface.update(opening, new Set(), null);
+    drawAt(0);
+    const symbols = context.translate.mock.calls.length;
+    expect(symbols).toBe(4);
+
+    surface.update(opening, new Set([0, 1]), 0, 'minimal');
+    expect(frames.size).toBe(1);
+    drawAt(16);
+    expect(context.translate).toHaveBeenCalledTimes(symbols);
+    expect(context.stroke).toHaveBeenCalledTimes(2);
+    expect(context.clearRect).toHaveBeenCalledTimes(2);
+    expect(surface.hitTest(18, 450, 360, 540)).toEqual({ column: 0, row: 2 });
+    expect(frames.size).toBe(0);
+  });
+
+  it('keeps the original falling timeline when the block style changes mid-animation', () => {
+    surface.update(opening, new Set(), null);
+    drawAt(0);
+    surface.update(settled, new Set(), null);
+    drawAt(45);
+    expect(surface.hitTest(18, 490, 360, 540)).toEqual({ column: 0, row: 0 });
+
+    surface.update(settled, new Set(), 2, 'glass');
+    drawAt(90);
+    expect(surface.hitTest(18, 490, 360, 540)).toBeNull();
+    expect(surface.hitTest(18, 522, 360, 540)).toEqual({ column: 0, row: 0 });
+    expect(frames.size).toBe(1);
+    drawAt(180);
+    expect(frames.size).toBe(0);
+  });
+
+  it.each(BLOCK_STYLES)(
+    'renders $id with keyboard and group outlines, and only classic symbols',
+    ({ id }) => {
+      surface.update(opening, new Set([0, 1]), 3, id);
+      drawAt(0);
+      expect(context.stroke.mock.calls.length).toBeGreaterThanOrEqual(3);
+      expect(context.translate).toHaveBeenCalledTimes(id === 'classic' ? 4 : 0);
+      if (id === 'minimal') expect(context.createLinearGradient).not.toHaveBeenCalled();
+      expect(frames.size).toBe(0);
+    },
+  );
 
   it('updates bitmap density after moving between displays without changing CSS coordinates', () => {
     surface.update(opening, new Set(), null);

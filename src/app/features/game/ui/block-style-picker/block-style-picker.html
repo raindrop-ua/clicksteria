@@ -1,0 +1,29 @@
+<fieldset aria-describedby="block-style-help">
+  <legend>Block style</legend>
+  <div class="style-options">
+    @for (option of styles; track option.id) {
+      <button
+        type="button"
+        class="style-option"
+        [attr.aria-pressed]="blockStyle.style() === option.id"
+        [title]="option.description"
+        (click)="blockStyle.setStyle(option.id)"
+      >
+        <span
+          class="style-preview"
+          [class.preview-minimal]="option.id === 'minimal'"
+          [class.preview-glass]="option.id === 'glass'"
+          aria-hidden="true"
+        >
+          <span class="preview-block coral"></span>
+          <span class="preview-block cyan"></span>
+          <span class="preview-block green"></span>
+        </span>
+        <span>{{ option.label }}</span>
+      </button>
+    }
+  </div>
+</fieldset>
+<p id="block-style-help" class="style-help">
+  Classic adds shapes. Minimal and Glass use color only.
+</p>

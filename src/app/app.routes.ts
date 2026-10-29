@@ -5,6 +5,18 @@ export const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'play' },
   { path: 'play', loadChildren: () => import('@features/game/game.routes') },
   {
+    path: 'settings',
+    title: 'Settings · Clicksteria',
+    data: {
+      seo: {
+        description:
+          'Make Clicksteria your own: choose a board scenery and switch between Classic, Minimal, and Glass block styles.',
+        canonicalPath: '/settings',
+      } satisfies SeoData,
+    },
+    loadComponent: () => import('@features/settings/settings-page'),
+  },
+  {
     path: 'rules',
     title: 'How to Play Clicksteria — Rules & Scoring',
     data: {
