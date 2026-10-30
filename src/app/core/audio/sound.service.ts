@@ -1,10 +1,10 @@
 import { DOCUMENT } from '@angular/common';
-import { afterNextRender, DestroyRef, inject, Injectable, signal } from '@angular/core';
+import { afterNextRender, DestroyRef, inject, Service, signal } from '@angular/core';
 
 const STORAGE_KEY = 'clicksteria.sound';
 
 /** Owns preference persistence and a single, lazily created Web Audio context. */
-@Injectable({ providedIn: 'root' })
+@Service()
 export class SoundService {
   private readonly document = inject(DOCUMENT);
   private readonly destroyRef = inject(DestroyRef);

@@ -1,5 +1,5 @@
 import { DOCUMENT } from '@angular/common';
-import { DestroyRef, Injectable, inject } from '@angular/core';
+import { DestroyRef, inject, Service } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Meta, Title } from '@angular/platform-browser';
 import { ActivatedRouteSnapshot, NavigationEnd, Router } from '@angular/router';
@@ -17,7 +17,7 @@ const SOCIAL_IMAGE = `${SITE_ORIGIN}/og-image.png`;
 const SOCIAL_IMAGE_ALT =
   'Clicksteria logo beside colorful puzzle blocks popping out of the game board';
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class SeoService {
   private readonly document = inject(DOCUMENT);
   private readonly meta = inject(Meta);
