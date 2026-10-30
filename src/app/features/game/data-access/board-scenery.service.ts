@@ -1,5 +1,5 @@
 import { DOCUMENT } from '@angular/common';
-import { afterNextRender, computed, DestroyRef, inject, Injectable, signal } from '@angular/core';
+import { afterNextRender, computed, DestroyRef, inject, Service, signal } from '@angular/core';
 import {
   CLASSIC_SCENERY,
   isSceneryPreference,
@@ -10,7 +10,7 @@ import {
 
 const STORAGE_KEY = 'clicksteria.scenery';
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class BoardSceneryService {
   private readonly document = inject(DOCUMENT);
   private readonly destroyRef = inject(DestroyRef);

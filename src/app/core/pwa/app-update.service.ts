@@ -1,5 +1,5 @@
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
-import { ApplicationRef, Injectable, PLATFORM_ID, inject, signal } from '@angular/core';
+import { ApplicationRef, PLATFORM_ID, inject, signal, Service } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { SwUpdate } from '@angular/service-worker';
 import {
@@ -17,7 +17,7 @@ import {
 
 const CHECK_INTERVAL = 6 * 60 * 60 * 1000;
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class AppUpdateService {
   private readonly updates = inject(SwUpdate);
   private readonly document = inject(DOCUMENT);

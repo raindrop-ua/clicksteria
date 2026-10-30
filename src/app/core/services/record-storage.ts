@@ -1,7 +1,7 @@
-import { Injectable } from '@angular/core';
+import { Service } from '@angular/core';
 
 /** Browser persistence is optional: blocked storage must never interrupt a game. */
-@Injectable({ providedIn: 'root' })
+@Service()
 export class RecordStorage {
   private readonly key = 'clicksteria:classic:best:v1';
   read(): number {

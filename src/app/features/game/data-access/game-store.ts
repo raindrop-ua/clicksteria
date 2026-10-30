@@ -1,4 +1,4 @@
-import { computed, inject, Injectable, signal } from '@angular/core';
+import { computed, inject, Service, signal } from '@angular/core';
 import { SoundService } from '@core/audio/sound.service';
 import { RecordStorage } from '@core/services/record-storage';
 import {
@@ -13,7 +13,7 @@ import {
 import { GameState, Position } from '@features/game/domain/game.models';
 
 /** One session survives route changes. The engine owns rules; this service owns history and UI state. */
-@Injectable({ providedIn: 'root' })
+@Service()
 export class GameStore {
   private readonly storage = inject(RecordStorage);
   private readonly sound = inject(SoundService);

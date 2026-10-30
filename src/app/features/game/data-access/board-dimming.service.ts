@@ -1,9 +1,9 @@
 import { DOCUMENT } from '@angular/common';
-import { afterNextRender, DestroyRef, inject, Injectable, signal } from '@angular/core';
+import { afterNextRender, DestroyRef, inject, Service, signal } from '@angular/core';
 
 const STORAGE_KEY = 'clicksteria.dim-others';
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class BoardDimmingService {
   private readonly document = inject(DOCUMENT);
   private readonly destroyRef = inject(DestroyRef);
