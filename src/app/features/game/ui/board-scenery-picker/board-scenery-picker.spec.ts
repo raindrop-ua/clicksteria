@@ -41,23 +41,25 @@ describe('Board scenery picker', () => {
     expect(service.preference()).toBe('winter');
     expect(localStorage.getItem('clicksteria.scenery')).toBe('winter');
     expect(fixture.nativeElement.querySelector('img')?.getAttribute('src')).toBe(
-      '/images/scenery/winter-thumbnail.jpg',
+      '/images/scenery/winter.jpg',
     );
     service.setPreference('classic');
     await fixture.whenStable();
     expect(select.value).toBe('classic');
     expect(fixture.nativeElement.querySelector('img')?.getAttribute('src')).toBe(
-      '/images/scenery/classic-thumbnail.jpg',
+      '/images/scenery/classic.jpg',
     );
   });
 
-  it('uses dedicated thumbnails for every scenery and includes the optional sunset', async () => {
+  it('previews only the selected native scenery as the choice changes', async () => {
     const { fixture, select, service } = await setup();
     for (const scene of SCENERIES) {
       service.setPreference(scene.id);
       await fixture.whenStable();
       expect(select.value).toBe(scene.id);
-      expect(fixture.nativeElement.querySelector('img')?.getAttribute('src')).toBe(scene.thumbnail);
+      const images = fixture.nativeElement.querySelectorAll('img') as NodeListOf<HTMLImageElement>;
+      expect(images).toHaveLength(1);
+      expect(images[0].getAttribute('src')).toBe(scene.image);
     }
     expect(select.selectedOptions[0].textContent).toContain('Sunset mountains');
     expect(localStorage.getItem('clicksteria.scenery')).toBe('sunset');

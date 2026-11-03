@@ -1,0 +1,41 @@
+:host {
+  display: block;
+  flex: 0 0 auto;
+}
+footer {
+  display: flex;
+  inline-size: min(100%, 96rem);
+  min-block-size: 3.5rem;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.5rem;
+  margin-inline: auto;
+  padding: 0.5rem clamp(1rem, 3.2vw, 3rem);
+  color: var(--color-muted);
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+nav {
+  display: flex;
+  gap: 1.5rem;
+}
+a {
+  display: inline-flex;
+  min-block-size: 2.75rem;
+  align-items: center;
+  text-underline-offset: 0.25em;
+}
+a:hover,
+.legal-active {
+  color: #ffffff;
+  text-decoration: underline;
+}
+@media (max-width: 599px) {
+  footer {
+    flex-direction: column;
+    gap: 0;
+    padding-block: 0.75rem;
+    text-align: center;
+  }
+}

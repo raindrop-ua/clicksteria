@@ -1,0 +1,31 @@
+:host {
+  display: block;
+}
+.legal-page {
+  max-width: 850px;
+  margin-inline: auto;
+}
+.legal-heading {
+  text-align: center;
+}
+.document-date {
+  color: var(--color-muted);
+  font-size: 0.875rem;
+}
+.legal-panel {
+  padding: clamp(1.375rem, 5vw, 3rem);
+  border-radius: 28px;
+}
+.legal-copy {
+  max-width: 70ch;
+  margin-inline: auto;
+  overflow-wrap: anywhere;
+}
+.page-action {
+  display: flex;
+  justify-content: center;
+  margin-top: 1.75rem;
+}
+.page-action .button {
+  min-width: min(100%, 250px);
+}

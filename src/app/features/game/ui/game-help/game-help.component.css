@@ -1,0 +1,20 @@
+:host {
+  display: block;
+}
+.help-links {
+  display: grid;
+  gap: 8px;
+  margin-top: 8px;
+}
+.help-links .button {
+  justify-content: flex-start;
+  gap: 12px;
+  min-height: 52px;
+  padding-inline: 18px;
+  border-radius: 18px;
+  font-size: 1rem;
+  font-weight: 650;
+}
+.help-links app-icon {
+  --icon-size: 22px;
+}

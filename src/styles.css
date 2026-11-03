@@ -1,85 +1,288 @@
-@import 'tailwindcss';
+@layer reset, tokens, base, elements;
 
-@theme {
-  --color-paper: light-dark(#f6f5f0, #14131d);
-  --color-surface: light-dark(#fbfaf7, #1d1c29);
-  --color-panel: light-dark(#eee9fa, #282139);
-  --color-panel-line: light-dark(#ddd6fe, #47365f);
-  --color-hover: light-dark(#f5f3ff, #30283f);
-  --color-on-accent: light-dark(#ffffff, #171121);
-  --color-accent-hover: light-dark(#5b21b6, #c4a7ff);
-  --color-selection: light-dark(#dfd3ff, #483467);
-  --color-ink: light-dark(#111321, #f3f0fa);
-  --color-muted: light-dark(#60617b, #b5afc7);
-  --color-accent: light-dark(#7038f5, #b995ff);
-  --color-line: light-dark(#dedee5, #393446);
-  --font-sans: 'Outfit', 'Arial', sans-serif;
-}
-@layer base {
-  :root {
-    color-scheme: light dark;
+@layer reset {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
   }
-  :root[data-theme='light'] {
-    color-scheme: light;
-  }
-  :root[data-theme='dark'] {
-    color-scheme: dark;
-  }
-  html {
-    background: var(--color-paper);
-    color: var(--color-ink);
-  }
-  body {
+  body,
+  h1,
+  h2,
+  h3,
+  p,
+  figure,
+  blockquote,
+  dl,
+  dd {
     margin: 0;
-    font-family: var(--font-sans);
-    -webkit-font-smoothing: antialiased;
   }
   button,
-  a {
+  input,
+  select,
+  textarea {
+    font: inherit;
+  }
+  button,
+  a,
+  input,
+  select {
     -webkit-tap-highlight-color: transparent;
   }
+  button {
+    color: inherit;
+  }
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+  img,
+  svg,
+  canvas {
+    display: block;
+  }
+  img {
+    max-inline-size: 100%;
+  }
+  [hidden] {
+    display: none !important;
+  }
+}
+
+@layer tokens {
+  :root {
+    color-scheme: dark;
+    --color-paper: #15204a;
+    --color-ink: #fcfcff;
+    --color-muted: #ced3f7;
+    --color-accent: #b6d9ff;
+    --color-accent-hover: #e6f4ff;
+    --color-surface: #21294f;
+    --color-panel: #2c3264;
+    --color-panel-line: #b7caff4d;
+    --color-line: #bfcaff40;
+    --color-hover: #4c4c843d;
+    --color-selection: #8459d480;
+    --color-on-accent: #ffffff;
+    --color-gold: #ffe178;
+    --font-sans: 'Outfit', 'Avenir Next', 'Arial', sans-serif;
+    --radius-panel: 1.5rem;
+    --radius-control: 1.25rem;
+    --shadow-panel: 0 12px 32px #07122d40;
+    --ease-out: cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+}
+
+@layer base {
+  html {
+    min-inline-size: 320px;
+    background: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  body {
+    min-block-size: 100svh;
+    overflow-x: clip;
+  }
   button:not(:disabled),
+  select,
+  input[type='checkbox'],
   a {
     cursor: pointer;
-  }
-  :focus-visible {
-    outline: 3px solid var(--color-accent);
-    outline-offset: 4px;
   }
   button:disabled {
     cursor: not-allowed;
   }
+  :focus-visible {
+    outline: 3px solid #d9f3ff;
+    outline-offset: 5px;
+  }
   ::selection {
     background: var(--color-selection);
+    color: #ffffff;
+  }
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+  noscript {
+    display: block;
+    padding: 1rem;
+    text-align: center;
   }
 }
-@layer components {
-  .button {
-    @apply inline-flex min-h-12 items-center justify-center gap-2 rounded-xl border border-accent px-4 py-3 text-sm font-semibold transition-colors hover:bg-hover disabled:border-line disabled:bg-transparent disabled:text-muted;
+
+@layer elements {
+  .sr-only {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
+  }
+  .surface {
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-panel);
+    background: linear-gradient(135deg, #3b427add, #302960ed);
+    box-shadow:
+      inset 0 1px 0 #ffffff17,
+      var(--shadow-panel);
+    backdrop-filter: blur(12px);
+  }
+  .button,
+  .icon-button {
+    position: relative;
+    display: inline-flex;
+    min-block-size: 3.25rem;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    padding: 0.8rem 1.35rem;
+    border: 1px solid #b8cbff5c;
+    border-radius: var(--radius-control);
+    background: linear-gradient(125deg, #3d4d80e6, #382e66ed);
+    color: var(--color-ink);
+    box-shadow:
+      inset 0 1px 0 #ffffff1f,
+      0 5px 16px #0a103326;
+    font-size: 1.0625rem;
+    font-weight: 600;
+    line-height: 1.25;
+    text-align: center;
+    text-shadow: 0 1px 2px #111b3b40;
+    transition:
+      background 180ms ease,
+      border-color 180ms ease,
+      box-shadow 180ms ease,
+      transform 180ms var(--ease-out);
   }
   .button-primary {
-    @apply border-accent bg-accent text-on-accent hover:border-accent-hover hover:bg-accent-hover disabled:border-line disabled:bg-line;
+    border-color: #a7e8ffbd;
+    background: linear-gradient(112deg, #169bd4, #3560ed 45%, #9638e9);
+    box-shadow:
+      inset 0 1px 0 #ffffff66,
+      inset 0 -2px 5px #e8afff40,
+      0 7px 24px #242eb33b;
+    color: #ffffff;
+    font-weight: 700;
   }
-  .nav-link {
-    @apply relative flex h-full items-center text-muted transition-colors hover:text-accent;
+  .button:hover:not(:disabled),
+  .icon-button:hover:not(:disabled) {
+    border-color: #d7e4ffbf;
+    box-shadow:
+      inset 0 1px 0 #ffffff33,
+      0 7px 24px #0a103352;
+    transform: translateY(-2px);
   }
-  .nav-active {
-    @apply text-accent after:absolute after:inset-x-0 after:bottom-0 md:after:bottom-5 after:h-0.5 after:rounded after:bg-accent;
+  .button-primary:hover:not(:disabled) {
+    background: linear-gradient(112deg, #168fc9, #4768f4 45%, #a049f3);
+    box-shadow:
+      inset 0 1px 0 #ffffff70,
+      0 8px 28px #463fd561;
   }
-  .brand-mark {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 2px;
-    width: 25px;
-    aspect-ratio: 1;
+  .button:active:not(:disabled),
+  .icon-button:active:not(:disabled) {
+    transform: translateY(0) scale(0.98);
   }
-  .brand-mark i {
-    border-radius: 3px;
-    background: var(--color-accent);
-    box-shadow: inset 0 2px 2px #ffffff40;
+  .button:disabled,
+  .icon-button:disabled {
+    border-color: #abbce333;
+    background: #2d355da6;
+    color: #a9b4d7;
+    box-shadow: none;
+    text-shadow: none;
+  }
+  .icon-button {
+    inline-size: 3.25rem;
+    flex: 0 0 auto;
+    padding: 0.75rem;
+    border-radius: 50%;
+  }
+  .content-page {
+    inline-size: min(100%, 70rem);
+    margin-inline: auto;
+    padding-block: 1.25rem 2rem;
+  }
+  .content-heading {
+    margin-block-end: 1.75rem;
+    text-align: center;
+  }
+  .content-heading h1 {
+    font-size: clamp(2.25rem, 5vw, 3.75rem);
+    font-weight: 800;
+    line-height: 1.08;
+    letter-spacing: -0.04em;
+  }
+  .content-heading > p {
+    margin-block-start: 0.6rem;
+    color: var(--color-muted);
+    font-size: clamp(1.0625rem, 2.5vw, 1.25rem);
+    line-height: 1.6;
+  }
+  .prose {
+    color: var(--color-muted);
+    font-size: 1.0625rem;
+    line-height: 1.8;
+  }
+  .prose > * + * {
+    margin-block-start: 1.1rem;
+  }
+  .prose h2,
+  .prose h3,
+  .prose strong {
+    color: var(--color-ink);
+  }
+  .prose h2 {
+    margin-block-start: 2rem;
+    font-size: 1.45rem;
+    font-weight: 700;
+    line-height: 1.3;
+  }
+  .prose h3 {
+    font-size: 1.2rem;
+    line-height: 1.4;
+  }
+  .prose ul,
+  .prose ol {
+    padding-inline-start: 1.4rem;
+  }
+  .prose li + li {
+    margin-block-start: 0.45rem;
+  }
+  .prose a {
+    color: #d4edff;
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+  .prose code {
+    padding: 0.15em 0.35em;
+    border: 1px solid var(--color-line);
+    border-radius: 0.35em;
+    background: #14214980;
+    color: #ecedff;
+    font-size: 0.9em;
   }
 }
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 180ms;
+}
+
 @media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(root),
+  ::view-transition-image-pair(root),
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none;
+  }
   *,
   *::before,
   *::after {
