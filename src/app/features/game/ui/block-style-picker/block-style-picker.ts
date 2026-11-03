@@ -1,5 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { BlockStyleService } from '@features/game/data-access/block-style.service';
+import { BoardSymbolsService } from '@features/game/data-access/board-symbols.service';
 import { BLOCK_STYLES } from '@features/game/domain/block-style';
 
 @Component({
@@ -9,5 +10,6 @@ import { BLOCK_STYLES } from '@features/game/domain/block-style';
 })
 export class BlockStylePicker {
   protected readonly blockStyle = inject(BlockStyleService);
+  protected readonly symbols = inject(BoardSymbolsService);
   protected readonly styles = BLOCK_STYLES;
 }

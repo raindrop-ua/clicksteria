@@ -11,8 +11,8 @@
       >
         <span
           class="style-preview"
-          [class.preview-minimal]="option.id === 'minimal'"
-          [class.preview-glass]="option.id === 'glass'"
+          [class.preview-classic]="option.id === 'classic'"
+          [class.preview-no-symbols]="!symbols.enabled()"
           aria-hidden="true"
         >
           <span class="preview-block coral"></span>
@@ -25,5 +25,5 @@
   </div>
 </fieldset>
 <p id="block-style-help" class="style-help">
-  Classic adds shapes. Minimal and Glass use color only.
+  Classic has bouncy jelly blocks. Minimalist keeps the original look and motion.
 </p>

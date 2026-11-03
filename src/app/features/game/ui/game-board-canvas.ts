@@ -1,6 +1,12 @@
 import { Board, GAME_CONFIG, Position } from '@features/game/domain/game.models';
 import { BlockStyle } from '@features/game/domain/block-style';
 import { RenderTile, renderBoard } from './game-board-renderer';
+import {
+  JELLY_REMOVAL_DURATION,
+  jellyDuration,
+  sampleDepartingTile,
+  sampleJellyTile,
+} from './game-board-motion';
 
 const FALL_DURATION = 180;
 
@@ -16,16 +22,21 @@ export class GameBoardCanvas {
   private targets = new Map<number, RenderTile>();
   private displayed: readonly RenderTile[] = [];
   private origins = new Map<number, RenderTile>();
+  private departures: readonly { tile: RenderTile; startedAt: number }[] = [];
   private highlighted: ReadonlySet<number> = new Set();
   private focusedId: number | null = null;
   private style: BlockStyle = 'classic';
   private dimOthers = true;
+  private showSymbols = true;
   private startedAt = 0;
   private frame: number | null = null;
   private needsResize = true;
   private destroyed = false;
 
-  constructor(private readonly canvas: HTMLCanvasElement) {
+  constructor(
+    private readonly canvas: HTMLCanvasElement,
+    private readonly paint: typeof renderBoard = renderBoard,
+  ) {
     this.view = canvas.ownerDocument.defaultView ?? window;
     this.context = canvas.getContext('2d');
     this.motion = this.view.matchMedia?.('(prefers-reduced-motion: reduce)');
@@ -47,8 +58,11 @@ export class GameBoardCanvas {
     focusedId: number | null,
     style: BlockStyle = 'classic',
     dimOthers = true,
+    showSymbols = true,
   ): void {
     if (this.destroyed) return;
+    const styleChanged = this.style !== style;
+    if (styleChanged) this.clearMotion();
     if (board !== this.board) {
       const now = this.view.performance.now();
       const previous = new Map(this.sample(now).map((tile) => [tile.id, tile]));
@@ -61,8 +75,25 @@ export class GameBoardCanvas {
         const old = previous.get(tile.id);
         return old && old.color !== tile.color;
       });
+      const removal =
+        this.tiles.length < previous.size &&
+        this.tiles.every((tile) => previous.get(tile.id)?.color === tile.color);
+      const animate = !styleChanged && !reset && !this.motion?.matches;
+      // Only a removal may launch jelly blocks. Undo/restoration/new games snap
+      // cleanly into place, including when they interrupt an existing burst.
+      if (style === 'classic' && (!animate || !removal)) this.clearMotion();
+      if (style === 'classic' && animate && removal) {
+        this.departures = [
+          ...this.departures.filter(
+            (departure) => now - departure.startedAt < JELLY_REMOVAL_DURATION,
+          ),
+          ...[...previous.values()]
+            .filter((tile) => !this.targets.has(tile.id))
+            .map((tile) => ({ tile, startedAt: now })),
+        ];
+      }
       this.origins = new Map(
-        !reset && !this.motion?.matches
+        animate && (style === 'minimal' || removal)
           ? this.tiles.flatMap((tile) => {
               const old = previous.get(tile.id);
               return old && (old.column !== tile.column || old.row !== tile.row)
@@ -78,6 +109,7 @@ export class GameBoardCanvas {
     this.focusedId = focusedId;
     this.style = style;
     this.dimOthers = dimOthers;
+    this.showSymbols = showSymbols;
     this.schedule();
   }
 
@@ -111,6 +143,7 @@ export class GameBoardCanvas {
     this.view.removeEventListener('resize', this.resize);
     this.motion?.removeEventListener('change', this.motionChanged);
     this.density?.removeEventListener('change', this.densityChanged);
+    this.clearMotion();
   }
 
   private readonly resize = (): void => {
@@ -119,7 +152,7 @@ export class GameBoardCanvas {
   };
 
   private readonly motionChanged = (): void => {
-    if (this.motion?.matches) this.origins.clear();
+    if (this.motion?.matches) this.clearMotion();
     this.schedule();
   };
 
@@ -139,8 +172,25 @@ export class GameBoardCanvas {
     this.frame = this.view.requestAnimationFrame(this.draw);
   }
 
+  private clearMotion(): void {
+    this.origins.clear();
+    this.departures = [];
+  }
+
   private sample(now: number): readonly RenderTile[] {
     if (!this.origins.size) return this.tiles;
+    if (this.style === 'classic') {
+      const elapsed = now - this.startedAt;
+      return this.tiles.map((tile) => {
+        const origin = this.origins.get(tile.id);
+        if (!origin) return tile;
+        if (elapsed >= jellyDuration(origin, tile)) {
+          this.origins.delete(tile.id);
+          return tile;
+        }
+        return sampleJellyTile(origin, tile, elapsed);
+      });
+    }
     const progress = Math.min(1, Math.max(0, (now - this.startedAt) / FALL_DURATION));
     if (progress === 1) {
       this.origins.clear();
@@ -172,7 +222,13 @@ export class GameBoardCanvas {
       this.needsResize = false;
     }
     this.displayed = this.sample(now);
-    renderBoard(
+    this.departures = this.departures.filter(
+      (departure) => now - departure.startedAt < JELLY_REMOVAL_DURATION,
+    );
+    const departingTiles = this.departures.map((departure) =>
+      sampleDepartingTile(departure.tile, now - departure.startedAt),
+    );
+    this.paint(
       this.context,
       this.canvas.width,
       this.canvas.height,
@@ -181,7 +237,9 @@ export class GameBoardCanvas {
       this.focusedId,
       this.style,
       this.dimOthers,
+      departingTiles,
+      this.showSymbols,
     );
-    if (this.origins.size) this.schedule();
+    if (this.origins.size || this.departures.length) this.schedule();
   };
 }

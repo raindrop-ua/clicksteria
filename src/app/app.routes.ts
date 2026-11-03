@@ -10,7 +10,7 @@ export const routes: Routes = [
     data: {
       seo: {
         description:
-          'Make Clicksteria your own: choose a board scenery and switch between Classic, Minimal, and Glass block styles.',
+          'Make Clicksteria your own: choose a board scenery and switch between Classic jelly blocks and the original Minimalist style.',
         canonicalPath: '/settings',
       } satisfies SeoData,
     },

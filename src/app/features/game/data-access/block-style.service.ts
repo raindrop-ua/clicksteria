@@ -48,6 +48,7 @@ export class BlockStyleService {
   }
 
   private parse(value: string | null): BlockStyle {
+    // Retired styles (including Glass) fall back to the new default.
     return isBlockStyle(value) ? value : 'classic';
   }
 }

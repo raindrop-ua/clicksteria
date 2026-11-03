@@ -17,6 +17,13 @@
       }
     },
     {
+      "name": "game-audio",
+      "installMode": "prefetch",
+      "resources": {
+        "files": ["/audio/*.wav"]
+      }
+    },
+    {
       "name": "assets",
       "installMode": "lazy",
       "updateMode": "prefetch",

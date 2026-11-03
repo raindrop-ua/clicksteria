@@ -103,6 +103,7 @@ describe('board scenery calendar', () => {
   it('keeps an explicit choice regardless of the current season or celebration', () => {
     expect(resolveScenery('winter', localDate('2026-10-31')).id).toBe('winter');
     expect(resolveScenery('classic', localDate('2026-12-25')).id).toBe('classic');
+    expect(resolveScenery('sunset', localDate('2026-12-25')).id).toBe('sunset');
     expect(resolveScenery('auto', localDate('2026-10-31')).id).toBe('halloween');
   });
 
@@ -117,8 +118,11 @@ describe('board scenery calendar', () => {
   it('provides unique local assets and labels for every scenery', () => {
     expect(new Set(SCENERIES.map((entry) => entry.id)).size).toBe(SCENERIES.length);
     expect(new Set(SCENERIES.map((entry) => entry.image)).size).toBe(SCENERIES.length);
-    expect(SCENERIES.every((entry) => entry.image.startsWith('/images/') && entry.label)).toBe(
-      true,
-    );
+    expect(new Set(SCENERIES.map((entry) => entry.thumbnail)).size).toBe(SCENERIES.length);
+    for (const entry of SCENERIES) {
+      expect(entry.image).toBe(`/images/scenery/${entry.id}.jpg`);
+      expect(entry.thumbnail).toBe(`/images/scenery/${entry.id}-thumbnail.jpg`);
+      expect(entry.label).toBeTruthy();
+    }
   });
 });

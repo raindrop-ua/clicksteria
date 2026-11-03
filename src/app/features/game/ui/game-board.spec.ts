@@ -123,7 +123,7 @@ describe('Canvas game board', () => {
     expect(activated).not.toHaveBeenCalled();
   });
 
-  it.each(['minimal', 'glass'] as const)(
+  it.each(['minimal'] as const)(
     'redraws %s blocks without replacing the board or losing keyboard selection',
     async (style) => {
       const update = vi.spyOn(GameBoardCanvas.prototype, 'update');
@@ -139,7 +139,7 @@ describe('Canvas game board', () => {
       fixture.componentRef.setInput('blockStyle', style);
       await fixture.whenStable();
 
-      expect(update).toHaveBeenLastCalledWith(before, highlighted, 1, style, true);
+      expect(update).toHaveBeenLastCalledWith(before, highlighted, 1, style, true, true);
       expect(grid.getAttribute('data-block-style')).toBe(style);
       expect(grid.querySelector('canvas')).toBe(canvas);
       expect(cell()?.id).toBe(selected);
@@ -162,11 +162,39 @@ describe('Canvas game board', () => {
     fixture.componentRef.setInput('dimOthers', false);
     await fixture.whenStable();
 
-    expect(update).toHaveBeenLastCalledWith(before, highlighted, 0, 'classic', false);
+    expect(update).toHaveBeenLastCalledWith(before, highlighted, 0, 'classic', false, true);
     expect(fixture.componentInstance.board()).toBe(before);
     expect(cell()?.id).toBe(selected);
     expect(document.activeElement).toBe(grid);
     expect(activated).not.toHaveBeenCalled();
+  });
+
+  it('toggles decorative symbols without changing the board, selection, focus or active label', async () => {
+    const update = vi.spyOn(GameBoardCanvas.prototype, 'update');
+    const { fixture, grid, canvas, key, cell, activated, preview } = await setup();
+    grid.focus();
+    await key('ArrowUp');
+    const highlighted = new Set([0, 1]);
+    fixture.componentRef.setInput('highlighted', highlighted);
+    await fixture.whenStable();
+    const selected = cell()?.id;
+    const label = cell()?.getAttribute('aria-label');
+    preview.mockClear();
+
+    for (const showSymbols of [false, true]) {
+      fixture.componentRef.setInput('showSymbols', showSymbols);
+      await fixture.whenStable();
+      expect(update).toHaveBeenLastCalledWith(before, highlighted, 1, 'classic', true, showSymbols);
+      expect(grid.querySelector('canvas')).toBe(canvas);
+      expect(fixture.componentInstance.board()).toBe(before);
+      expect(fixture.componentInstance.highlighted()).toBe(highlighted);
+      expect(cell()?.id).toBe(selected);
+      expect(cell()?.getAttribute('aria-label')).toBe(label);
+      expect(grid.getAttribute('aria-activedescendant')).toBe(selected);
+      expect(document.activeElement).toBe(grid);
+    }
+    expect(activated).not.toHaveBeenCalled();
+    expect(preview).not.toHaveBeenCalled();
   });
 
   it('moves in the visible arrow direction and clamps navigation to occupied cells', async () => {

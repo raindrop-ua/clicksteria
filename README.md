@@ -58,7 +58,7 @@ New routes belong in `app.routes.ts` and should be lazy by default. Keep game-sp
 
 Components use Angular 22's default change detection, standalone defaults, signal inputs/outputs, and native control flow. TypeScript and Angular template strictness are enabled. Page layout and chrome use Tailwind; scoped CSS handles the board surface and focus.
 
-The board draws its tiles and, in Classic style, symbols on a single 2D canvas above the optimized background image. `game-board-renderer.ts` owns pixel-aligned drawing; `game-board-canvas.ts` owns device-pixel-ratio scaling, resizing, and the 180 ms falling animation. Frames are requested only for changes and while tiles are moving. Pointer hit testing follows the visible tile positions during a fall. Browser observers, media-query listeners, and pending frames are released when the board is destroyed.
+The board draws tiles and optional shape symbols on a single 2D canvas above the optimized background image. `game-board-renderer.ts` owns pixel-aligned drawing; `game-board-canvas.ts` owns device-pixel-ratio scaling, resizing, and animation scheduling. Classic jelly artwork and landing poses are cached as sprites in `game-board-jelly.ts`; `game-board-motion.ts` handles accelerating falls, soft landings, and removed blocks flying down off the field. Minimalist preserves the original rendering and 180 ms falling animation. Frames are requested only for changes and while tiles are moving. Pointer hit testing follows surviving tiles' visible positions during a fall; departing blocks cannot be played again. Browser observers, media-query listeners, and pending frames are released when the board is destroyed.
 
 ### Import aliases
 
@@ -100,13 +100,13 @@ The record is the highest score reached, including before undo. Only the record 
 
 ## Accessibility and verification
 
-Classic tiles have both colors and distinct shapes; Minimal and Glass omit the visible shapes. Descriptive accessible names remain available in every style. Choose Classic for visual shape cues when colors are hard to distinguish. Tab enters/leaves the board; arrow keys move between tiles; Home/End move to the first/last column; Enter/Space plays. A single focusable ARIA grid exposes the current tile through an active descendant, keeping DOM size constant as the board changes. Focus stays on the board after removal, and moves are announced through a live region. Reduced-motion preferences disable falling animations, including when changed during play.
+Classic and Minimalist show distinct shape symbols by default. The shared **Show block symbols** switch can hide them in both styles; leave it enabled for visual cues beyond color. Descriptive accessible names remain available with symbols on or off. Tab enters/leaves the board; arrow keys move between tiles; Home/End move to the first/last column; Enter/Space plays. A single focusable ARIA grid exposes the current tile through an active descendant, keeping DOM size constant as the board changes. Focus stays on the board after removal, and moves are announced through a live region. Reduced-motion preferences disable falling, jelly landing, and removal animations, including when changed during play.
 
 Unit coverage includes branching adjacency, diagonal exclusion, invalid moves, gravity, empty-column collapse, immutable snapshots, scoring, wins, blocked boards, seeded complete games, undo, hints, and session initialization.
 
 ## Appearance
 
-Open **Settings** from the header to choose the block style, board scenery, and highlight dimming at `/settings`. Returning to Play keeps the current board, score, and undo history.
+Open **Settings** from the header to choose the block style, board scenery, symbol visibility, and highlight dimming at `/settings`. Returning to Play keeps the current board, score, and undo history.
 
 The header offers System, Light, and Dark modes. System is the default and follows OS changes without saving an override. Choosing Light or Dark persists `clicksteria.theme`; choosing System removes it. Preferences synchronize between tabs, and blocked storage falls back to an in-memory choice.
 
@@ -114,15 +114,16 @@ The header offers System, Light, and Dark modes. System is the default and follo
 
 ### Block styles
 
-The **Block style** controls in Settings offer three independent appearances:
+The **Block style** controls in Settings offer two appearances:
 
-- **Classic** (default): the original opaque, beveled blocks with shape symbols.
-- **Minimal**: flat, solid-color blocks without symbols.
-- **Glass**: translucent colored blocks with fine rims and glossy highlights, without symbols. The selected scenery shows through the blocks.
+- **Classic** (default): rounded jelly blocks based on the native iOS field, with glossy highlights, soft shadows, and optional shape symbols. Removed blocks fly down off the field; surviving blocks stretch slightly as they fall and wobble gently on landing.
+- **Minimalist**: the original opaque, beveled Classic blocks with their original colors, optional shape symbols, and 180 ms falling animation.
 
 Styles work with every board scenery and with System, Light, or Dark app modes. The selected style is applied when returning to Play without starting a new game or changing the board, score, or undo history. Idle boards do not run an animation loop.
 
-The preference persists under `clicksteria.block-style` and synchronizes across tabs. Choosing Classic removes the override. Storage restrictions fall back to an in-memory choice. `features/game/domain/block-style.ts` defines the catalog, `data-access/block-style.service.ts` owns browser persistence, and `ui/block-style-picker/` owns the controls. Server and initial browser rendering start with Classic; a stored preference is restored after hydration.
+The preference persists under `clicksteria.block-style` and synchronizes across tabs. Choosing Classic removes the override; Minimalist uses the `minimal` value. The retired Glass style falls back to Classic. Storage restrictions fall back to an in-memory choice. `features/game/domain/block-style.ts` defines the catalog, `data-access/block-style.service.ts` owns browser persistence, and `ui/block-style-picker/` owns the controls. Server and initial browser rendering start with Classic; a stored preference is restored after hydration.
+
+**Show block symbols** is enabled by default and controls both styles and their Settings previews. Shapes make colors easier to tell apart. Turning it off hides only the symbols, preserving each style's colors, lighting, and motion. `data-access/board-symbols.service.ts` saves an opt-out as `false` under `clicksteria.show-symbols`; enabling symbols removes the override. The choice restores after hydration, synchronizes across tabs, and stays usable in memory if storage is blocked. Changing it keeps the current board, score, and undo history.
 
 **Dim other blocks** is enabled by default. It softens blocks outside the highlighted group when hovering, navigating with the keyboard, or using a hint. Turn it off to keep their usual brightness while preserving the highlighted group's outline. This setting works with every block style. `data-access/board-dimming.service.ts` saves an opt-out as `false` under `clicksteria.dim-others`; enabling it removes the override. The choice restores after hydration, synchronizes across tabs, and stays usable in memory if storage is blocked.
 
@@ -142,17 +143,17 @@ The **Board scenery** selector in Settings defaults to **Auto**, using the playe
 | Halloween         | October 24–November 2                                 |
 | Christmas         | December 18–26                                        |
 
-These are decorative windows rather than public-holiday definitions. Easter wins if its window overlaps Earth Day. All four seasons, nine celebrations, and the original **Classic lake** can also be selected manually without changing the board, score, history, or focus. A manual choice persists under `clicksteria.scenery` and synchronizes across tabs; returning to Auto removes the override. Storage failures keep the choice in memory.
+These are decorative windows rather than public-holiday definitions. Easter wins if its window overlaps Earth Day. All four seasons, nine celebrations, **Classic lake**, and **Sunset mountains** can also be selected manually without changing the board, score, history, or focus. A manual choice persists under `clicksteria.scenery` and synchronizes across tabs; returning to Auto removes the override. Storage failures keep the choice in memory.
 
 `features/game/domain/board-scenery.ts` owns the pure calendar and catalog; `data-access/board-scenery.service.ts` owns browser initialization, persistence, and date refresh. SSR starts with the same classic lake on server and client; the local scenery is selected after hydration. Auto refreshes at local midnight and when the app regains visibility or window focus, including after sleep or a timezone change. No location permission, network calendar, or date library is needed.
 
-The optimized decorative images in `public/images/scenery/` are static, lightweight SVG landscapes. A dark overlay keeps the empty field calm. The chosen block style controls tile opacity and symbols; selection outlines and pointer hit testing work in every style. There are no weather particles, flashing lights, or new animation loops. The PWA's existing lazy asset cache stores each background when first used.
+The fifteen decorative backgrounds in `public/images/scenery/` are the native iOS artwork, copied as 1024 × 1536 JPEGs. Settings uses separate 170 × 256 thumbnails rather than loading full-size scenes. The existing scenery IDs, saved choices, and Auto calendar are preserved; Sunset mountains is an additional manual choice. A dark overlay keeps the empty field calm. Both block styles keep their opaque tiles and optional shape symbols over the scenery; selection outlines and pointer hit testing work in each style. Scenery adds no weather particles, flashing lights, or animation loops. The PWA's lazy asset cache stores each background and thumbnail when first used.
 
 ## Sound
 
-Block clicks (mouse, touch, or keyboard) play a short, quiet synthesized pop. The speaker button toggles game sounds; the preference is stored as `true` or `false` under `clicksteria.sound` and synchronizes across tabs. Sound is on by default.
+Game actions (mouse, touch, or keyboard) use the native iOS sound banks: **Classic** plays bubbling effects (`bubble-*.wav`), while **Minimalist** plays the original plain clicks/pops (`pop-*.wav` and `single-block.wav`). The twenty 44.1 kHz mono PCM WAV files are copied into `public/audio/`. Each bank has three variations for small groups (2–4 blocks), medium groups (5–11), and large groups (12 or more), plus a quieter sound for tapping a single block. Variations avoid immediate repeats within each style and group size. Group sounds use gain 0.34 and single blocks 0.28, matching iOS. Changing the block style selects its sounds on the next action without resetting the game.
 
-`core/audio/sound.service.ts` owns the preference, storage, lazy Web Audio context, playback, and cleanup. The toggle only displays state and calls the service; `GameStore.play()` triggers the effect. Muting stops the current sound and cancels pending playback. Missing or blocked audio/storage never interrupts the game, and no audio is initialized during SSR or page load.
+The speaker button toggles game sounds; the preference is stored as `true` or `false` under `clicksteria.sound` and synchronizes across tabs. Sound is on by default. `core/audio/sound.service.ts` owns the preference, storage, sample loading, lazy Web Audio context, playback, and cleanup. The toggle only displays state and calls the service; `GameStore.play()` selects the sound style and effect from the current block style and actual move result. Sample bytes preload after browser rendering, while the audio context is created and resumed only for a user action. Decoded samples are cached, with bounded overlapping voices for quick moves. Muting stops active voices and cancels pending playback. Missing or blocked audio/storage never interrupts the game. The PWA prefetches both small audio banks so all variations remain available offline after installation.
 
 ## PWA and updates
 
