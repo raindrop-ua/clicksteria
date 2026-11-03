@@ -1,0 +1,72 @@
+:host {
+  display: block;
+  min-width: 0;
+}
+.menu-rail {
+  width: 100%;
+  text-align: center;
+}
+.rail-emblem {
+  display: block;
+  width: 120px;
+  height: 120px;
+  margin: 0 auto 16px;
+  object-fit: contain;
+  filter: drop-shadow(0 8px 16px #0c10373d);
+}
+.rail-intro h1 {
+  margin: 0;
+  color: var(--color-ink);
+  font-size: clamp(1.875rem, 2.3vw, 2rem);
+  font-weight: 750;
+  line-height: 1.15;
+  letter-spacing: -0.04em;
+  word-spacing: 0.035em;
+}
+.rail-intro p {
+  margin: 8px 0 0;
+  color: var(--color-muted);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  line-height: 1.5;
+}
+.rail-actions {
+  margin-top: 24px;
+}
+.rail-note {
+  margin: 18px 0 0;
+  color: var(--color-muted);
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+@media (max-width: 799px) {
+  .rail-emblem,
+  app-game-help,
+  .rail-note {
+    display: none;
+  }
+  .rail-intro {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .rail-actions {
+    margin: 0;
+  }
+}
+@media (min-width: 800px) and (max-height: 700px) {
+  .rail-emblem {
+    width: 112px;
+    height: 112px;
+    margin-bottom: 14px;
+  }
+  .rail-intro h1 {
+    font-size: 1.875rem;
+  }
+  .rail-actions {
+    margin-top: 18px;
+  }
+}

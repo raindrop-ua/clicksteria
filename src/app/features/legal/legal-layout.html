@@ -1,0 +1,16 @@
+<article class="content-page legal-page">
+  <header class="content-heading legal-heading">
+    <h1>{{ title() }}</h1>
+    <p class="document-date">
+      Last updated: <time [attr.datetime]="updatedDate()">{{ updatedLabel() }}</time>
+    </p>
+  </header>
+
+  <div class="surface legal-panel">
+    <div class="prose legal-copy"><ng-content /></div>
+  </div>
+
+  <div class="page-action">
+    <a routerLink="/play" class="button button-primary">Back to game <app-icon name="arrow" /></a>
+  </div>
+</article>

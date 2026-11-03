@@ -1,0 +1,72 @@
+<article class="content-page guide-page">
+  <header class="content-heading guide-heading">
+    <h1>How to play</h1>
+    <p>
+      Clear the board by matching groups of the same color.<br class="desktop-break" />
+      Take your time — every move is worth thinking through.
+    </p>
+  </header>
+
+  <div class="surface guide-panel">
+    <div class="guide-welcome">
+      <div class="match-example" aria-hidden="true">
+        <span class="example-block"></span>
+        <span class="example-block"></span>
+        <span class="example-block"></span>
+      </div>
+      <p>Match two or more.<span>Make room for your next good move.</span></p>
+    </div>
+
+    <ol class="rule-steps">
+      @for (rule of rules; track rule.title; let index = $index) {
+        <li>
+          <span class="step-number" aria-hidden="true">0{{ index + 1 }}</span>
+          <div>
+            <h2>{{ rule.title }}</h2>
+            <p>{{ rule.text }}</p>
+          </div>
+        </li>
+      }
+    </ol>
+
+    <section class="scoring-guide" aria-labelledby="scoring-heading">
+      <div class="section-title">
+        <span class="section-icon" aria-hidden="true">+</span>
+        <h2 id="scoring-heading">How scoring works</h2>
+      </div>
+      <p>
+        A group of n blocks earns n × (n − 1) points. Two blocks earn 2 points, five earn 20, and
+        ten earn 90. Clear the entire board for a bonus of 1,000 points.
+      </p>
+      <div class="score-examples" aria-hidden="true">
+        <div>
+          <span>2 blocks</span><strong>2 <small>points</small></strong>
+        </div>
+        <div>
+          <span>5 blocks</span><strong>20 <small>points</small></strong>
+        </div>
+        <div>
+          <span>10 blocks</span><strong>90 <small>points</small></strong>
+        </div>
+      </div>
+      <p>
+        Your best score is the highest score you have reached. It is saved in this browser and does
+        not decrease when you undo a move. Hints are free.
+      </p>
+    </section>
+
+    <section class="input-guide" aria-labelledby="input-heading">
+      <h2 id="input-heading">Mouse, touch, or keyboard</h2>
+      <p>
+        Click or tap a group to remove it. Hover to highlight connected blocks and preview the
+        points for that move. With a keyboard: <kbd>Tab</kbd> enters the board, arrow keys select a
+        block, and <kbd>Enter</kbd> or <kbd>Space</kbd> makes a move. Press <kbd>Tab</kbd> again to
+        leave the board.
+      </p>
+    </section>
+  </div>
+
+  <div class="page-action">
+    <a routerLink="/play" class="button button-primary">Back to game <app-icon name="arrow" /></a>
+  </div>
+</article>
