@@ -1,12 +1,10 @@
-<a
-  href="#main"
-  (click)="skipToMain($event)"
-  class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:rounded-lg focus:bg-surface focus:p-4"
-  >Skip to content</a
->
-<div class="mx-auto flex min-h-dvh max-w-310 flex-col px-4 sm:px-10">
+<a href="#main" (click)="skipToMain($event)" class="skip-link">Skip to content</a>
+<div class="site-backdrop" aria-hidden="true">
+  <img [ngSrc]="backdrop()" alt="" fill priority sizes="100vw" draggable="false" />
+</div>
+<div class="site-layout">
   <app-header />
   <app-update-banner />
-  <main id="main" tabindex="-1" class="flex-1 outline-none"><router-outlet /></main>
+  <main id="main" tabindex="-1"><router-outlet /></main>
   <app-footer />
 </div>

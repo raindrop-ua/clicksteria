@@ -1,22 +1,16 @@
-<div class="pb-4 text-center">
-  <h1 class="text-[clamp(42px,6vw,64px)] leading-[1.05] font-extrabold tracking-[-3px]">
-    Clicksteria<span class="text-accent">.</span>
-  </h1>
-  <p class="mt-3 text-base font-medium text-muted sm:text-xl">A familiar game. One more move.</p>
-</div>
-<div class="mx-auto mb-3 flex max-w-[740px] justify-end">
-  <p class="text-xs text-muted">No rush. No timer.</p>
-</div>
-<div class="mx-auto grid max-w-[740px] items-start gap-4 md:grid-cols-[minmax(0,1fr)_270px]">
-  <section
-    aria-label="Clicksteria"
-    class="min-w-0 rounded-2xl border border-line bg-surface p-3 sm:p-4"
-  >
-    <div class="mb-3 flex items-center justify-between gap-2 px-1">
-      <h2 class="text-xs font-bold sm:text-sm">Classic mode</h2>
-      <span class="text-[11px] text-muted sm:text-xs">10 × 15 · 5 colors</span>
-    </div>
-    <div class="relative rounded-xl bg-[#121a37] p-2.5 sm:p-3">
+<div class="game-layout">
+  <section class="play-column" aria-label="Clicksteria game">
+    <dl class="scoreboard" aria-label="Score">
+      <div class="score-panel">
+        <dt>Score</dt>
+        <dd>{{ game.score() | number }}</dd>
+      </div>
+      <div class="score-panel">
+        <dt>Best score</dt>
+        <dd>{{ game.record() | number }}</dd>
+      </div>
+    </dl>
+    <div class="board-frame">
       <app-game-board
         [inert]="game.status() !== 'playing'"
         [board]="game.board()"
@@ -29,36 +23,51 @@
         (preview)="game.preview($event)"
       />
       @if (!game.state()) {
-        <div role="status" class="absolute inset-0 grid place-items-center text-sm text-white">
-          Preparing the board…
-        </div>
+        <div role="status" class="board-loading">Preparing the board…</div>
       } @else if (game.status() !== 'playing') {
         <app-game-result
           [status]="game.status()"
           [score]="game.score()"
-          (playAgain)="game.newGame()"
+          (playAgain)="playAgain()"
         />
       }
     </div>
-    <div class="mt-3 flex min-h-5 items-center justify-between gap-2 px-1 text-[11px] text-muted">
-      <span>Moves: {{ game.moves() }}</span>
-      <span>{{
-        game.previewScore()
-          ? '+' + game.previewScore() + ' points for this group'
-          : 'Match two or more'
-      }}</span>
+    <div class="board-toolbar" aria-label="Game controls">
+      <button
+        type="button"
+        class="icon-button board-action"
+        aria-label="Undo move"
+        title="Undo move"
+        [disabled]="!game.canUndo()"
+        (click)="game.undo()"
+      >
+        <app-icon name="undo" />
+      </button>
+      <div class="group-preview">
+        <p>
+          {{ game.previewScore() ? '+' + game.previewScore() + ' points' : 'Match two or more' }}
+        </p>
+        <p class="blocks-left">
+          Blocks left: <strong>{{ game.remaining() }}</strong>
+        </p>
+      </div>
+      <button
+        type="button"
+        class="icon-button board-action"
+        aria-label="Hint"
+        title="Hint"
+        [disabled]="!game.state() || game.status() !== 'playing'"
+        (click)="game.hint()"
+      >
+        <app-icon name="bulb" />
+      </button>
     </div>
   </section>
   <app-game-sidebar
-    [score]="game.score()"
-    [record]="game.record()"
-    [remaining]="game.remaining()"
     [canUndo]="game.canUndo()"
     [ready]="!!game.state()"
     [status]="game.status()"
     (newGame)="game.newGame()"
-    (undo)="game.undo()"
-    (hint)="game.hint()"
   />
 </div>
 <p class="sr-only" role="status" aria-live="polite" aria-atomic="true">{{ game.message() }}</p>

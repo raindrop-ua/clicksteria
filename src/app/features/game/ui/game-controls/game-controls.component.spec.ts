@@ -36,12 +36,22 @@ describe('Game controls', () => {
     buttons()[0].click();
     await fixture.whenStable();
     expect(newGame).toHaveBeenCalledOnce();
-    expect(buttons()).toHaveLength(3);
+    expect(buttons()).toHaveLength(1);
   });
 
   it('starts immediately when there are no moves to lose', async () => {
     const { newGame, buttons } = await setup(false);
     buttons()[0].click();
     expect(newGame).toHaveBeenCalledOnce();
+  });
+  it('cancels confirmation with Escape and returns focus to New game', async () => {
+    const { fixture, newGame, buttons } = await setup();
+    buttons()[0].click();
+    await fixture.whenStable();
+    buttons()[0].dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+    await fixture.whenStable();
+    expect(newGame).not.toHaveBeenCalled();
+    expect(buttons()).toHaveLength(1);
+    expect(document.activeElement).toBe(buttons()[0]);
   });
 });

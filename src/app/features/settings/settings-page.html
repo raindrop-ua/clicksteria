@@ -1,49 +1,77 @@
 <article class="settings-page">
   <header class="settings-header">
-    <h1>Settings<span class="text-accent">.</span></h1>
+    <h1>Settings</h1>
     <p>Make a little room for your style.</p>
   </header>
 
   <div class="settings-sections">
-    <section class="settings-card" aria-labelledby="scenery-heading">
-      <h2 id="scenery-heading">Scenery</h2>
-      <p class="section-description">A backdrop for your next good move.</p>
+    <section class="settings-card surface" aria-labelledby="scenery-heading">
+      <header class="section-heading">
+        <svg class="section-icon" viewBox="0 0 40 40" fill="none" aria-hidden="true">
+          <path d="m3 33 9-18 5 7 7-14 13 25H3Z" />
+        </svg>
+        <div>
+          <h2 id="scenery-heading">Scenery</h2>
+          <p class="section-description">A backdrop for your next good move.</p>
+        </div>
+      </header>
       <app-board-scenery-picker />
     </section>
 
-    <section class="settings-card" aria-labelledby="blocks-heading">
-      <h2 id="blocks-heading">Blocks</h2>
-      <p class="section-description">Keep it classic, simple, or a little shiny.</p>
+    <section class="settings-card surface" aria-labelledby="blocks-heading">
+      <header class="section-heading">
+        <svg class="section-icon" viewBox="0 0 40 40" fill="none" aria-hidden="true">
+          <rect x="14" y="3" width="13" height="13" rx="4" />
+          <rect x="5" y="23" width="13" height="13" rx="4" />
+          <rect x="25" y="23" width="13" height="13" rx="4" />
+        </svg>
+        <div>
+          <h2 id="blocks-heading">Blocks</h2>
+          <p class="section-description">Keep it classic, simple, or a little shiny.</p>
+        </div>
+      </header>
       <app-block-style-picker />
       <div class="board-setting">
         <label class="board-toggle" for="board-symbols">
-          <span>Show block symbols</span>
+          <span class="setting-symbol" aria-hidden="true"></span>
+          <span class="toggle-copy">
+            <span id="symbols-label">Show block symbols</span>
+            <span id="symbols-help" class="toggle-help"
+              >Shapes make colors easier to tell apart.</span
+            >
+          </span>
           <input
             #symbolsChoice
             id="board-symbols"
             type="checkbox"
             role="switch"
+            aria-labelledby="symbols-label"
             aria-describedby="symbols-help"
             [checked]="symbols.enabled()"
             (change)="symbols.setEnabled(symbolsChoice.checked)"
           />
         </label>
-        <p id="symbols-help">Shapes make colors easier to tell apart.</p>
       </div>
       <div class="board-setting">
         <label class="board-toggle" for="board-dimming">
-          <span>Dim other blocks</span>
+          <span class="setting-dimming" aria-hidden="true"></span>
+          <span class="toggle-copy">
+            <span id="dimming-label">Dim other blocks</span>
+            <span id="dimming-help" class="toggle-help"
+              >Soften blocks outside the highlighted group.</span
+            >
+          </span>
           <input
             #dimmingChoice
             id="board-dimming"
             type="checkbox"
             role="switch"
+            aria-labelledby="dimming-label"
             aria-describedby="dimming-help"
             [checked]="dimming.enabled()"
             (change)="dimming.setEnabled(dimmingChoice.checked)"
           />
         </label>
-        <p id="dimming-help">Soften blocks outside the highlighted group.</p>
       </div>
     </section>
   </div>
@@ -51,5 +79,7 @@
   <p class="save-note">
     Changes save automatically in this browser. Your current game stays right where you left it.
   </p>
-  <a routerLink="/play" class="button button-primary">Back to game <app-icon name="arrow" /></a>
+  <a routerLink="/play" class="button button-primary back-to-game"
+    ><app-icon name="undo" /> Back to game</a
+  >
 </article>

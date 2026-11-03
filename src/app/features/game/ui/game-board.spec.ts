@@ -112,10 +112,10 @@ describe('Canvas game board', () => {
     const scene = SCENERIES.find((entry) => entry.id === 'halloween')!;
     fixture.componentRef.setInput('scenery', scene);
     await fixture.whenStable();
-    const image = grid.querySelector('img')!;
-    expect(image.getAttribute('src')).toBe(scene.image);
-    expect(image.getAttribute('alt')).toBe('');
-    expect(image.getAttribute('aria-hidden')).toBe('true');
+    // Scenery belongs to the app backdrop, behind this transparent canvas surface.
+    expect(grid.querySelector('img')).toBeNull();
+    expect(grid.querySelectorAll('canvas')).toHaveLength(1);
+    expect(grid.style.getPropertyValue('--scenery-accent')).toBe(scene.accent);
     expect(grid.getAttribute('data-scenery')).toBe('halloween');
     expect(cell()?.id).toBe(selected);
     expect(document.activeElement).toBe(grid);

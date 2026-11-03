@@ -1,13 +1,11 @@
+import { NgOptimizedImage } from '@angular/common';
 import { Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { Icon } from '@shared/ui/icon';
+
 @Component({
-  imports: [RouterLink],
-  template: `<section class="py-20 text-center">
-    <h1 class="text-4xl font-bold">Nothing here yet</h1>
-    <p class="mt-4 text-muted">
-      This page does not exist. But there are still blocks on the board.
-    </p>
-    <a routerLink="/play" class="button button-primary mt-8">Back to game</a>
-  </section>`,
+  imports: [NgOptimizedImage, RouterLink, Icon],
+  templateUrl: './not-found-page.html',
+  styleUrl: './not-found-page.css',
 })
 export default class NotFoundPage {}
