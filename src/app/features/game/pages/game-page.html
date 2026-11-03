@@ -24,6 +24,7 @@
         [scenery]="scenery.scenery()"
         [blockStyle]="blocks.style()"
         [dimOthers]="dimming.enabled()"
+        [showSymbols]="symbols.enabled()"
         (tileActivated)="game.play($event)"
         (preview)="game.preview($event)"
       />

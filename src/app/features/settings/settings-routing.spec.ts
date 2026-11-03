@@ -12,6 +12,7 @@ describe('Settings navigation', () => {
     localStorage.removeItem('clicksteria.scenery');
     localStorage.removeItem('clicksteria.block-style');
     localStorage.removeItem('clicksteria.dim-others');
+    localStorage.removeItem('clicksteria.show-symbols');
     TestBed.configureTestingModule({ providers: [provideRouter(routes)] });
     vi.spyOn(HTMLCanvasElement.prototype, 'getContext').mockReturnValue(null);
     vi.stubGlobal('matchMedia', () => ({
@@ -29,6 +30,7 @@ describe('Settings navigation', () => {
     localStorage.removeItem('clicksteria.scenery');
     localStorage.removeItem('clicksteria.block-style');
     localStorage.removeItem('clicksteria.dim-others');
+    localStorage.removeItem('clicksteria.show-symbols');
   });
 
   it('opens settings directly and applies its choices when starting the game', async () => {
@@ -42,24 +44,24 @@ describe('Settings navigation', () => {
     const scenery = settings.querySelector('select')!;
     scenery.value = 'summer';
     scenery.dispatchEvent(new Event('change'));
-    const glass = Array.from(settings.querySelectorAll('button')).find((button) =>
-      button.textContent?.includes('Glass'),
+    const minimalist = Array.from(settings.querySelectorAll('button')).find((button) =>
+      button.textContent?.includes('Minimalist'),
     )!;
-    glass.click();
-    const dimming = settings.querySelector<HTMLInputElement>('input[role="switch"]')!;
+    minimalist.click();
+    const dimming = settings.querySelector<HTMLInputElement>('#board-dimming')!;
     expect(dimming.checked).toBe(true);
     dimming.checked = false;
     dimming.dispatchEvent(new Event('change'));
     await harness.fixture.whenStable();
     expect(localStorage.getItem('clicksteria.scenery')).toBe('summer');
-    expect(localStorage.getItem('clicksteria.block-style')).toBe('glass');
+    expect(localStorage.getItem('clicksteria.block-style')).toBe('minimal');
     expect(localStorage.getItem('clicksteria.dim-others')).toBe('false');
 
     await harness.navigateByUrl('/play');
     await harness.fixture.whenStable();
     const play = harness.routeNativeElement!;
     expect(play.querySelector('[data-board]')?.getAttribute('data-scenery')).toBe('summer');
-    expect(play.querySelector('[data-board]')?.getAttribute('data-block-style')).toBe('glass');
+    expect(play.querySelector('[data-board]')?.getAttribute('data-block-style')).toBe('minimal');
     expect(play.querySelector('app-board-scenery-picker')).toBeNull();
     expect(play.querySelector('app-block-style-picker')).toBeNull();
     expect(
@@ -82,7 +84,7 @@ describe('Settings navigation', () => {
     await harness.navigateByUrl('/settings');
     await harness.fixture.whenStable();
     const minimal = Array.from(harness.routeNativeElement!.querySelectorAll('button')).find(
-      (button) => button.textContent?.includes('Minimal'),
+      (button) => button.textContent?.includes('Minimalist'),
     )!;
     minimal.click();
     await harness.fixture.whenStable();
@@ -97,4 +99,59 @@ describe('Settings navigation', () => {
     game.undo();
     expect(game.state()).toBe(opening);
   });
+
+  it.each(['classic', 'minimal'] as const)(
+    'applies and restores the symbol preference in %s without changing the game or undo history',
+    async (style) => {
+      const harness = await RouterTestingHarness.create('/play');
+      await harness.fixture.whenStable();
+      const game = TestBed.inject(GameStore);
+      const opening = game.state();
+      game.play(findLargestGroup(game.board())[0]);
+      const played = game.state();
+
+      await harness.navigateByUrl('/settings');
+      await harness.fixture.whenStable();
+      const settings = harness.routeNativeElement!;
+      const styleLabel = style === 'classic' ? 'Classic' : 'Minimalist';
+      const choice = Array.from(settings.querySelectorAll('button')).find(
+        (button) => button.textContent?.trim() === styleLabel,
+      )!;
+      choice.click();
+      const symbols = settings.querySelector<HTMLInputElement>('#board-symbols')!;
+      expect(symbols.checked).toBe(true);
+      symbols.click();
+      await harness.fixture.whenStable();
+      expect(localStorage.getItem('clicksteria.show-symbols')).toBe('false');
+      expect(settings.querySelectorAll('.preview-no-symbols')).toHaveLength(2);
+
+      await harness.navigateByUrl('/play');
+      await harness.fixture.whenStable();
+      const board = () =>
+        harness.fixture.debugElement.query(
+          (element) => element.componentInstance instanceof GameBoard,
+        )?.componentInstance as GameBoard;
+      expect(board().blockStyle()).toBe(style);
+      expect(board().showSymbols()).toBe(false);
+      expect(game.state()).toBe(played);
+      expect(game.canUndo()).toBe(true);
+
+      await harness.navigateByUrl('/settings');
+      await harness.fixture.whenStable();
+      const restored =
+        harness.routeNativeElement!.querySelector<HTMLInputElement>('#board-symbols')!;
+      expect(restored.checked).toBe(false);
+      restored.click();
+      await harness.fixture.whenStable();
+      expect(localStorage.getItem('clicksteria.show-symbols')).toBeNull();
+
+      await harness.navigateByUrl('/play');
+      await harness.fixture.whenStable();
+      expect(board().showSymbols()).toBe(true);
+      expect(board().blockStyle()).toBe(style);
+      expect(game.state()).toBe(played);
+      game.undo();
+      expect(game.state()).toBe(opening);
+    },
+  );
 });
