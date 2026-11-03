@@ -15,7 +15,11 @@
       <option value="auto" [selected]="scenery.preference() === 'auto'">
         Auto · {{ scenery.automaticScenery().label }}
       </option>
-      <option value="classic" [selected]="scenery.preference() === 'classic'">Classic lake</option>
+      @for (scene of landscapes; track scene.id) {
+        <option [value]="scene.id" [selected]="scenery.preference() === scene.id">
+          {{ scene.label }}
+        </option>
+      }
       <optgroup label="Seasons">
         @for (scene of seasons; track scene.id) {
           <option [value]="scene.id" [selected]="scenery.preference() === scene.id">

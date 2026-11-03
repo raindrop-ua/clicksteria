@@ -16,10 +16,11 @@ export class BoardSceneryPicker {
     return [
       {
         id: scene.id,
-        image: scene.id === 'classic' ? '/images/scenery/classic-thumbnail.jpg' : scene.image,
+        image: scene.thumbnail,
       },
     ];
   });
+  protected readonly landscapes = SCENERIES.filter((scene) => scene.group === 'classic');
   protected readonly seasons = SCENERIES.filter((scene) => scene.group === 'season');
   protected readonly celebrations = SCENERIES.filter((scene) => scene.group === 'celebration');
 

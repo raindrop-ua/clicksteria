@@ -55,6 +55,18 @@ describe('BoardSceneryService', () => {
     expect(localStorage.getItem(STORAGE_KEY)).toBeNull();
   });
 
+  it('restores sunset as a manual preference without changing the automatic calendar', () => {
+    localStorage.setItem(STORAGE_KEY, 'sunset');
+    const service = setup();
+    expect(service.preference()).toBe('sunset');
+    expect(service.scenery().image).toBe('/images/scenery/sunset.jpg');
+    expect(service.scenery().thumbnail).toBe('/images/scenery/sunset-thumbnail.jpg');
+    expect(service.automaticScenery().id).toBe('halloween');
+    service.setPreference('auto');
+    expect(service.scenery().id).toBe('halloween');
+    expect(localStorage.getItem(STORAGE_KEY)).toBeNull();
+  });
+
   it('recomputes at the next local midnight across a year boundary', () => {
     vi.setSystemTime(new Date(2026, 11, 26, 23, 59, 58));
     const timeout = vi.spyOn(window, 'setTimeout');

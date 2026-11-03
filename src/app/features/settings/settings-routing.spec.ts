@@ -20,7 +20,8 @@ describe('Settings navigation', () => {
       addEventListener: vi.fn(),
       removeEventListener: vi.fn(),
     }));
-    vi.spyOn(TestBed.inject(SoundService), 'playClick').mockImplementation(() => undefined);
+    vi.spyOn(TestBed.inject(SoundService), 'playGroup').mockImplementation(() => undefined);
+    vi.spyOn(TestBed.inject(SoundService), 'playSingle').mockImplementation(() => undefined);
   });
 
   afterEach(() => {
