@@ -11,12 +11,12 @@ import { isSceneryPreference, SCENERIES } from '@features/game/domain/board-scen
 })
 export class BoardSceneryPicker {
   protected readonly scenery = inject(BoardSceneryService);
-  protected readonly thumbnail = computed(() => {
+  protected readonly preview = computed(() => {
     const scene = this.scenery.scenery();
     return [
       {
         id: scene.id,
-        image: scene.thumbnail,
+        image: scene.image,
       },
     ];
   });

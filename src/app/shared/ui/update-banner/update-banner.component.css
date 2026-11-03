@@ -1,0 +1,31 @@
+:host {
+  display: block;
+}
+.update-notice {
+  display: flex;
+  inline-size: min(calc(100% - 2rem), 64rem);
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin: 1rem auto 0;
+  padding: 1.25rem;
+}
+h2 {
+  font-size: 1.15rem;
+  font-weight: 700;
+}
+p {
+  margin-block-start: 0.4rem;
+  color: var(--color-muted);
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+.button {
+  flex: 0 0 auto;
+}
+@media (max-width: 639px) {
+  .update-notice {
+    align-items: stretch;
+    flex-direction: column;
+  }
+}

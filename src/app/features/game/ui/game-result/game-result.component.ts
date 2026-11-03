@@ -4,6 +4,7 @@ import { GameStatus } from '@features/game/domain/game.models';
 @Component({
   selector: 'app-game-result',
   templateUrl: './game-result.component.html',
+  styleUrl: './game-result.component.css',
 })
 export class GameResult {
   readonly status = input.required<GameStatus>();

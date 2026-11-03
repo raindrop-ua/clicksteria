@@ -2,56 +2,75 @@
   display: block;
 }
 .scenery-picker {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
+  display: grid;
+  gap: 1rem;
 }
 .scenery-preview {
   position: relative;
-  flex: 0 0 56px;
-  height: 64px;
+  inline-size: 100%;
+  aspect-ratio: 1.78;
   overflow: hidden;
-  border-radius: 0.625rem;
-  background: #121a37;
+  border: 1px solid #ffffff40;
+  border-radius: 20px;
+  background: #11183a;
+  box-shadow: 0 6px 20px #0b103533;
 }
 .scenery-preview img {
-  position: absolute;
-  top: 50%;
-  left: 0;
-  transform: translateY(-50%);
   object-fit: cover;
+  object-position: center 57%;
 }
 .scenery-choice {
-  flex: 1;
-  min-width: 0;
+  min-inline-size: 0;
 }
 label {
   display: block;
-  margin-bottom: 0.25rem;
-  font-size: 0.75rem;
+  margin-block-end: 0.5rem;
+  font-size: 1.05rem;
   font-weight: 600;
-  color: var(--color-muted);
+  color: var(--color-ink);
+}
+.scenery-select {
+  position: relative;
+}
+.scenery-select::after {
+  position: absolute;
+  inset-block-start: 18px;
+  inset-inline-end: 20px;
+  inline-size: 9px;
+  block-size: 9px;
+  border-inline-end: 2px solid #ffffff;
+  border-block-end: 2px solid #ffffff;
+  rotate: 45deg;
+  pointer-events: none;
+  content: '';
 }
 select {
   display: block;
-  width: 100%;
-  min-height: 44px;
-  padding: 0.5rem 0.625rem;
-  border: 1px solid var(--color-line);
-  border-radius: 0.625rem;
-  background: var(--color-surface);
+  inline-size: 100%;
+  min-block-size: 50px;
+  padding: 0.7rem 2.8rem 0.7rem 1rem;
+  border: 1px solid #ffffff70;
+  border-radius: 18px;
+  appearance: none;
+  background: linear-gradient(130deg, #46588e, #383164);
+  box-shadow: inset 0 1px 2px #ffffff1a;
   color: var(--color-ink);
   font: inherit;
-  font-size: 0.875rem;
+  font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
 }
 select:hover {
-  border-color: var(--color-accent);
+  border-color: #b9ddff;
+}
+option,
+optgroup {
+  background: #21294f;
+  color: #ffffff;
 }
 .scenery-help {
-  margin-top: 0.5rem;
-  font-size: 0.6875rem;
+  margin-block: 0.7rem 0;
+  font-size: 0.875rem;
   line-height: 1.5;
   color: var(--color-muted);
 }

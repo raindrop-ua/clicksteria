@@ -2,11 +2,11 @@
 
 ![Clicksteria — block-matching puzzle game](public/og-image.png)
 
-A colorful block-matching puzzle game built with Angular 22 and Tailwind CSS 4. English interface, responsive layout, SSR/prerendering, lazy routes, and no backend or external runtime services.
+A colorful block-matching puzzle game built with Angular 22 and plain CSS, with a dark sunset-and-indigo design inspired by the native iOS app. English interface, responsive layout, SSR/prerendering, lazy routes, and no backend or external runtime services.
 
 ## Development
 
-Use pnpm 11.19.0 (pinned in `package.json`) with Node.js 24. If using Corepack, enable it with `corepack enable pnpm`.
+Use pnpm 12.4.1 (pinned in `package.json`) with Node.js 24. If using Corepack, enable it with `corepack enable pnpm`.
 
 ```sh
 pnpm install --frozen-lockfile
@@ -15,7 +15,7 @@ pnpm test --watch=false
 pnpm build
 ```
 
-Open http://localhost:4200. Production output is in `dist/clicksteria`; `pnpm serve:ssr:clicksteria` runs the generated server. Tailwind is integrated through `.postcssrc.json` and `src/styles.css`.
+Open http://localhost:4200. Production output is in `dist/clicksteria`; `pnpm serve:ssr:clicksteria` runs the generated server. Global design tokens, shared controls, and the browser reset live in `src/styles.css`; individual components use adjacent CSS files. No CSS framework or custom PostCSS configuration is needed.
 
 Installing dependencies also activates the Husky pre-commit hook. It runs ESLint and Prettier only on staged files, keeping commits fast while preventing new lint and formatting issues.
 
@@ -33,7 +33,6 @@ src/
     core/
       audio/            Sound preference and lazy Web Audio playback
       services/         SEO metadata and record persistence
-      theme/            System/light/dark preference and browser sync
     layout/             Persistent shell, navigation, route focus
     shared/ui/          Reusable icons and preference controls
     features/
@@ -52,11 +51,11 @@ The router lazy-loads the game route collection and the standalone rules, settin
 
 Inside the game feature, dependencies flow from page/UI → `GameStore` → domain engine. The domain imports no Angular APIs, keeps board transformations immutable, and accepts an injectable random function for deterministic tests. The board receives state and emits user intents; it does not own scoring, history, persistence, or sound. The sidebar is presentational.
 
-`GameStore` is a root singleton, so the current session and undo history survive navigation between Play, Rules, and Settings. It coordinates domain operations with the app-wide record and sound services, while browser-only initialization stays in `afterNextRender` to avoid SSR and hydration mismatches. Theme, sound, and record preferences degrade to in-memory behavior when browser storage is unavailable.
+`GameStore` is a root singleton, so the current session and undo history survive navigation between Play, Rules, and Settings. It coordinates domain operations with the app-wide record and sound services, while browser-only initialization stays in `afterNextRender` to avoid SSR and hydration mismatches. Sound, board appearance, and record preferences degrade to in-memory behavior when browser storage is unavailable.
 
 New routes belong in `app.routes.ts` and should be lazy by default. Keep game-specific state and behavior under `features/game`; put truly app-wide browser concerns in `core`; keep `shared/ui` limited to reusable presentational controls.
 
-Components use Angular 22's default change detection, standalone defaults, signal inputs/outputs, and native control flow. TypeScript and Angular template strictness are enabled. Page layout and chrome use Tailwind; scoped CSS handles the board surface and focus.
+Components use Angular 22's default change detection, standalone defaults, signal inputs/outputs, and native control flow. TypeScript and Angular template strictness are enabled. Page layouts and chrome use plain CSS with custom properties, Grid, Flexbox, logical properties, fluid sizing, and features available across Baseline 2024 browsers. Component templates and CSS are kept in adjacent files. Shared focus and reduced-motion rules live in the global stylesheet.
 
 The board draws tiles and optional shape symbols on a single 2D canvas above the optimized background image. `game-board-renderer.ts` owns pixel-aligned drawing; `game-board-canvas.ts` owns device-pixel-ratio scaling, resizing, and animation scheduling. Classic jelly artwork and landing poses are cached as sprites in `game-board-jelly.ts`; `game-board-motion.ts` handles accelerating falls, soft landings, and removed blocks flying down off the field. Minimalist preserves the original rendering and 180 ms falling animation. Frames are requested only for changes and while tiles are moving. Pointer hit testing follows surviving tiles' visible positions during a fall; departing blocks cannot be played again. Browser observers, media-query listeners, and pending frames are released when the board is destroyed.
 
@@ -108,9 +107,11 @@ Unit coverage includes branching adjacency, diagonal exclusion, invalid moves, g
 
 Open **Settings** from the header to choose the block style, board scenery, symbol visibility, and highlight dimming at `/settings`. Returning to Play keeps the current board, score, and undo history.
 
-The header offers System, Light, and Dark modes. System is the default and follows OS changes without saving an override. Choosing Light or Dark persists `clicksteria.theme`; choosing System removes it. Preferences synchronize between tabs, and blocked storage falls back to an in-memory choice.
+The website uses a single dark appearance: an atmospheric sunset backdrop, translucent indigo panels, light text, and cyan-to-violet action buttons. Browser controls, browser chrome, and the installed PWA start dark before Angular loads. There is no theme picker, system-theme listener, or pre-paint storage script; old theme preferences are ignored.
 
-`src/index.html` applies the preference before first paint. Keep its storage key and theme-color values synchronized with `core/theme/theme.service.ts`. The service initializes browser listeners after hydration and releases them on destruction. `shared/ui/theme-switcher` owns the controls; `src/styles.css` owns the `light-dark()` semantic palette. Game tiles retain their colors in both themes.
+`src/styles.css` owns the shared color tokens, reset, buttons, surfaces, focus cues, and reduced-motion behavior. Layout and component CSS use the same palette across Play, Settings, Rules, and the legal pages. Game blocks retain the selected Classic or Minimalist artwork.
+
+The CSS uses native cascade layers, custom properties, logical properties, responsive Grid/Flex layouts, `clamp()`, small viewport units, and localized backdrop filtering within the Baseline 2024 feature set. The emblem and menu sunset in `public/images/branding/` are copied from the native iOS asset catalog. Play puts the selected scenery behind the whole interface; other pages share the menu sunset. The board remains a transparent canvas over that backdrop.
 
 ### Block styles
 
@@ -119,7 +120,7 @@ The **Block style** controls in Settings offer two appearances:
 - **Classic** (default): rounded jelly blocks based on the native iOS field, with glossy highlights, soft shadows, and optional shape symbols. Removed blocks fly down off the field; surviving blocks stretch slightly as they fall and wobble gently on landing.
 - **Minimalist**: the original opaque, beveled Classic blocks with their original colors, optional shape symbols, and 180 ms falling animation.
 
-Styles work with every board scenery and with System, Light, or Dark app modes. The selected style is applied when returning to Play without starting a new game or changing the board, score, or undo history. Idle boards do not run an animation loop.
+Both styles work with every board scenery against the dark interface. The selected style is applied when returning to Play without starting a new game or changing the board, score, or undo history. Idle boards do not run an animation loop.
 
 The preference persists under `clicksteria.block-style` and synchronizes across tabs. Choosing Classic removes the override; Minimalist uses the `minimal` value. The retired Glass style falls back to Classic. Storage restrictions fall back to an in-memory choice. `features/game/domain/block-style.ts` defines the catalog, `data-access/block-style.service.ts` owns browser persistence, and `ui/block-style-picker/` owns the controls. Server and initial browser rendering start with Classic; a stored preference is restored after hydration.
 
@@ -147,7 +148,7 @@ These are decorative windows rather than public-holiday definitions. Easter wins
 
 `features/game/domain/board-scenery.ts` owns the pure calendar and catalog; `data-access/board-scenery.service.ts` owns browser initialization, persistence, and date refresh. SSR starts with the same classic lake on server and client; the local scenery is selected after hydration. Auto refreshes at local midnight and when the app regains visibility or window focus, including after sleep or a timezone change. No location permission, network calendar, or date library is needed.
 
-The fifteen decorative backgrounds in `public/images/scenery/` are the native iOS artwork, copied as 1024 × 1536 JPEGs. Settings uses separate 170 × 256 thumbnails rather than loading full-size scenes. The existing scenery IDs, saved choices, and Auto calendar are preserved; Sunset mountains is an additional manual choice. A dark overlay keeps the empty field calm. Both block styles keep their opaque tiles and optional shape symbols over the scenery; selection outlines and pointer hit testing work in each style. Scenery adds no weather particles, flashing lights, or animation loops. The PWA's lazy asset cache stores each background and thumbnail when first used.
+The fifteen decorative backgrounds in `public/images/scenery/` are the native iOS artwork, copied as 1024 × 1536 JPEGs. Settings shows one large preview of the selected native scene, replacing its image when the selection changes; it does not decode the whole catalog. Matching 170 × 256 thumbnails are also bundled. The existing scenery IDs, saved choices, and Auto calendar are preserved; Sunset mountains is an additional manual choice. A dark overlay keeps the empty field calm. Both block styles keep their opaque tiles and optional shape symbols over the scenery; selection outlines and pointer hit testing work in each style. Scenery adds no weather particles, flashing lights, or animation loops. The PWA's lazy asset cache stores each background and thumbnail when first used.
 
 ## Sound
 

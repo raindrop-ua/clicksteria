@@ -1,4 +1,3 @@
-import { NgOptimizedImage } from '@angular/common';
 import {
   afterNextRender,
   afterRenderEffect,
@@ -21,7 +20,6 @@ import { positionAtPoint } from './game-board-renderer';
 
 @Component({
   selector: 'app-game-board',
-  imports: [NgOptimizedImage],
   templateUrl: './game-board.html',
   styleUrl: './game-board.css',
 })

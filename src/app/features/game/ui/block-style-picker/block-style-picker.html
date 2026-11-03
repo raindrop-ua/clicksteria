@@ -9,6 +9,7 @@
         [title]="option.description"
         (click)="blockStyle.setStyle(option.id)"
       >
+        <span class="selection-mark" aria-hidden="true"></span>
         <span
           class="style-preview"
           [class.preview-classic]="option.id === 'classic'"

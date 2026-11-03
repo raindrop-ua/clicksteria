@@ -6,6 +6,7 @@ import { Icon } from '@shared/ui/icon';
   selector: 'app-sound-toggle',
   imports: [Icon],
   templateUrl: './sound-toggle.component.html',
+  styleUrl: './sound-toggle.component.css',
 })
 export class SoundToggle {
   protected readonly sound = inject(SoundService);

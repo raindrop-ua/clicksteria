@@ -1,19 +1,26 @@
-<div class="mt-6 grid gap-2.5">
+<div class="new-game-controls">
   @if (confirming()) {
-    <p class="text-sm leading-6" role="status">Start over? Your current game will be lost.</p>
-    <button class="button button-primary" (click)="confirming.set(false); newGame.emit()">
-      Yes, start a new game
-    </button>
-    <button class="button" (click)="confirming.set(false)">Keep playing</button>
+    <div class="confirmation" aria-label="Start a new game">
+      <p role="status">Start over? Your current game will be lost.</p>
+      <button
+        type="button"
+        class="button button-primary"
+        (click)="confirming.set(false); newGame.emit()"
+      >
+        Yes, start a new game
+      </button>
+      <button type="button" class="button button-secondary" (click)="confirming.set(false)">
+        Keep playing
+      </button>
+    </div>
   } @else {
-    <button class="button button-primary" [disabled]="!ready()" (click)="requestNew()">
-      New game
-    </button>
-    <button class="button" [disabled]="!canUndo()" (click)="undo.emit()">
-      <app-icon name="undo" />Undo move
-    </button>
-    <button class="button" [disabled]="!ready() || status() !== 'playing'" (click)="hint.emit()">
-      <app-icon name="bulb" />Hint
+    <button
+      type="button"
+      class="button button-primary new-game"
+      [disabled]="!ready()"
+      (click)="requestNew()"
+    >
+      <app-icon name="play" />New game
     </button>
   }
 </div>
