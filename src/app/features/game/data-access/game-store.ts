@@ -11,12 +11,14 @@ import {
   removeGroup,
 } from '@features/game/domain/game.engine';
 import { GameState, Position } from '@features/game/domain/game.models';
+import { BlockStyleService } from './block-style.service';
 
 /** One session survives route changes. The engine owns rules; this service owns history and UI state. */
 @Service()
 export class GameStore {
   private readonly storage = inject(RecordStorage);
   private readonly sound = inject(SoundService);
+  private readonly blocks = inject(BlockStyleService);
   private readonly current = signal<GameState | null>(null);
   private readonly history = signal<readonly GameState[]>([]);
   private readonly selection = signal<Position | null>(null);
@@ -58,9 +60,10 @@ export class GameStore {
   play(position: Position): void {
     const previous = this.current();
     if (!previous) return;
-    this.sound.playClick();
+    const soundStyle = this.blocks.style() === 'minimal' ? 'clicks' : 'bubbles';
     const next = removeGroup(previous, position);
     if (next === previous) {
+      if (previous.board[position.column]?.[position.row]) this.sound.playSingle(soundStyle);
       this.message.set('This block is on its own. Select a group of two or more.');
       return;
     }
@@ -68,6 +71,7 @@ export class GameStore {
     this.current.set(next);
     this.selection.set(null);
     const removed = countTiles(previous.board) - countTiles(next.board);
+    this.sound.playGroup(removed, soundStyle);
     this.message.set(`Blocks removed: ${removed}. +${next.score - previous.score} points.`);
     if (next.score > this.best()) {
       this.best.set(next.score);

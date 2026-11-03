@@ -1,7 +1,10 @@
 export const BLOCK_STYLES = [
-  { id: 'classic', label: 'Classic', description: 'Bright blocks with matching shapes.' },
-  { id: 'minimal', label: 'Minimal', description: 'Simple, flat colors without symbols.' },
-  { id: 'glass', label: 'Glass', description: 'Translucent blocks with a soft glass shine.' },
+  { id: 'classic', label: 'Classic', description: 'Glossy jelly blocks with playful motion.' },
+  {
+    id: 'minimal',
+    label: 'Minimalist',
+    description: 'Original bright blocks with matching shapes.',
+  },
 ] as const;
 
 export type BlockStyle = (typeof BLOCK_STYLES)[number]['id'];

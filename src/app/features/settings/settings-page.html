@@ -15,8 +15,23 @@
       <h2 id="blocks-heading">Blocks</h2>
       <p class="section-description">Keep it classic, simple, or a little shiny.</p>
       <app-block-style-picker />
-      <div class="dimming-setting">
-        <label class="dimming-toggle" for="board-dimming">
+      <div class="board-setting">
+        <label class="board-toggle" for="board-symbols">
+          <span>Show block symbols</span>
+          <input
+            #symbolsChoice
+            id="board-symbols"
+            type="checkbox"
+            role="switch"
+            aria-describedby="symbols-help"
+            [checked]="symbols.enabled()"
+            (change)="symbols.setEnabled(symbolsChoice.checked)"
+          />
+        </label>
+        <p id="symbols-help">Shapes make colors easier to tell apart.</p>
+      </div>
+      <div class="board-setting">
+        <label class="board-toggle" for="board-dimming">
           <span>Dim other blocks</span>
           <input
             #dimmingChoice

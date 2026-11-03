@@ -42,12 +42,12 @@ h2 {
   font-size: 0.875rem;
   line-height: 1.6;
 }
-.dimming-setting {
+.board-setting {
   margin-top: 1rem;
   padding-top: 0.75rem;
   border-top: 1px solid var(--color-line);
 }
-.dimming-toggle {
+.board-toggle {
   display: flex;
   min-height: 44px;
   align-items: center;
@@ -57,7 +57,7 @@ h2 {
   font-weight: 600;
   cursor: pointer;
 }
-.dimming-toggle input {
+.board-toggle input {
   position: relative;
   flex: 0 0 44px;
   width: 44px;
@@ -69,7 +69,7 @@ h2 {
   background: var(--color-line);
   cursor: pointer;
 }
-.dimming-toggle input::before {
+.board-toggle input::before {
   position: absolute;
   top: 3px;
   left: 3px;
@@ -79,15 +79,15 @@ h2 {
   background: var(--color-ink);
   content: '';
 }
-.dimming-toggle input:checked {
+.board-toggle input:checked {
   border-color: var(--color-accent);
   background: var(--color-accent);
 }
-.dimming-toggle input:checked::before {
+.board-toggle input:checked::before {
   transform: translateX(18px);
   background: var(--color-on-accent);
 }
-#dimming-help {
+.board-setting p {
   color: var(--color-muted);
   font-size: 0.75rem;
   line-height: 1.6;

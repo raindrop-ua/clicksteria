@@ -19,11 +19,11 @@ describe('BlockStyleService', () => {
   }
 
   it('uses classic for the first render before restoring a saved style', () => {
-    localStorage.setItem(STORAGE_KEY, 'glass');
+    localStorage.setItem(STORAGE_KEY, 'minimal');
     const service = TestBed.inject(BlockStyleService);
     expect(service.style()).toBe('classic');
     TestBed.tick();
-    expect(service.style()).toBe('glass');
+    expect(service.style()).toBe('minimal');
   });
 
   it('persists a choice across visits and removes the override for classic', () => {
@@ -43,15 +43,30 @@ describe('BlockStyleService', () => {
     const service = setup();
     const storage = (key: string | null, newValue: string | null, area = localStorage) =>
       window.dispatchEvent(new StorageEvent('storage', { key, newValue, storageArea: area }));
-    storage(STORAGE_KEY, 'glass');
-    expect(service.style()).toBe('glass');
-    storage('unrelated', 'minimal');
-    storage(STORAGE_KEY, 'minimal', sessionStorage);
-    expect(service.style()).toBe('glass');
+    storage(STORAGE_KEY, 'minimal');
+    expect(service.style()).toBe('minimal');
+    storage('unrelated', 'classic');
+    storage(STORAGE_KEY, 'classic', sessionStorage);
+    expect(service.style()).toBe('minimal');
     storage(STORAGE_KEY, 'invalid');
     expect(service.style()).toBe('classic');
     storage(STORAGE_KEY, 'minimal');
     storage(null, null);
+    expect(service.style()).toBe('classic');
+  });
+
+  it('falls back to classic for the retired glass style on restore and in other tabs', () => {
+    localStorage.setItem(STORAGE_KEY, 'glass');
+    const service = setup();
+    expect(service.style()).toBe('classic');
+    service.setStyle('minimal');
+    window.dispatchEvent(
+      new StorageEvent('storage', {
+        key: STORAGE_KEY,
+        newValue: 'glass',
+        storageArea: localStorage,
+      }),
+    );
     expect(service.style()).toBe('classic');
   });
 
@@ -69,8 +84,8 @@ describe('BlockStyleService', () => {
       throw new Error('denied');
     });
     const service = setup();
-    expect(() => service.setStyle('glass')).not.toThrow();
-    expect(service.style()).toBe('glass');
+    expect(() => service.setStyle('minimal')).not.toThrow();
+    expect(service.style()).toBe('minimal');
     expect(() => service.setStyle('classic')).not.toThrow();
     expect(service.style()).toBe('classic');
   });
