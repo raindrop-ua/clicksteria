@@ -2,6 +2,7 @@
   display: block;
   width: 100%;
 }
+
 .game-layout {
   --board-width: clamp(396px, calc((100svh - 380px) * 2 / 3), 456px);
   display: grid;
@@ -12,15 +13,18 @@
   width: 100%;
   margin-inline: auto;
 }
+
 .play-column {
   min-width: 0;
 }
+
 .scoreboard {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
   margin: 0 0 14px;
 }
+
 .score-panel,
 .board-toolbar {
   border: 1px solid #ffffff38;
@@ -30,6 +34,7 @@
     0 10px 26px #070d351f;
   backdrop-filter: blur(14px);
 }
+
 .score-panel {
   display: flex;
   min-width: 0;
@@ -41,12 +46,14 @@
   border-radius: 22px;
   text-align: center;
 }
+
 .score-panel dt {
   color: var(--color-muted);
   font-size: 1rem;
   font-weight: 600;
   line-height: 1.2;
 }
+
 .score-panel dd {
   overflow-wrap: anywhere;
   margin: 2px 0 0;
@@ -57,6 +64,7 @@
   line-height: 1.1;
   letter-spacing: -0.04em;
 }
+
 .board-frame {
   --frame-inset: 6px;
   position: relative;
@@ -68,6 +76,7 @@
     inset 0 0 0 1px #d7d6ff26,
     0 12px 32px #080d2b1f;
 }
+
 .board-loading {
   position: absolute;
   inset: 0;
@@ -77,6 +86,7 @@
   color: var(--color-ink);
   font-size: 0.875rem;
 }
+
 .board-toolbar {
   display: grid;
   grid-template-columns: 54px minmax(0, 1fr) 54px;
@@ -87,6 +97,7 @@
   padding: 9px 12px;
   border-radius: 22px;
 }
+
 .board-action {
   width: 54px;
   min-height: 0;
@@ -97,13 +108,16 @@
     inset 0 1px 0 #ffffff24,
     0 3px 9px #080f3d26;
 }
+
 .board-action app-icon {
   transform: scale(1.3);
 }
+
 .group-preview {
   min-width: 0;
   text-align: center;
 }
+
 .group-preview p {
   margin: 0;
   color: var(--color-ink);
@@ -111,14 +125,17 @@
   font-weight: 700;
   line-height: 1.5;
 }
+
 .group-preview .blocks-left {
   color: var(--color-muted);
   font-weight: 600;
 }
+
 .blocks-left strong {
   color: #ffda52;
   font-variant-numeric: tabular-nums;
 }
+
 @media (max-width: 799px) {
   .game-layout {
     --board-width: min(100%, 360px);
@@ -126,20 +143,25 @@
     gap: 18px;
     max-width: 360px;
   }
+
   .scoreboard {
     gap: 10px;
     margin-bottom: 12px;
   }
+
   .score-panel {
     min-height: 67px;
     border-radius: 19px;
   }
+
   .score-panel dt {
     font-size: 0.8125rem;
   }
+
   .score-panel dd {
     font-size: 1.875rem;
   }
+
   .board-toolbar {
     grid-template-columns: 48px minmax(0, 1fr) 48px;
     min-height: 68px;
@@ -147,19 +169,23 @@
     padding: 8px 10px;
     border-radius: 20px;
   }
+
   .board-action {
     width: 48px;
     height: 48px;
     border-radius: 15px;
   }
+
   .group-preview p {
     font-size: 0.875rem;
   }
 }
+
 @media (min-width: 800px) and (max-height: 650px) {
   .score-panel {
     min-height: 64px;
   }
+
   .board-toolbar {
     min-height: 64px;
     padding-block: 5px;

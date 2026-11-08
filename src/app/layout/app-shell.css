@@ -4,6 +4,7 @@
   isolation: isolate;
   min-block-size: 100svh;
 }
+
 .site-backdrop {
   position: fixed;
   z-index: -2;
@@ -12,27 +13,32 @@
   background: #15204a;
   pointer-events: none;
 }
+
 .site-backdrop img {
   object-fit: cover;
   object-position: center 35%;
 }
+
 .site-backdrop::after {
   position: absolute;
   inset: 0;
   background: linear-gradient(#14205250, #18214912 45%, #101d4b80);
   content: '';
 }
+
 .site-layout {
   display: flex;
   min-block-size: 100svh;
   flex-direction: column;
 }
+
 main {
   flex: 1;
   inline-size: 100%;
   padding: 1.5rem;
   outline: none;
 }
+
 .skip-link {
   position: fixed;
   z-index: 20;
@@ -45,9 +51,11 @@ main {
   color: #ffffff;
   transform: translateY(-200%);
 }
+
 .skip-link:focus {
   transform: translateY(0);
 }
+
 @media (max-width: 799px) {
   main {
     padding: 1rem 0.75rem;

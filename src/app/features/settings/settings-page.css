@@ -1,15 +1,18 @@
 :host {
   display: block;
 }
+
 .settings-page {
   max-inline-size: 1080px;
   margin-inline: auto;
   padding-block: clamp(1.5rem, 4vw, 2.75rem);
 }
+
 .settings-header {
   margin-block-end: 1.75rem;
   text-align: center;
 }
+
 h1 {
   margin: 0;
   font-size: clamp(2.5rem, 6vw, 4rem);
@@ -18,6 +21,7 @@ h1 {
   letter-spacing: -0.04em;
   text-shadow: 0 3px 18px #10143c70;
 }
+
 .settings-header p {
   margin-block: 0.5rem 0;
   color: var(--color-muted);
@@ -25,20 +29,24 @@ h1 {
   font-weight: 500;
   line-height: 1.5;
 }
+
 .settings-sections {
   display: grid;
   gap: 1.25rem;
 }
+
 .settings-card {
   min-inline-size: 0;
   padding: clamp(1.1rem, 2.5vw, 1.6rem);
 }
+
 .section-heading {
   display: flex;
   align-items: center;
   gap: 1rem;
   margin-block-end: 1.4rem;
 }
+
 .section-icon {
   flex: 0 0 38px;
   inline-size: 38px;
@@ -48,6 +56,7 @@ h1 {
   stroke-linecap: round;
   stroke-linejoin: round;
 }
+
 h2 {
   margin: 0;
   font-size: 2rem;
@@ -55,12 +64,14 @@ h2 {
   letter-spacing: -0.03em;
   line-height: 1.2;
 }
+
 .section-description {
   margin-block: 0.25rem 0;
   color: var(--color-muted);
   font-size: 1rem;
   line-height: 1.45;
 }
+
 .board-setting {
   margin-block-start: 0.75rem;
   border: 1px solid var(--color-line);
@@ -68,6 +79,7 @@ h2 {
   background: linear-gradient(135deg, #59629645, #27265570);
   box-shadow: inset 0 1px 1px #ffffff1a;
 }
+
 .board-toggle {
   display: grid;
   min-block-size: 74px;
@@ -78,17 +90,20 @@ h2 {
   font-weight: 600;
   cursor: pointer;
 }
+
 .toggle-copy {
   display: grid;
   gap: 0.15rem;
   line-height: 1.25;
 }
+
 .toggle-help {
   color: var(--color-muted);
   font-size: 0.875rem;
   font-weight: 400;
   line-height: 1.45;
 }
+
 .setting-symbol,
 .setting-dimming {
   inline-size: 22px;
@@ -96,13 +111,16 @@ h2 {
   border: 2px solid currentColor;
   border-radius: 5px;
 }
+
 .setting-symbol {
   rotate: 45deg;
   scale: 0.8;
 }
+
 .setting-dimming {
   border-style: dashed;
 }
+
 .board-toggle input {
   position: relative;
   inline-size: 48px;
@@ -115,6 +133,7 @@ h2 {
   box-shadow: inset 0 1px 3px #00000030;
   cursor: pointer;
 }
+
 .board-toggle input::before {
   position: absolute;
   inset-block-start: 3px;
@@ -127,13 +146,16 @@ h2 {
   transition: translate 160ms ease;
   content: '';
 }
+
 .board-toggle input:checked {
   border-color: #70e7ff;
   background: linear-gradient(135deg, #2adaff, #178cff);
 }
+
 .board-toggle input:checked::before {
   translate: 20px 0;
 }
+
 .save-note {
   max-inline-size: 52rem;
   margin: 1.35rem auto 1rem;
@@ -142,20 +164,24 @@ h2 {
   line-height: 1.6;
   text-align: center;
 }
+
 .back-to-game {
   display: flex;
   inline-size: min(100%, 320px);
   margin-inline: auto;
 }
+
 @media (min-width: 800px) {
   .settings-sections {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
+
 @media (max-width: 380px) {
   .board-toggle {
     grid-template-columns: minmax(0, 1fr) 48px;
   }
+
   .setting-symbol,
   .setting-dimming {
     display: none;

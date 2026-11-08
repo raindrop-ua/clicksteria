@@ -1,20 +1,24 @@
 :host {
   display: block;
 }
+
 .new-game-controls .button {
   width: 100%;
   min-height: 52px;
   border-radius: 20px;
 }
+
 .new-game {
   gap: 10px;
   font-size: 1.125rem;
   font-weight: 700;
   letter-spacing: -0.025em;
 }
+
 .new-game app-icon {
   --icon-size: 22px;
 }
+
 .confirmation {
   display: grid;
   gap: 8px;
@@ -24,17 +28,20 @@
   background: #161e4be8;
   box-shadow: 0 12px 30px #070d352b;
 }
+
 .confirmation p {
   margin: 0 0 4px;
   color: var(--color-ink);
   font-size: 0.875rem;
   line-height: 1.5;
 }
+
 .confirmation .button {
   min-height: 48px;
   border-radius: 15px;
   font-size: 0.875rem;
 }
+
 @media (max-width: 799px) {
   .new-game-controls .new-game {
     min-height: 54px;

@@ -4,6 +4,7 @@
   block-size: var(--icon-size, 1.5rem);
   flex: 0 0 auto;
 }
+
 svg {
   inline-size: 100%;
   block-size: 100%;

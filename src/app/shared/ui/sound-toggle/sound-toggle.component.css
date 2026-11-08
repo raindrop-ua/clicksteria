@@ -1,6 +1,7 @@
 :host {
   display: block;
 }
+
 .sound-button {
   --sound-button-size: 3.5rem;
   --icon-size: 1.65rem;
@@ -11,6 +12,7 @@
   border-color: #b7caff59;
   background: linear-gradient(145deg, #56629c99, #303568c7);
 }
+
 @media (max-width: 799px) {
   .sound-button {
     --sound-button-size: 2.75rem;

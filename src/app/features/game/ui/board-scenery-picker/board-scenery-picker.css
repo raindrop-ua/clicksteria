@@ -1,10 +1,12 @@
 :host {
   display: block;
 }
+
 .scenery-picker {
   display: grid;
   gap: 1rem;
 }
+
 .scenery-preview {
   position: relative;
   inline-size: 100%;
@@ -15,13 +17,16 @@
   background: #11183a;
   box-shadow: 0 6px 20px #0b103533;
 }
+
 .scenery-preview img {
   object-fit: cover;
   object-position: center 57%;
 }
+
 .scenery-choice {
   min-inline-size: 0;
 }
+
 label {
   display: block;
   margin-block-end: 0.5rem;
@@ -29,9 +34,11 @@ label {
   font-weight: 600;
   color: var(--color-ink);
 }
+
 .scenery-select {
   position: relative;
 }
+
 .scenery-select::after {
   position: absolute;
   inset-block-start: 18px;
@@ -44,6 +51,7 @@ label {
   pointer-events: none;
   content: '';
 }
+
 select {
   display: block;
   inline-size: 100%;
@@ -60,14 +68,17 @@ select {
   font-weight: 600;
   cursor: pointer;
 }
+
 select:hover {
   border-color: #b9ddff;
 }
+
 option,
 optgroup {
   background: #21294f;
   color: #ffffff;
 }
+
 .scenery-help {
   margin-block: 0.7rem 0;
   font-size: 0.875rem;
