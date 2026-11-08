@@ -17,7 +17,9 @@ pnpm build
 
 Open http://localhost:4200. Production output is in `dist/clicksteria`; `pnpm serve:ssr:clicksteria` runs the generated server. Global design tokens, shared controls, and the browser reset live in `src/styles.css`; individual components use adjacent CSS files. No CSS framework or custom PostCSS configuration is needed.
 
-Installing dependencies also activates the Husky pre-commit hook. It runs ESLint and Prettier only on staged files, keeping commits fast while preventing new lint and formatting issues.
+Installing dependencies also activates the Husky pre-commit hook. It runs ESLint, Prettier, and Stylelint only on the relevant staged files, keeping commits fast while preventing new lint and formatting issues.
+
+Run `pnpm lint` to check TypeScript, templates, and CSS, or `pnpm lint:fix` to apply automatic fixes. For CSS alone, use `pnpm lint:css` and `pnpm lint:css:fix`. CSS formatting runs Prettier first to collapse extra blank lines, then Stylelint to require a blank line between rule blocks and before at-rules, including inside `@media`, `@layer`, and `@keyframes`. The first block inside a container has no leading blank line, and comments stay with the block they describe. These same CSS fixes run automatically before commits.
 
 ## Architecture
 
