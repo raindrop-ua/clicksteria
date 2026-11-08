@@ -40,7 +40,7 @@ src/
     features/
       game/
         domain/         Immutable models and pure TypeScript rules
-        data-access/    Signal store: session, history, preview, record
+        data-access/    Signal store, saved sessions, history, preview, record
         ui/             Accessible board and presentational sidebar
         pages/          Feature composition and browser initialization
         game.routes.ts  Lazy game route and SEO metadata
@@ -53,7 +53,7 @@ The router lazy-loads the game route collection and the standalone rules, settin
 
 Inside the game feature, dependencies flow from page/UI → `GameStore` → domain engine. The domain imports no Angular APIs, keeps board transformations immutable, and accepts an injectable random function for deterministic tests. The board receives state and emits user intents; it does not own scoring, history, persistence, or sound. The sidebar is presentational.
 
-`GameStore` is a root singleton, so the current session and undo history survive navigation between Play, Rules, and Settings. It coordinates domain operations with the app-wide record and sound services, while browser-only initialization stays in `afterNextRender` to avoid SSR and hydration mismatches. Sound, board appearance, and record preferences degrade to in-memory behavior when browser storage is unavailable.
+`GameStore` is a root singleton, so the current session and undo history survive navigation between Play, Rules, and Settings. It coordinates domain operations with the app-wide record and sound services and saves the current session in browser storage. Browser-only initialization restores an unfinished saved session or creates a fresh game in `afterNextRender`, avoiding SSR and hydration mismatches. Sessions, sound, board appearance, and record preferences remain usable in memory when browser storage is unavailable.
 
 New routes belong in `app.routes.ts` and should be lazy by default. Keep game-specific state and behavior under `features/game`; put truly app-wide browser concerns in `core`; keep `shared/ui` limited to reusable presentational controls.
 
@@ -93,17 +93,27 @@ Path targets are relative to `tsconfig.json`, so no `baseUrl` is needed. Compone
 - Remaining tiles fall down; empty columns collapse left.
 - A group of `n` tiles awards `n × (n − 1)` points. Clearing the board adds 1,000.
 - No remaining groups ends the game; an empty board is a win.
-- Undo restores the exact prior board and score, up to the start of the current game.
+- Undo restores the exact prior board and score, up to the start of the current game. It remains available after a win or loss in the current tab, until you reload.
 - Hint highlights the largest current group, with no penalty; it does not guarantee a solution.
 - A new game asks for confirmation if moves have been made and the game is still active.
 
-The record is the highest score reached, including before undo. Only the record persists in localStorage (`clicksteria:classic:best:v1`); a reload starts a fresh game. Storage failures gracefully fall back to an in-memory record. Random board creation and storage reads run in `afterNextRender`, avoiding server/client hydration differences.
+The record is the highest score reached, including before undo. It persists separately in localStorage under `clicksteria:classic:best:v1`; appearance and sound preferences keep their existing separate keys.
+
+The current game autosaves as one version 1 snapshot under `clicksteria:classic:session:v1`. It includes the current board's tile IDs and colors, score, move count, and full Undo history. A new game, each successful move, and Undo save immediately. Opening `/play` restores an unfinished saved game automatically after hydration, including after a reload or browser restart. Starting a new game replaces the saved snapshot.
+
+A finished game is not resumed: reloading or reopening after a win or loss creates a fresh 150-block board with zero score and an empty Undo history. The best score remains saved separately. Undo is still available after the game ends in the current tab; using it before reloading returns the game to an unfinished state, which is saved and can resume again.
+
+Invalid or unsupported snapshots are ignored and a fresh game is created. If storage cannot be read or written, the game remains playable in memory, but unsaved changes may not survive a reload. Random board creation and storage reads run in `afterNextRender`, avoiding server/client hydration differences. Saved games stay in this browser; there is no server copy, cloud sync, or account backup.
+
+`GameSessionStorage` isolates browser storage and writes each complete snapshot with one `setItem`. The pure `domain/game-session.ts` decoder validates the version, board dimensions, unique tile IDs, colors, scores, and full history by replaying each transition through the game engine. This keeps malformed saves from entering the store or breaking Undo.
+
+Game progress does not synchronize live across tabs. Each open tab keeps its own in-memory game. Reloading uses the last successful save from any tab: an unfinished game resumes, while a finished game starts a fresh board. This does not change the existing cross-tab synchronization of appearance and sound preferences.
 
 ## Accessibility and verification
 
 Classic and Minimalist show distinct shape symbols by default. The shared **Show block symbols** switch can hide them in both styles; leave it enabled for visual cues beyond color. Descriptive accessible names remain available with symbols on or off. Tab enters/leaves the board; arrow keys move between tiles; Home/End move to the first/last column; Enter/Space plays. A single focusable ARIA grid exposes the current tile through an active descendant, keeping DOM size constant as the board changes. Focus stays on the board after removal, and moves are announced through a live region. Reduced-motion preferences disable falling, jelly landing, and removal animations, including when changed during play.
 
-Unit coverage includes branching adjacency, diagonal exclusion, invalid moves, gravity, empty-column collapse, immutable snapshots, scoring, wins, blocked boards, seeded complete games, undo, hints, and session initialization.
+Unit coverage includes branching adjacency, diagonal exclusion, invalid moves, gravity, empty-column collapse, immutable snapshots, scoring, wins, blocked boards, seeded complete games, undo, hints, session restoration, malformed saves, and unavailable browser storage.
 
 ## Appearance
 
@@ -162,8 +172,8 @@ The speaker button toggles game sounds; the preference is stored as `true` or `f
 
 The service worker is enabled in production builds on HTTPS (or localhost). It registers after application stability, with a 30-second fallback. Test it with `pnpm build` and `NG_ALLOWED_HOSTS=localhost,127.0.0.1 pnpm serve:ssr:clicksteria`, not the default development server. The local production server listens on port 4000 unless `PORT` is set.
 
-`core/pwa/app-update.service.ts` listens for `VERSION_READY` and displays an inline banner above the page only after the new version has downloaded. Checks run after stability, every six hours while visible and online, when returning to the app, and when connectivity returns. Failed checks are retried at the next trigger. An unrecoverable worker state displays a recovery prompt. Nothing reloads automatically: the button reloads the page to load matching shell and lazy bundles. The current game resets on reload; the stored best score remains.
+`core/pwa/app-update.service.ts` listens for `VERSION_READY` and displays an inline banner above the page only after the new version has downloaded. Checks run after stability, every six hours while visible and online, when returning to the app, and when connectivity returns. Failed checks are retried at the next trigger. An unrecoverable worker state displays a recovery prompt. Nothing reloads automatically: the button reloads the page to load matching shell and lazy bundles. An unfinished game resumes from the latest valid save with its Undo history after hydration; a finished game starts fresh. The stored best score and preferences remain. If saving is unavailable, unsaved progress may be lost on reload.
 
 The server caches content-hashed JS/CSS for a year, but requires revalidation of worker scripts, `ngsw.json`, the web manifest, HTML, and unversioned assets. Preserve these headers at the CDN/reverse proxy; do not apply a cache-everything rule to these resources. Deploy each build atomically so the manifest and its referenced assets belong to the same release.
 
-To verify an update, serve production build A, open `/play`, and wait for the service worker to control the page. Keep that tab open, replace the served build with build B containing a source change, and return to the tab (or reconnect). The banner should appear once B is downloaded; clicking **Refresh to update** loads B. Also verify offline reload after the initial cache is populated.
+To verify an update, serve production build A, open `/play`, make a move without finishing the game, and wait for the service worker to control the page. Keep that tab open, replace the served build with build B containing a source change, and return to the tab (or reconnect). The banner should appear once B is downloaded; clicking **Refresh to update** loads B and resumes the unfinished saved board, score, moves, and Undo history. Also verify the same restoration during an offline reload after the initial cache is populated. Reloading a finished game should create a fresh 150-block board with zero score and no Undo, while keeping the best score.

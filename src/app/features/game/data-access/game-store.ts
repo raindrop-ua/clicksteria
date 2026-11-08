@@ -12,11 +12,13 @@ import {
 } from '@features/game/domain/game.engine';
 import { GameState, Position } from '@features/game/domain/game.models';
 import { BlockStyleService } from './block-style.service';
+import { GameSessionStorage } from './game-session-storage';
 
-/** One session survives route changes. The engine owns rules; this service owns history and UI state. */
+/** Active sessions survive reloads. The engine owns rules; this service owns history and UI state. */
 @Service()
 export class GameStore {
   private readonly storage = inject(RecordStorage);
+  private readonly sessions = inject(GameSessionStorage);
   private readonly sound = inject(SoundService);
   private readonly blocks = inject(BlockStyleService);
   private readonly current = signal<GameState | null>(null);
@@ -46,6 +48,17 @@ export class GameStore {
   initialize(): void {
     if (this.current()) return;
     this.best.set(this.storage.read());
+    const saved = this.sessions.read();
+    if (saved) {
+      this.updateRecord(saved.current.score);
+      if (getStatus(saved.current.board) === 'playing') {
+        this.current.set(saved.current);
+        this.history.set(saved.history);
+        this.selection.set(null);
+        this.message.set('Saved game restored. Continue where you left off.');
+        return;
+      }
+    }
     this.newGame();
   }
   newGame(): void {
@@ -53,6 +66,7 @@ export class GameStore {
     this.history.set([]);
     this.selection.set(null);
     this.message.set('New game. Find a group of matching blocks.');
+    this.saveSession();
   }
   preview(position: Position | null): void {
     this.selection.set(position);
@@ -70,13 +84,11 @@ export class GameStore {
     this.history.update((history) => [...history, previous]);
     this.current.set(next);
     this.selection.set(null);
+    this.saveSession();
     const removed = countTiles(previous.board) - countTiles(next.board);
     this.sound.playGroup(removed, soundStyle);
     this.message.set(`Blocks removed: ${removed}. +${next.score - previous.score} points.`);
-    if (next.score > this.best()) {
-      this.best.set(next.score);
-      this.storage.write(next.score);
-    }
+    this.updateRecord(next.score);
   }
   undo(): void {
     const previous = this.history().at(-1);
@@ -85,6 +97,7 @@ export class GameStore {
     this.history.update((history) => history.slice(0, -1));
     this.selection.set(null);
     this.message.set('Last move undone.');
+    this.saveSession();
   }
   hint(): void {
     const group = findLargestGroup(this.board());
@@ -94,5 +107,16 @@ export class GameStore {
         ? `Hint: a group of ${group.length} blocks worth ${groupScore(group.length)} points.`
         : 'No moves left.',
     );
+  }
+
+  private saveSession(): void {
+    const current = this.current();
+    if (current) this.sessions.write({ version: 1, current, history: this.history() });
+  }
+
+  private updateRecord(score: number): void {
+    if (score <= this.best()) return;
+    this.best.set(score);
+    this.storage.write(score);
   }
 }
