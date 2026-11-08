@@ -3,7 +3,7 @@ export const BLOCK_STYLES = [
   {
     id: 'minimal',
     label: 'Minimalist',
-    description: 'Original bright blocks with matching shapes.',
+    description: 'Simple blocks with matching shapes and the classic color palette.',
   },
 ] as const;
 

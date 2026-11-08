@@ -36,5 +36,9 @@ export function drawSymbol(context: CanvasRenderingContext2D, color: TileColor):
       context.closePath();
       break;
   }
+  context.fillStyle = '#ffffffad';
   context.fill();
+  context.strokeStyle = '#00000080';
+  context.lineWidth = 1.25;
+  context.stroke();
 }

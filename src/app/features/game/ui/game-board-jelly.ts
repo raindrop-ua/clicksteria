@@ -1,14 +1,6 @@
 import { TileColor } from '@features/game/domain/game.models';
 import { drawSymbol } from './game-board-symbol';
-
-/** The candy colors and lighting are shared with the native iOS field. */
-const PALETTE: Record<TileColor, { fill: string; highlight: string; depth: string }> = {
-  coral: { fill: '#ff4936', highlight: '#ff8c78', depth: '#e92b23' },
-  amber: { fill: '#f4c23b', highlight: '#ffdd7a', depth: '#eaa221' },
-  cyan: { fill: '#2477ff', highlight: '#56c4ff', depth: '#163af3' },
-  violet: { fill: '#ab20f5', highlight: '#d66aff', depth: '#7907db' },
-  green: { fill: '#58c443', highlight: '#93e075', depth: '#329f2e' },
-};
+import { BLOCK_PALETTE } from './block-palette';
 
 interface SpriteCache {
   readonly width: number;
@@ -97,7 +89,7 @@ function drawArtwork(
   showSymbols: boolean,
 ): void {
   const { x, y, width, height, radius, side, shadow } = jellyGeometry(cellWidth, cellHeight);
-  const palette = PALETTE[color];
+  const palette = BLOCK_PALETTE[color];
   context.beginPath();
   context.roundRect(x, y + shadow, width, height, radius);
   context.fillStyle = '#0000003d';
@@ -157,11 +149,7 @@ function drawArtwork(
     context.save();
     context.translate(x + (width - symbolSize) / 2, y + (height - symbolSize) / 2);
     context.scale(symbolSize / 24, symbolSize / 24);
-    context.fillStyle = '#ffffffad';
     drawSymbol(context, color);
-    context.strokeStyle = '#00000080';
-    context.lineWidth = 1.25;
-    context.stroke();
     context.restore();
   }
 }

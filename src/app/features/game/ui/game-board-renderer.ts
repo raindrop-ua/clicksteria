@@ -2,6 +2,7 @@ import { Board, GAME_CONFIG, Position, TileColor } from '@features/game/domain/g
 import { BlockStyle } from '@features/game/domain/block-style';
 import { drawJelly, jellyGeometry } from './game-board-jelly';
 import { drawSymbol } from './game-board-symbol';
+import { BLOCK_PALETTE } from './block-palette';
 
 /** Positions may be fractional while surviving tiles settle after a move. */
 export interface RenderTile extends Position {
@@ -12,19 +13,11 @@ export interface RenderTile extends Position {
   readonly opacity?: number;
 }
 
-const PALETTE: Record<TileColor, { tile: string; symbol: string }> = {
-  coral: { tile: '#ff6578', symbol: '#ad213a' },
-  amber: { tile: '#ffc647', symbol: '#805000' },
-  cyan: { tile: '#36c4ee', symbol: '#005f89' },
-  violet: { tile: '#a174ff', symbol: '#441993' },
-  green: { tile: '#5bd97a', symbol: '#146a2d' },
-};
-
 const HIGHLIGHT_PALETTE = varyPalette(1.17);
 const DIMMED_PALETTE = varyPalette(0.92);
 const NO_HIGHLIGHTS: ReadonlySet<number> = new Set();
 
-function varyPalette(brightness: number): typeof PALETTE {
+function varyPalette(brightness: number): typeof BLOCK_PALETTE {
   const adjust = (hex: string): string =>
     `rgb(${[1, 3, 5]
       .map((start) =>
@@ -32,11 +25,11 @@ function varyPalette(brightness: number): typeof PALETTE {
       )
       .join(' ')})`;
   return Object.fromEntries(
-    Object.entries(PALETTE).map(([color, values]) => [
+    Object.entries(BLOCK_PALETTE).map(([color, values]) => [
       color,
-      { tile: adjust(values.tile), symbol: adjust(values.symbol) },
+      { ...values, fill: adjust(values.fill) },
     ]),
-  ) as typeof PALETTE;
+  ) as typeof BLOCK_PALETTE;
 }
 
 /** Draw in backing-store pixels so resting tile edges never land between pixels. */
@@ -77,7 +70,7 @@ export function renderBoard(
       ? HIGHLIGHT_PALETTE[tile.color]
       : highlighted.size && dimOthers
         ? DIMMED_PALETTE[tile.color]
-        : PALETTE[tile.color];
+        : BLOCK_PALETTE[tile.color];
 
     context.beginPath();
     context.roundRect(left, top, tileWidth, tileHeight, radius);
@@ -91,7 +84,7 @@ export function renderBoard(
     const innerRadius = Math.max(0, radius - border);
     context.beginPath();
     context.roundRect(x, y, innerWidth, innerHeight, innerRadius);
-    context.fillStyle = palette.tile;
+    context.fillStyle = palette.fill;
     context.fill();
 
     const bevel = context.createLinearGradient(0, y, 0, y + innerHeight);
@@ -122,7 +115,6 @@ export function renderBoard(
       const symbolSize = innerWidth * 0.51;
       context.translate(left + (tileWidth - symbolSize) / 2, top + (tileHeight - symbolSize) / 2);
       context.scale(symbolSize / 24, symbolSize / 24);
-      context.fillStyle = palette.symbol;
       drawSymbol(context, tile.color);
       context.restore();
     }

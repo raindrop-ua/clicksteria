@@ -108,12 +108,12 @@ describe('Game board artwork and sprite caching', () => {
 
   afterEach(() => vi.restoreAllMocks());
 
-  it('keeps the original classic border, face, bevel and circle in the renamed minimal style', () => {
+  it('keeps the minimal border, bevel and circle with the shared tile palette', () => {
     renderBoard(context, 360, 540, [tiles[0]], new Set(), null, 'minimal');
 
     expect(paintings.get(context)).toEqual([
       { path: [['roundRect', 0, 504, 36, 36, 7]], fill: '#121a37' },
-      { path: [['roundRect', 2, 506, 32, 32, 5]], fill: '#ff6578' },
+      { path: [['roundRect', 2, 506, 32, 32, 5]], fill: '#ff4936' },
       {
         path: [['roundRect', 2, 506, 32, 32, 5]],
         fill: {
@@ -126,7 +126,7 @@ describe('Game board artwork and sprite caching', () => {
           addColorStop: expect.any(Function),
         },
       },
-      { path: [['arc', 12, 12, 6, 0, Math.PI * 2]], fill: '#ad213a' },
+      { path: [['arc', 12, 12, 6, 0, Math.PI * 2]], fill: '#ffffffad' },
     ]);
     expect(contexts).toHaveLength(1);
   });
@@ -134,13 +134,7 @@ describe('Game board artwork and sprite caching', () => {
   it('retains five distinct shape cues in minimal and in the cached jelly artwork', () => {
     renderBoard(context, 360, 540, tiles, new Set(), null, 'minimal');
     const minimalSymbols = paintings.get(context)!.filter((_, index) => index % 4 === 3);
-    expect(minimalSymbols.map((shape) => shape.fill)).toEqual([
-      '#ad213a',
-      '#805000',
-      '#005f89',
-      '#441993',
-      '#146a2d',
-    ]);
+    expect(minimalSymbols.map((shape) => shape.fill)).toEqual(colors.map(() => '#ffffffad'));
     expect(new Set(minimalSymbols.map((shape) => JSON.stringify(shape.path))).size).toBe(5);
 
     draw();

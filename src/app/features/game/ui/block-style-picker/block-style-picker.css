@@ -109,24 +109,22 @@ legend {
 }
 
 .coral {
-  --block-color: #ff6578;
-  --symbol-color: #ad213a;
+  --block-color: #ff4936;
 }
 
 .cyan {
-  --block-color: #36c4ee;
-  --symbol-color: #005f89;
+  --block-color: #2477ff;
 }
 
 .green {
-  --block-color: #5bd97a;
-  --symbol-color: #146a2d;
+  --block-color: #58c443;
 }
 
 .preview-block::after {
   position: absolute;
   inset: 29%;
-  background: var(--symbol-color);
+  background: #ffffffad;
+  filter: drop-shadow(0 0 1px #00000080);
   content: '';
 }
 
@@ -184,7 +182,6 @@ legend {
 
 .preview-classic .preview-block::after {
   inset: 34%;
-  background: #ffffffad;
 }
 
 .preview-no-symbols .preview-block::after {
