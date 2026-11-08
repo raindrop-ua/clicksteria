@@ -9,6 +9,7 @@ import { findLargestGroup } from '@features/game/domain/game.engine';
 
 describe('Settings navigation', () => {
   beforeEach(() => {
+    localStorage.removeItem('clicksteria:classic:session:v1');
     localStorage.removeItem('clicksteria.scenery');
     localStorage.removeItem('clicksteria.block-style');
     localStorage.removeItem('clicksteria.dim-others');
@@ -28,6 +29,7 @@ describe('Settings navigation', () => {
     TestBed.resetTestingModule();
     vi.restoreAllMocks();
     vi.unstubAllGlobals();
+    localStorage.removeItem('clicksteria:classic:session:v1');
     localStorage.removeItem('clicksteria.scenery');
     localStorage.removeItem('clicksteria.block-style');
     localStorage.removeItem('clicksteria.dim-others');

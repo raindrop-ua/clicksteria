@@ -147,7 +147,7 @@ describe('App updates', () => {
     fixture.detectChanges();
     const element = fixture.nativeElement as HTMLElement;
     expect(element.querySelector('[aria-live="polite"]')).toBeTruthy();
-    expect(element.textContent).toContain('Refreshing starts a new game');
+    expect(element.textContent).toContain('Unfinished games resume from the latest save.');
     expect(reload).not.toHaveBeenCalled();
     element.querySelector('button')?.click();
     expect(reload).toHaveBeenCalledTimes(1);

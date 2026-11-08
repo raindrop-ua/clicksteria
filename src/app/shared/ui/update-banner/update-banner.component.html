@@ -8,10 +8,10 @@
         <p>
           {{
             notice === 'ready'
-              ? 'Finish your game, then refresh to update. Refreshing starts a new game.'
-              : 'Clicksteria needs to reload to keep working. This starts a new game.'
+              ? 'Refresh to get the latest version.'
+              : 'Reload Clicksteria to keep playing.'
           }}
-          Your best score is saved.
+          Unfinished games resume from the latest save.
         </p>
       </div>
       <button type="button" class="button button-primary" (click)="updates.reload()">
