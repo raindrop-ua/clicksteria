@@ -4,6 +4,7 @@
   border-block-end: 1px solid #abbfff26;
   background: linear-gradient(120deg, #15234bc7, #222354ab);
 }
+
 .site-header {
   display: flex;
   inline-size: min(100%, 96rem);
@@ -13,6 +14,7 @@
   margin-inline: auto;
   padding-inline: clamp(1rem, 3.2vw, 3rem);
 }
+
 .brand {
   display: inline-flex;
   min-block-size: 4.5rem;
@@ -23,16 +25,19 @@
   letter-spacing: -0.045em;
   line-height: 1;
 }
+
 .brand img {
   inline-size: 4.25rem;
   block-size: 4.25rem;
   object-fit: contain;
 }
+
 nav {
   display: flex;
   align-items: center;
   gap: 0.65rem;
 }
+
 nav a {
   display: inline-flex;
   min-block-size: 2.9rem;
@@ -48,10 +53,12 @@ nav a {
     background 180ms ease,
     color 180ms ease;
 }
+
 nav a:hover {
   background: #a1b7ff17;
   color: #ffffff;
 }
+
 nav a.nav-active {
   border-color: #bbcdff70;
   background: linear-gradient(145deg, #7d75fc, #4148db 65%, #7953e4);
@@ -60,9 +67,11 @@ nav a.nav-active {
     0 4px 15px #13133e33;
   color: #ffffff;
 }
+
 app-sound-toggle {
   margin-inline-start: auto;
 }
+
 @media (max-width: 799px) {
   .site-header {
     display: grid;
@@ -71,25 +80,30 @@ app-sound-toggle {
     min-block-size: 7rem;
     padding-block: 0.5rem;
   }
+
   .brand {
     min-block-size: 2.75rem;
     font-size: 1.7rem;
   }
+
   .brand img {
     inline-size: 2.75rem;
     block-size: 2.75rem;
   }
+
   nav {
     grid-row: 2;
     grid-column: 1 / -1;
     justify-content: center;
     gap: 0.5rem;
   }
+
   nav a {
     min-block-size: 2.5rem;
     padding: 0.45rem 1.3rem;
     font-size: 1rem;
   }
+
   app-sound-toggle {
     grid-column: 2;
     grid-row: 1;

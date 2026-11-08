@@ -1,6 +1,7 @@
 :host {
   display: block;
 }
+
 .board {
   position: relative;
   width: 100%;
@@ -18,6 +19,7 @@
   user-select: none;
   -webkit-tap-highlight-color: transparent;
 }
+
 .board-canvas {
   position: absolute;
   inset: 0;

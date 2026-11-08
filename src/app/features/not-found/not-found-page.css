@@ -1,11 +1,13 @@
 :host {
   display: block;
 }
+
 .not-found-page {
   display: grid;
   min-height: min(70dvh, 700px);
   place-items: center;
 }
+
 .not-found-panel {
   display: flex;
   width: min(100%, 570px);
@@ -15,6 +17,7 @@
   border-radius: 30px;
   text-align: center;
 }
+
 img {
   display: block;
   width: clamp(128px, 20vw, 176px);
@@ -22,6 +25,7 @@ img {
   margin-bottom: 1.5rem;
   filter: drop-shadow(0 10px 16px #080c3470);
 }
+
 .error-code {
   margin: 0 0 0.75rem;
   color: var(--color-accent);
@@ -29,6 +33,7 @@ img {
   font-weight: 600;
   letter-spacing: 0.06em;
 }
+
 h1 {
   margin: 0;
   color: var(--color-ink);
@@ -37,12 +42,14 @@ h1 {
   letter-spacing: -0.04em;
   line-height: 1.15;
 }
+
 .not-found-copy {
   max-width: 33ch;
   margin: 1rem 0 1.75rem;
   color: var(--color-muted);
   line-height: 1.75;
 }
+
 .button {
   min-width: min(100%, 240px);
 }

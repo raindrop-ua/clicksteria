@@ -2,6 +2,7 @@
   display: block;
   flex: 0 0 auto;
 }
+
 footer {
   display: flex;
   inline-size: min(100%, 96rem);
@@ -16,21 +17,25 @@ footer {
   font-size: 0.9rem;
   line-height: 1.4;
 }
+
 nav {
   display: flex;
   gap: 1.5rem;
 }
+
 a {
   display: inline-flex;
   min-block-size: 2.75rem;
   align-items: center;
   text-underline-offset: 0.25em;
 }
+
 a:hover,
 .legal-active {
   color: #ffffff;
   text-decoration: underline;
 }
+
 @media (max-width: 599px) {
   footer {
     flex-direction: column;

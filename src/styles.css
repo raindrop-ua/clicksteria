@@ -6,6 +6,7 @@
   *::after {
     box-sizing: border-box;
   }
+
   body,
   h1,
   h2,
@@ -17,33 +18,40 @@
   dd {
     margin: 0;
   }
+
   button,
   input,
   select,
   textarea {
     font: inherit;
   }
+
   button,
   a,
   input,
   select {
     -webkit-tap-highlight-color: transparent;
   }
+
   button {
     color: inherit;
   }
+
   a {
     color: inherit;
     text-decoration: none;
   }
+
   img,
   svg,
   canvas {
     display: block;
   }
+
   img {
     max-inline-size: 100%;
   }
+
   [hidden] {
     display: none !important;
   }
@@ -82,32 +90,39 @@
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
   }
+
   body {
     min-block-size: 100svh;
     overflow-x: clip;
   }
+
   button:not(:disabled),
   select,
   input[type='checkbox'],
   a {
     cursor: pointer;
   }
+
   button:disabled {
     cursor: not-allowed;
   }
+
   :focus-visible {
     outline: 3px solid #d9f3ff;
     outline-offset: 5px;
   }
+
   ::selection {
     background: var(--color-selection);
     color: #ffffff;
   }
+
   h1,
   h2,
   h3 {
     text-wrap: balance;
   }
+
   noscript {
     display: block;
     padding: 1rem;
@@ -127,6 +142,7 @@
     white-space: nowrap;
     border: 0;
   }
+
   .surface {
     border: 1px solid var(--color-line);
     border-radius: var(--radius-panel);
@@ -136,6 +152,7 @@
       var(--shadow-panel);
     backdrop-filter: blur(12px);
   }
+
   .button,
   .icon-button {
     position: relative;
@@ -163,6 +180,7 @@
       box-shadow 180ms ease,
       transform 180ms var(--ease-out);
   }
+
   .button-primary {
     border-color: #a7e8ffbd;
     background: linear-gradient(112deg, #169bd4, #3560ed 45%, #9638e9);
@@ -173,6 +191,7 @@
     color: #ffffff;
     font-weight: 700;
   }
+
   .button:hover:not(:disabled),
   .icon-button:hover:not(:disabled) {
     border-color: #d7e4ffbf;
@@ -181,16 +200,19 @@
       0 7px 24px #0a103352;
     transform: translateY(-2px);
   }
+
   .button-primary:hover:not(:disabled) {
     background: linear-gradient(112deg, #168fc9, #4768f4 45%, #a049f3);
     box-shadow:
       inset 0 1px 0 #ffffff70,
       0 8px 28px #463fd561;
   }
+
   .button:active:not(:disabled),
   .icon-button:active:not(:disabled) {
     transform: translateY(0) scale(0.98);
   }
+
   .button:disabled,
   .icon-button:disabled {
     border-color: #abbce333;
@@ -199,68 +221,82 @@
     box-shadow: none;
     text-shadow: none;
   }
+
   .icon-button {
     inline-size: 3.25rem;
     flex: 0 0 auto;
     padding: 0.75rem;
     border-radius: 50%;
   }
+
   .content-page {
     inline-size: min(100%, 70rem);
     margin-inline: auto;
     padding-block: 1.25rem 2rem;
   }
+
   .content-heading {
     margin-block-end: 1.75rem;
     text-align: center;
   }
+
   .content-heading h1 {
     font-size: clamp(2.25rem, 5vw, 3.75rem);
     font-weight: 800;
     line-height: 1.08;
     letter-spacing: -0.04em;
   }
+
   .content-heading > p {
     margin-block-start: 0.6rem;
     color: var(--color-muted);
     font-size: clamp(1.0625rem, 2.5vw, 1.25rem);
     line-height: 1.6;
   }
+
   .prose {
     color: var(--color-muted);
     font-size: 1.0625rem;
     line-height: 1.8;
   }
+
   .prose > * + * {
     margin-block-start: 1.1rem;
   }
+
   .prose h2,
   .prose h3,
   .prose strong {
     color: var(--color-ink);
   }
+
   .prose h2 {
     margin-block-start: 2rem;
     font-size: 1.45rem;
     font-weight: 700;
     line-height: 1.3;
   }
+
   .prose h3 {
     font-size: 1.2rem;
     line-height: 1.4;
   }
+
   .prose ul,
   .prose ol {
     padding-inline-start: 1.4rem;
   }
+
   .prose li + li {
     margin-block-start: 0.45rem;
   }
+
   .prose a {
     color: #d4edff;
     text-decoration: underline;
     text-underline-offset: 0.2em;
   }
+
   .prose code {
     padding: 0.15em 0.35em;
     border: 1px solid var(--color-line);
@@ -283,6 +319,7 @@
   ::view-transition-new(root) {
     animation: none;
   }
+
   *,
   *::before,
   *::after {
