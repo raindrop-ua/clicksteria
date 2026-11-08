@@ -2,16 +2,17 @@
   display: block;
 }
 .sound-button {
+  --sound-button-size: 3.5rem;
   --icon-size: 1.65rem;
-  inline-size: 3.5rem;
-  min-block-size: 3.5rem;
+  inline-size: var(--sound-button-size);
+  block-size: var(--sound-button-size);
+  min-block-size: var(--sound-button-size);
+  padding: 0;
   border-color: #b7caff59;
   background: linear-gradient(145deg, #56629c99, #303568c7);
 }
 @media (max-width: 799px) {
   .sound-button {
-    inline-size: 2.75rem;
-    min-block-size: 2.75rem;
-    padding: 0.65rem;
+    --sound-button-size: 2.75rem;
   }
 }
