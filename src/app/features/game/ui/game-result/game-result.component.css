@@ -12,14 +12,34 @@
   padding: 24px;
   border: 1px solid #d5d6ff40;
   border-radius: 16px;
-  background: linear-gradient(155deg, #373469f2, #151e45f5);
+  background: linear-gradient(155deg, rgb(55 52 105 / 50%), rgb(21 30 69 / 50%));
   color: var(--color-ink);
   text-align: center;
-  backdrop-filter: blur(14px);
+  animation: result-reveal 360ms ease-out both;
 }
 .result-content {
   width: 100%;
   outline: none;
+  text-shadow:
+    0 1px 2px #080d2b,
+    0 0 8px #080d2b;
+  animation: result-content-enter 360ms var(--ease-out) both;
+}
+@keyframes result-reveal {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes result-content-enter {
+  from {
+    transform: translateY(16px);
+  }
+  to {
+    transform: translateY(0);
+  }
 }
 .result-eyebrow {
   margin: 0 0 12px;
