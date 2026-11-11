@@ -6,6 +6,7 @@ import { SoundService } from '@core/audio/sound.service';
 import { GameStore } from '@features/game/data-access/game-store';
 import { GameBoard } from '@features/game/ui/game-board';
 import { findLargestGroup } from '@features/game/domain/game.engine';
+import { BLOCK_STYLES } from '@features/game/domain/block-style';
 
 describe('Settings navigation', () => {
   beforeEach(() => {
@@ -103,9 +104,9 @@ describe('Settings navigation', () => {
     expect(game.state()).toBe(opening);
   });
 
-  it.each(['classic', 'minimal'] as const)(
-    'applies and restores the symbol preference in %s without changing the game or undo history',
-    async (style) => {
+  it.each(BLOCK_STYLES)(
+    'applies and restores symbols in $label without changing the game or undo history',
+    async ({ id: style, label: styleLabel }) => {
       const harness = await RouterTestingHarness.create('/play');
       await harness.fixture.whenStable();
       const game = TestBed.inject(GameStore);
@@ -116,7 +117,6 @@ describe('Settings navigation', () => {
       await harness.navigateByUrl('/settings');
       await harness.fixture.whenStable();
       const settings = harness.routeNativeElement!;
-      const styleLabel = style === 'classic' ? 'Classic' : 'Minimalist';
       const choice = Array.from(settings.querySelectorAll('button')).find(
         (button) => button.textContent?.trim() === styleLabel,
       )!;
@@ -126,7 +126,7 @@ describe('Settings navigation', () => {
       symbols.click();
       await harness.fixture.whenStable();
       expect(localStorage.getItem('clicksteria.show-symbols')).toBe('false');
-      expect(settings.querySelectorAll('.preview-no-symbols')).toHaveLength(2);
+      expect(settings.querySelectorAll('.preview-no-symbols')).toHaveLength(BLOCK_STYLES.length);
 
       await harness.navigateByUrl('/play');
       await harness.fixture.whenStable();

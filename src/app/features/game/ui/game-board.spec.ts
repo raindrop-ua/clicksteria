@@ -123,7 +123,7 @@ describe('Canvas game board', () => {
     expect(activated).not.toHaveBeenCalled();
   });
 
-  it.each(['minimal'] as const)(
+  it.each(['minimal', 'spectrum'] as const)(
     'redraws %s blocks without replacing the board or losing keyboard selection',
     async (style) => {
       const update = vi.spyOn(GameBoardCanvas.prototype, 'update');

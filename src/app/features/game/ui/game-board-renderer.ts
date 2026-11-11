@@ -3,6 +3,7 @@ import { BlockStyle } from '@features/game/domain/block-style';
 import { drawJelly, jellyGeometry } from './game-board-jelly';
 import { drawSymbol } from './game-board-symbol';
 import { BLOCK_PALETTE } from './block-palette';
+import { drawSpectrumBoard } from './game-board-spectrum';
 
 /** Positions may be fractional while surviving tiles settle after a move. */
 export interface RenderTile extends Position {
@@ -46,6 +47,19 @@ export function renderBoard(
   showSymbols = true,
 ): void {
   context.clearRect(0, 0, width, height);
+  if (style === 'spectrum') {
+    drawSpectrumBoard(
+      context,
+      width,
+      height,
+      tiles,
+      highlighted,
+      focusedId,
+      dimOthers,
+      showSymbols,
+    );
+    return;
+  }
   if (style === 'classic') {
     for (const tile of tiles) {
       drawCandy(context, width, height, tile, highlighted, focusedId, dimOthers, showSymbols);

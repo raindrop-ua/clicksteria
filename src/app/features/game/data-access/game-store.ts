@@ -1,5 +1,6 @@
 import { computed, inject, Service, signal } from '@angular/core';
 import { SoundService } from '@core/audio/sound.service';
+import { GameSoundStyle } from '@core/audio/game-sounds';
 import { RecordStorage } from '@core/services/record-storage';
 import {
   countTiles,
@@ -11,8 +12,15 @@ import {
   removeGroup,
 } from '@features/game/domain/game.engine';
 import { GameState, Position } from '@features/game/domain/game.models';
+import { BlockStyle } from '@features/game/domain/block-style';
 import { BlockStyleService } from './block-style.service';
 import { GameSessionStorage } from './game-session-storage';
+
+const SOUND_STYLES: Record<BlockStyle, GameSoundStyle> = {
+  classic: 'bubbles',
+  minimal: 'clicks',
+  spectrum: 'spectrum',
+};
 
 /** Active sessions survive reloads. The engine owns rules; this service owns history and UI state. */
 @Service()
@@ -74,7 +82,7 @@ export class GameStore {
   play(position: Position): void {
     const previous = this.current();
     if (!previous) return;
-    const soundStyle = this.blocks.style() === 'minimal' ? 'clicks' : 'bubbles';
+    const soundStyle = SOUND_STYLES[this.blocks.style()];
     const next = removeGroup(previous, position);
     if (next === previous) {
       if (previous.board[position.column]?.[position.row]) this.sound.playSingle(soundStyle);
