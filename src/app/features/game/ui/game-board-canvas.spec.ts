@@ -88,33 +88,39 @@ describe('Game board canvas lifecycle and motion', () => {
     vi.unstubAllGlobals();
   });
 
-  it('coalesces updates, preserves the minimal 180ms fall, and stops while idle', () => {
-    surface.update(opening, new Set(), null, 'minimal');
-    surface.update(opening, new Set([0, 1]), 0, 'minimal');
-    expect(frames.size).toBe(1);
-    drawAt(0);
-    expect(renderer).toHaveBeenCalledOnce();
-    expect(frames.size).toBe(0);
-    surface.update(settled, new Set(), null, 'minimal');
-    drawAt(45);
-    expect(drawing().tiles[0].row).toBeCloseTo(2 * (1 - 0.25) ** 3);
-    expect(drawing().tiles[0].scaleX).toBeUndefined();
-    expect(drawing().departing).toEqual([]);
-    expect(frames.size).toBe(1);
-    drawAt(180);
-    expect(drawing().tiles[0].row).toBe(0);
-    expect(frames.size).toBe(0);
-    expect(renderer).toHaveBeenCalledTimes(3);
-  });
-  it('activates a minimal falling tile at its visible position using current board coordinates', () => {
-    surface.update(opening, new Set(), null, 'minimal');
-    drawAt(0);
-    surface.update(settled, new Set(), null, 'minimal');
-    drawAt(45);
-    expect(surface.hitTest(18, 490, 360, 540)).toEqual({ column: 0, row: 0 });
-    expect(surface.hitTest(18, 535, 360, 540)).toBeNull();
-    expect(surface.hitTest(360, 490, 360, 540)).toBeNull();
-  });
+  it.each(['minimal', 'spectrum'] as const)(
+    'preserves the %s 180ms fall and stops while idle',
+    (style) => {
+      surface.update(opening, new Set(), null, style);
+      surface.update(opening, new Set([0, 1]), 0, style);
+      expect(frames.size).toBe(1);
+      drawAt(0);
+      expect(renderer).toHaveBeenCalledOnce();
+      expect(frames.size).toBe(0);
+      surface.update(settled, new Set(), null, style);
+      drawAt(45);
+      expect(drawing().tiles[0].row).toBeCloseTo(2 * (1 - 0.25) ** 3);
+      expect(drawing().tiles[0].scaleX).toBeUndefined();
+      expect(drawing().departing).toEqual([]);
+      expect(frames.size).toBe(1);
+      drawAt(180);
+      expect(drawing().tiles[0].row).toBe(0);
+      expect(frames.size).toBe(0);
+      expect(renderer).toHaveBeenCalledTimes(3);
+    },
+  );
+  it.each(['minimal', 'spectrum'] as const)(
+    'hit-tests a falling %s tile at its visible position',
+    (style) => {
+      surface.update(opening, new Set(), null, style);
+      drawAt(0);
+      surface.update(settled, new Set(), null, style);
+      drawAt(45);
+      expect(surface.hitTest(18, 490, 360, 540)).toEqual({ column: 0, row: 0 });
+      expect(surface.hitTest(18, 535, 360, 540)).toBeNull();
+      expect(surface.hitTest(360, 490, 360, 540)).toBeNull();
+    },
+  );
   it.each(BLOCK_STYLES)(
     'forwards $id selection, keyboard focus, and dimming independently of board state',
     ({ id }) => {
@@ -155,7 +161,7 @@ describe('Game board canvas lifecycle and motion', () => {
 
       drawAt(150);
       const expectedRow =
-        id === 'minimal'
+        id !== 'classic'
           ? 2 * (1 - 150 / 180) ** 3
           : 2 - 2 * (125 / (115 + 45 * Math.sqrt(2))) ** 2;
       expect(drawing().tiles[0].row).toBeCloseTo(expectedRow);

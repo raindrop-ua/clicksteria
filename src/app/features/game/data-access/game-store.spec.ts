@@ -240,6 +240,7 @@ describe('GameStore', () => {
     const group = findLargestGroup(game.board());
     for (const [style, audio] of [
       ['minimal', 'clicks'],
+      ['spectrum', 'spectrum'],
       ['classic', 'bubbles'],
       ['minimal', 'clicks'],
     ] as const) {
@@ -250,11 +251,12 @@ describe('GameStore', () => {
       game.undo();
       expect(game.state()).toBe(opening);
     }
-    expect(sound.playGroup).toHaveBeenCalledTimes(3);
+    expect(sound.playGroup).toHaveBeenCalledTimes(4);
   });
   it.each([
     ['classic', 'bubbles'],
     ['minimal', 'clicks'],
+    ['spectrum', 'spectrum'],
   ] as const)(
     'plays the quiet %s singleton effect only for an existing isolated block',
     (style, audio) => {

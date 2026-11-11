@@ -84,10 +84,10 @@ describe('SoundService', () => {
     vi.unstubAllGlobals();
     localStorage.removeItem('clicksteria.sound');
   });
-  it('prefetches both ten-file styles silently, then decodes once and reuses one context', async () => {
+  it('prefetches all three ten-file styles silently, then decodes once and reuses one context', async () => {
     const { service } = await setup();
     expect(service.enabled()).toBe(true);
-    expect(fetchSample).toHaveBeenCalledTimes(20);
+    expect(fetchSample).toHaveBeenCalledTimes(30);
     expect(audio.constructor).not.toHaveBeenCalled();
     expect(audio.context.decodeAudioData).not.toHaveBeenCalled();
     service.playGroup(2);
@@ -95,8 +95,8 @@ describe('SoundService', () => {
     service.playGroup(5);
     await flush();
     expect(audio.constructor).toHaveBeenCalledTimes(1);
-    expect(audio.context.decodeAudioData).toHaveBeenCalledTimes(20);
-    expect(fetchSample).toHaveBeenCalledTimes(20);
+    expect(audio.context.decodeAudioData).toHaveBeenCalledTimes(30);
+    expect(fetchSample).toHaveBeenCalledTimes(30);
     expect(audio.context.createBufferSource).toHaveBeenCalledTimes(2);
     expect(audio.sources[0].stop).not.toHaveBeenCalled();
     expect(audio.gains[0].gain.setValueAtTime).toHaveBeenCalledWith(0.34, 0);
@@ -149,9 +149,15 @@ describe('SoundService', () => {
     await flush();
     service.playSingle('bubbles');
     await flush();
+    service.playGroup(2, 'spectrum');
+    await flush();
+    service.playSingle('spectrum');
+    await flush();
     service.playGroup(2, 'bubbles');
     await flush();
     service.playGroup(2, 'clicks');
+    await flush();
+    service.playGroup(2, 'spectrum');
     await flush();
     expect(audio.sources.map((source) => source.buffer?.length)).toEqual(
       [
@@ -159,14 +165,19 @@ describe('SoundService', () => {
         '/audio/pop-small-1.wav',
         '/audio/single-block.wav',
         '/audio/bubble-single-block.wav',
+        '/audio/spectrum-pop-small-1.wav',
+        '/audio/spectrum-single-block.wav',
         '/audio/bubble-pop-small-2.wav',
         '/audio/pop-small-2.wav',
+        '/audio/spectrum-pop-small-2.wav',
       ].map(sampleId),
     );
     expect(audio.constructor).toHaveBeenCalledOnce();
-    expect(audio.context.decodeAudioData).toHaveBeenCalledTimes(20);
-    expect(fetchSample).toHaveBeenCalledTimes(20);
+    expect(audio.context.decodeAudioData).toHaveBeenCalledTimes(30);
+    expect(fetchSample).toHaveBeenCalledTimes(30);
     expect(audio.sources.every((source) => source.stop.mock.calls.length === 0)).toBe(true);
+    expect(audio.gains[4].gain.setValueAtTime).toHaveBeenCalledWith(0.22, 0);
+    expect(audio.gains[5].gain.setValueAtTime).toHaveBeenCalledWith(0.16, 0);
   });
   it('persists mute, updates the toggle, and restores it without fetching or creating audio', async () => {
     const { service, fixture } = await setup();
@@ -186,21 +197,24 @@ describe('SoundService', () => {
     expect(fetchSample).not.toHaveBeenCalled();
     restored.service.toggle();
     expect(localStorage.getItem('clicksteria.sound')).toBe('true');
-    expect(fetchSample).toHaveBeenCalledTimes(20);
+    expect(fetchSample).toHaveBeenCalledTimes(30);
   });
-  it('discards delayed playback when muted while resuming, even if unmuted again', async () => {
-    const resume = deferred<void>();
-    audio.context.state = 'suspended';
-    audio.context.resume.mockReturnValue(resume.promise);
-    const { service } = await setup();
-    service.playSingle();
-    service.toggle();
-    service.toggle();
-    audio.context.state = 'running';
-    resume.resolve();
-    await flush();
-    expect(audio.sources).toHaveLength(0);
-  });
+  it.each(['bubbles', 'clicks', 'spectrum'] as const)(
+    'discards delayed %s playback when muted while resuming, even if unmuted again',
+    async (style) => {
+      const resume = deferred<void>();
+      audio.context.state = 'suspended';
+      audio.context.resume.mockReturnValue(resume.promise);
+      const { service } = await setup();
+      service.playSingle(style);
+      service.toggle();
+      service.toggle();
+      audio.context.state = 'running';
+      resume.resolve();
+      await flush();
+      expect(audio.sources).toHaveLength(0);
+    },
+  );
   it('drops a sound whose blocked resume resolves after its attack deadline', async () => {
     const resume = deferred<void>();
     audio.context.state = 'suspended';
@@ -235,7 +249,7 @@ describe('SoundService', () => {
     const { service } = await setup();
     service.playSingle();
     await flush();
-    expect(audio.context.decodeAudioData).toHaveBeenCalledTimes(20);
+    expect(audio.context.decodeAudioData).toHaveBeenCalledTimes(30);
     service.toggle();
     decoded.resolve({ duration: 0.25 } as AudioBuffer);
     await flush();
@@ -244,7 +258,7 @@ describe('SoundService', () => {
     service.playSingle();
     await flush();
     expect(audio.sources).toHaveLength(1);
-    expect(audio.context.decodeAudioData).toHaveBeenCalledTimes(20);
+    expect(audio.context.decodeAudioData).toHaveBeenCalledTimes(30);
   });
   it.each(['resume', 'decode'] as const)(
     'discards a pending %s when the page becomes hidden',

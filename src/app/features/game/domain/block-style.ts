@@ -5,6 +5,11 @@ export const BLOCK_STYLES = [
     label: 'Minimalist',
     description: 'Simple blocks with matching shapes and the classic color palette.',
   },
+  {
+    id: 'spectrum',
+    label: 'ZX Spectrum',
+    description: 'Bright 8-bit blocks, pixel symbols and classic beeper sounds.',
+  },
 ] as const;
 
 export type BlockStyle = (typeof BLOCK_STYLES)[number]['id'];

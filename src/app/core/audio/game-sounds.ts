@@ -1,5 +1,5 @@
 export type GameSoundBank = 'small' | 'medium' | 'large' | 'single';
-export type GameSoundStyle = 'bubbles' | 'clicks';
+export type GameSoundStyle = 'bubbles' | 'clicks' | 'spectrum';
 export interface GameSoundSample {
   readonly style: GameSoundStyle;
   readonly bank: GameSoundBank;
@@ -17,7 +17,7 @@ export function soundSample(
   variation: number,
   style: GameSoundStyle = 'bubbles',
 ): GameSoundSample {
-  const prefix = style === 'bubbles' ? 'bubble-' : '';
+  const prefix = style === 'bubbles' ? 'bubble-' : style === 'spectrum' ? 'spectrum-' : '';
   return {
     style,
     bank,
@@ -26,12 +26,13 @@ export function soundSample(
       bank === 'single'
         ? `/audio/${prefix}single-block.wav`
         : `/audio/${prefix}pop-${bank}-${variation + 1}.wav`,
-    volume: bank === 'single' ? 0.28 : 0.34,
+    volume:
+      style === 'spectrum' ? (bank === 'single' ? 0.16 : 0.22) : bank === 'single' ? 0.28 : 0.34,
   };
 }
 
 export const GAME_SOUND_SAMPLES: readonly GameSoundSample[] = (
-  ['bubbles', 'clicks'] as const
+  ['bubbles', 'clicks', 'spectrum'] as const
 ).flatMap((style) => [
   ...(['small', 'medium', 'large'] as const).flatMap((bank) =>
     [0, 1, 2].map((variation) => soundSample(bank, variation, style)),

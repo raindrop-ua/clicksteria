@@ -13,6 +13,7 @@
         <span
           class="style-preview"
           [class.preview-classic]="option.id === 'classic'"
+          [class.preview-spectrum]="option.id === 'spectrum'"
           [class.preview-no-symbols]="!symbols.enabled()"
           aria-hidden="true"
         >
@@ -26,6 +27,6 @@
   </div>
 </fieldset>
 <p id="block-style-help" class="style-help">
-  Both styles share the same colors. Classic has bouncy jelly blocks; Minimalist has simple blocks
-  with calmer motion.
+  Classic has bouncy jelly blocks. Minimalist keeps the same colors with calmer motion. ZX Spectrum
+  adds bright pixel blocks and beeper sounds.
 </p>

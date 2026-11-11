@@ -18,26 +18,32 @@ describe('BlockStyleService', () => {
     return service;
   }
 
-  it('uses classic for the first render before restoring a saved style', () => {
-    localStorage.setItem(STORAGE_KEY, 'minimal');
-    const service = TestBed.inject(BlockStyleService);
-    expect(service.style()).toBe('classic');
-    TestBed.tick();
-    expect(service.style()).toBe('minimal');
-  });
+  it.each(['minimal', 'spectrum'] as const)(
+    'restores saved %s after a classic first render',
+    (style) => {
+      localStorage.setItem(STORAGE_KEY, style);
+      const service = TestBed.inject(BlockStyleService);
+      expect(service.style()).toBe('classic');
+      TestBed.tick();
+      expect(service.style()).toBe(style);
+    },
+  );
 
-  it('persists a choice across visits and removes the override for classic', () => {
-    const service = setup();
-    service.setStyle('minimal');
-    expect(service.style()).toBe('minimal');
-    expect(localStorage.getItem(STORAGE_KEY)).toBe('minimal');
-    TestBed.resetTestingModule();
-    const restored = setup();
-    expect(restored.style()).toBe('minimal');
-    restored.setStyle('classic');
-    expect(restored.style()).toBe('classic');
-    expect(localStorage.getItem(STORAGE_KEY)).toBeNull();
-  });
+  it.each(['minimal', 'spectrum'] as const)(
+    'persists %s across visits and resets to classic',
+    (style) => {
+      const service = setup();
+      service.setStyle(style);
+      expect(service.style()).toBe(style);
+      expect(localStorage.getItem(STORAGE_KEY)).toBe(style);
+      TestBed.resetTestingModule();
+      const restored = setup();
+      expect(restored.style()).toBe(style);
+      restored.setStyle('classic');
+      expect(restored.style()).toBe('classic');
+      expect(localStorage.getItem(STORAGE_KEY)).toBeNull();
+    },
+  );
 
   it('synchronizes other tabs and resets after storage is cleared or invalid', () => {
     const service = setup();
@@ -45,9 +51,11 @@ describe('BlockStyleService', () => {
       window.dispatchEvent(new StorageEvent('storage', { key, newValue, storageArea: area }));
     storage(STORAGE_KEY, 'minimal');
     expect(service.style()).toBe('minimal');
+    storage(STORAGE_KEY, 'spectrum');
+    expect(service.style()).toBe('spectrum');
     storage('unrelated', 'classic');
     storage(STORAGE_KEY, 'classic', sessionStorage);
-    expect(service.style()).toBe('minimal');
+    expect(service.style()).toBe('spectrum');
     storage(STORAGE_KEY, 'invalid');
     expect(service.style()).toBe('classic');
     storage(STORAGE_KEY, 'minimal');
