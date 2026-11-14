@@ -11,6 +11,7 @@ import { BLOCK_STYLES } from '@features/game/domain/block-style';
 describe('Settings navigation', () => {
   beforeEach(() => {
     localStorage.removeItem('clicksteria:classic:session:v1');
+    localStorage.removeItem('clicksteria:games-started:v1');
     localStorage.removeItem('clicksteria.scenery');
     localStorage.removeItem('clicksteria.block-style');
     localStorage.removeItem('clicksteria.dim-others');
@@ -31,6 +32,7 @@ describe('Settings navigation', () => {
     vi.restoreAllMocks();
     vi.unstubAllGlobals();
     localStorage.removeItem('clicksteria:classic:session:v1');
+    localStorage.removeItem('clicksteria:games-started:v1');
     localStorage.removeItem('clicksteria.scenery');
     localStorage.removeItem('clicksteria.block-style');
     localStorage.removeItem('clicksteria.dim-others');

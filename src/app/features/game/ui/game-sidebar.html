@@ -22,4 +22,9 @@
     <app-game-help />
   </div>
   <p class="rail-note">No rush. No timer.</p>
+  @if (ready()) {
+    <p class="rail-games">
+      Games played: <strong>{{ gamesPlayed() | number }}</strong>
+    </p>
+  }
 </aside>

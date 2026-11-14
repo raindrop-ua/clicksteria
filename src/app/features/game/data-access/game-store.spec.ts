@@ -7,11 +7,17 @@ import { GameSessionSnapshot } from '@features/game/domain/game-session';
 import { GameStore } from './game-store';
 import { BlockStyleService } from './block-style.service';
 import { GameSessionStorage } from './game-session-storage';
+import { GameCountStorage } from './game-count-storage';
 
 describe('GameStore', () => {
   const storage = { read: vi.fn(() => 17), write: vi.fn() };
   const sound = { playGroup: vi.fn(), playSingle: vi.fn() };
   const sessions = { read: vi.fn((): GameSessionSnapshot | null => null), write: vi.fn() };
+  const gameCounts = {
+    read: vi.fn(() => 0),
+    write: vi.fn(),
+    increment: vi.fn((current: number) => current + 1),
+  };
 
   function savedGame(): GameSessionSnapshot {
     let index = 0;
@@ -29,11 +35,13 @@ describe('GameStore', () => {
     vi.clearAllMocks();
     storage.read.mockReturnValue(17);
     sessions.read.mockReturnValue(null);
+    gameCounts.read.mockReturnValue(0);
     TestBed.configureTestingModule({
       providers: [
         { provide: RecordStorage, useValue: storage },
         { provide: SoundService, useValue: sound },
         { provide: GameSessionStorage, useValue: sessions },
+        { provide: GameCountStorage, useValue: gameCounts },
       ],
     });
   });
@@ -49,6 +57,8 @@ describe('GameStore', () => {
     game.initialize();
     expect(game.state()).toBe(first);
     expect(game.record()).toBe(17);
+    expect(game.gamesPlayed()).toBe(1);
+    expect(gameCounts.increment).toHaveBeenCalledExactlyOnceWith(0);
     expect(sessions.read).toHaveBeenCalledOnce();
     expect(sessions.write).toHaveBeenCalledExactlyOnceWith({
       version: 1,
@@ -74,6 +84,9 @@ describe('GameStore', () => {
     expect(sessions.write).not.toHaveBeenCalled();
     expect(game.record()).toBe(saved.current.score);
     expect(storage.write).toHaveBeenCalledWith(saved.current.score);
+    expect(game.gamesPlayed()).toBe(1);
+    expect(gameCounts.write).toHaveBeenCalledExactlyOnceWith(1);
+    expect(gameCounts.increment).not.toHaveBeenCalled();
 
     game.undo();
     expect(game.state()).toBe(saved.history[1]);
@@ -85,6 +98,7 @@ describe('GameStore', () => {
     game.undo();
     expect(game.state()).toBe(saved.history[0]);
     expect(game.canUndo()).toBe(false);
+    expect(game.gamesPlayed()).toBe(1);
     expect(game.record()).toBe(saved.current.score);
     expect(sessions.write).toHaveBeenLastCalledWith({
       version: 1,
@@ -117,6 +131,8 @@ describe('GameStore', () => {
       expect(game.canUndo()).toBe(false);
       expect(game.status()).toBe('playing');
       expect(game.record()).toBe(Math.max(17, current.score));
+      expect(game.gamesPlayed()).toBe(1);
+      expect(gameCounts.increment).toHaveBeenCalledExactlyOnceWith(0);
       expect(game.message()).toContain('New game');
       expect(sessions.write).toHaveBeenCalledExactlyOnceWith({
         version: 1,
@@ -190,6 +206,35 @@ describe('GameStore', () => {
     game.initialize();
     expect(game.record()).toBe(5000);
     expect(storage.write).not.toHaveBeenCalled();
+  });
+  it('resumes a saved game without incrementing an existing game count', () => {
+    gameCounts.read.mockReturnValue(42);
+    sessions.read.mockReturnValue(savedGame());
+    const game = TestBed.inject(GameStore);
+    game.initialize();
+    game.initialize();
+    game.hint();
+    game.preview({ column: 0, row: 0 });
+    game.play(findLargestGroup(game.board())[0]);
+    game.undo();
+    expect(game.gamesPlayed()).toBe(42);
+    expect(gameCounts.increment).not.toHaveBeenCalled();
+    expect(gameCounts.write).not.toHaveBeenCalled();
+    game.newGame();
+    expect(game.gamesPlayed()).toBe(43);
+    expect(gameCounts.increment).toHaveBeenCalledExactlyOnceWith(42);
+  });
+  it('counts consecutive new games once each and preserves the count through undo', () => {
+    gameCounts.read.mockReturnValue(7);
+    const game = TestBed.inject(GameStore);
+    game.initialize();
+    expect(game.gamesPlayed()).toBe(8);
+    game.play(findLargestGroup(game.board())[0]);
+    game.undo();
+    game.newGame();
+    game.newGame();
+    expect(game.gamesPlayed()).toBe(10);
+    expect(gameCounts.increment.mock.calls).toEqual([[7], [8], [9]]);
   });
   it('restores the exact previous board and score, and resets history for a new game', () => {
     const game = TestBed.inject(GameStore);

@@ -46,6 +46,19 @@
   font-weight: 500;
 }
 
+.rail-games {
+  margin: 8px 0 0;
+  color: var(--color-muted);
+  font-size: 0.8125rem;
+  line-height: 1.4;
+}
+
+.rail-games strong {
+  color: var(--color-ink);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
 @media (max-width: 799px) {
   .rail-emblem,
   app-game-help,
@@ -64,6 +77,10 @@
 
   .rail-actions {
     margin: 0;
+  }
+
+  .rail-games {
+    font-size: 0.75rem;
   }
 }
 
