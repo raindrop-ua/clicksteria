@@ -99,6 +99,8 @@ Path targets are relative to `tsconfig.json`, so no `baseUrl` is needed. Compone
 
 The record is the highest score reached, including before undo. It persists separately in localStorage under `clicksteria:classic:best:v1`; appearance and sound preferences keep their existing separate keys.
 
+**Games played** counts games started, including the first game, a confirmed new game, Play again, and the fresh game created when reopening a finished game. Restoring an unfinished game, Undo, Hint, and navigation do not increase it. The count persists separately under `clicksteria:games-started:v1`, stays local to this browser, and remains usable in memory if storage is blocked. An existing unfinished save initializes an otherwise empty counter to 1; games played before this counter was introduced cannot be reconstructed.
+
 The current game autosaves as one version 1 snapshot under `clicksteria:classic:session:v1`. It includes the current board's tile IDs and colors, score, move count, and full Undo history. A new game, each successful move, and Undo save immediately. Opening `/play` restores an unfinished saved game automatically after hydration, including after a reload or browser restart. Starting a new game replaces the saved snapshot.
 
 A finished game is not resumed: reloading or reopening after a win or loss creates a fresh 150-block board with zero score and an empty Undo history. The best score remains saved separately. Undo is still available after the game ends in the current tab; using it before reloading returns the game to an unfinished state, which is saved and can resume again.

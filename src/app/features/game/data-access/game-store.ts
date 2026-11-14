@@ -15,6 +15,7 @@ import { GameState, Position } from '@features/game/domain/game.models';
 import { BlockStyle } from '@features/game/domain/block-style';
 import { BlockStyleService } from './block-style.service';
 import { GameSessionStorage } from './game-session-storage';
+import { GameCountStorage } from './game-count-storage';
 
 const SOUND_STYLES: Record<BlockStyle, GameSoundStyle> = {
   classic: 'bubbles',
@@ -27,14 +28,17 @@ const SOUND_STYLES: Record<BlockStyle, GameSoundStyle> = {
 export class GameStore {
   private readonly storage = inject(RecordStorage);
   private readonly sessions = inject(GameSessionStorage);
+  private readonly gameCounts = inject(GameCountStorage);
   private readonly sound = inject(SoundService);
   private readonly blocks = inject(BlockStyleService);
   private readonly current = signal<GameState | null>(null);
   private readonly history = signal<readonly GameState[]>([]);
   private readonly selection = signal<Position | null>(null);
   private readonly best = signal(0);
+  private readonly gamesStarted = signal(0);
   readonly state = this.current.asReadonly();
   readonly record = this.best.asReadonly();
+  readonly gamesPlayed = this.gamesStarted.asReadonly();
   readonly message = signal('Select a group of two or more matching blocks.');
   readonly board = computed(() => this.current()?.board ?? []);
   readonly score = computed(() => this.current()?.score ?? 0);
@@ -56,10 +60,15 @@ export class GameStore {
   initialize(): void {
     if (this.current()) return;
     this.best.set(this.storage.read());
+    this.gamesStarted.set(this.gameCounts.read());
     const saved = this.sessions.read();
     if (saved) {
       this.updateRecord(saved.current.score);
       if (getStatus(saved.current.board) === 'playing') {
+        if (this.gamesStarted() === 0) {
+          this.gamesStarted.set(1);
+          this.gameCounts.write(1);
+        }
         this.current.set(saved.current);
         this.history.set(saved.history);
         this.selection.set(null);
@@ -74,6 +83,7 @@ export class GameStore {
     this.history.set([]);
     this.selection.set(null);
     this.message.set('New game. Find a group of matching blocks.');
+    this.gamesStarted.set(this.gameCounts.increment(this.gamesStarted()));
     this.saveSession();
   }
   preview(position: Position | null): void {
